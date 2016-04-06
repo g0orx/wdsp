@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2015 Warren Pratt, NR0V
+Copyright (C) 2015, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -50,7 +50,7 @@ typedef struct _snba
 	int oasize;
 	int oainidx;
 	int oaoutidx;
-	int init_oainidx;
+	int init_oaoutidx;
 	double* outaccum;
 
 	int resamprun;
@@ -84,10 +84,12 @@ typedef struct _snba
 	{
 		double pmultmin;
 	} scan;
+	double out_low_cut;
+	double out_high_cut;
 } snba, *SNBA;
 
 extern SNBA create_snba (int run, double* in, double* out, int inrate, int internalrate, int bsize, int ovrlp, int xsize,
-	int asize, int npasses, double k1, double k2, int b, int pre, int post, double pmultmin);
+	int asize, int npasses, double k1, double k2, int b, int pre, int post, double pmultmin, double out_low_cut, double out_high_cut);
 
 extern void destroy_snba (SNBA d);
 
@@ -101,36 +103,37 @@ extern void setSamplerate_snba (SNBA a, int rate);
 
 extern void setSize_snba (SNBA a, int size);
 
-
+__declspec (dllexport) void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh);
 
 typedef struct _bpsnba
 {
-		int run;
-		int size;
-		double* in;
-		double* out;
-		int rate;
-		int snba_run;
-		double* buff;
-		NBP bpsnba;
-		int mode;
-		double f_low;
-		double f_high;
-		double abs_low_freq;
-		double abs_high_freq;
-		int wintype;
-		double gain;
-		int autoincr;
-		int maxpb;
-		NOTCHDB* ptraddr;
+		int run;						// run the filter
+		int run_notches;				// use the notches, vs straight bandpass
+		int position;					// position in the processing pipeline
+		int size;						// buffer size
+		double* in;						// input buffer
+		double* out;					// output buffer
+		int rate;						// sample rate
+		double* buff;					// internal buffer
+		NBP bpsnba;						// pointer to the notched bandpass filter, nbp
+		double f_low;					// low cutoff frequency
+		double f_high;					// high cutoff frequency
+		double abs_low_freq;			// lowest positive freq supported by SNB
+		double abs_high_freq;			// highest positive freq supported by SNG
+		int wintype;					// filter window type
+		double gain;					// filter gain
+		int autoincr;					// use auto increment for notch width
+		int maxpb;						// maximum passband segments supported
+		NOTCHDB* ptraddr;				// pointer to address of NOTCH DATABASE
 } bpsnba, *BPSNBA;
 
 extern void calc_bpsnba (BPSNBA a);
 
 extern void decalc_bpsnba (BPSNBA a);
 
-extern BPSNBA create_bpsnba (int snba_run, int size, double* in, double* out, int rate, int mode, 
-	double abs_low_freq, double abs_high_freq, int wintype, double gain, int autoincr, int maxpb, NOTCHDB* ptraddr);
+extern BPSNBA create_bpsnba (int run, int run_notches, int position, int size, double* in, double* out, int rate,  
+	double abs_low_freq, double abs_high_freq, double f_low, double f_high, int wintype, double gain, int autoincr, 
+	int maxpb, NOTCHDB* ptraddr);
 
 extern void destroy_bpsnba (BPSNBA a);
 
@@ -142,10 +145,10 @@ extern void setSamplerate_bpsnba (BPSNBA a, int rate);
 
 extern void setSize_bpsnba (BPSNBA a, int size);
 
-extern void setMode_bpsnba (BPSNBA a, int snba_run, int mode);
+extern void xbpsnbain (BPSNBA a, int position);
 
-extern void xbpsnbain (BPSNBA a);
+extern void xbpsnbaout (BPSNBA a, int position);
 
-extern void xbpsnbaout (BPSNBA a);
+extern void recalc_bpsnba_filter (BPSNBA a);
 
 #endif

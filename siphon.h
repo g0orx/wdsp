@@ -33,6 +33,9 @@ warren@wpratt.com
 typedef struct _siphon
 {
 	int run;
+	int position;
+	int mode;
+	int disp;
 	int insize;
 	double* in;
 	int sipsize;	// NOTE:  sipsize MUST BE A POWER OF TWO!!
@@ -48,13 +51,14 @@ typedef struct _siphon
 	CRITICAL_SECTION update;
 } siphon, *SIPHON;
 
-extern SIPHON create_siphon (int run, int insize, double* in, int sipsize, int fftsize, int specmode);
+extern SIPHON create_siphon (int run, int position, int mode, int disp, int insize, double* in, int sipsize, 
+	int fftsize, int specmode);
 
 extern void destroy_siphon (SIPHON a);
 
 extern void flush_siphon (SIPHON a);
 
-extern void xsiphon (SIPHON a);
+extern void xsiphon (SIPHON a, int pos);
 
 extern void setBuffers_siphon (SIPHON a, double* in);
 

@@ -64,7 +64,7 @@ void destroy_meter (METER a)
 
 void flush_meter (METER a)
 {
-	a->avg = -400.0;
+	a->avg  = 0.0;
 	a->peak = 0.0;
 	a->result[a->enum_av] = -400.0;
 	a->result[a->enum_pk] = -400.0;
@@ -88,12 +88,12 @@ void xmeter (METER a)
 		for (i = 0; i < a->size; i++)
 		{
 			smag = a->buff[2 * i + 0] * a->buff[2 * i + 0] + a->buff[2 * i + 1] * a->buff[2 * i + 1];
-			a->avg = a->avg * a->mult_average + (1.0 - a->mult_average) * 10.0 * mlog10 (smag + 1.0e-40);
+			a->avg = a->avg * a->mult_average + (1.0 - a->mult_average) * smag;
 			a->peak *= a->mult_peak;
 			if (smag > np) np = smag;
 		}
 		if (np > a->peak) a->peak = np;
-		a->result[a->enum_av] = a->avg;
+		a->result[a->enum_av] = 10.0 * mlog10 (a->avg + 1.0e-40);
 		a->result[a->enum_pk] = 10.0 * mlog10 (a->peak + 1.0e-40);
 		if ((a->pgain != 0) && (a->enum_gain >= 0))
 			a->result[a->enum_gain] = 20.0 * mlog10 (*a->pgain + 1.0e-40);

@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2015 Warren Pratt, NR0V
+Copyright (C) 2015, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@ warren@wpratt.com
 
 typedef struct _notchdb
 {
-	int fnfrun;
+	int master_run;
 	double tunefreq;
 	double shift;
 	int nn;
@@ -41,31 +41,33 @@ typedef struct _notchdb
 	int maxnotches;
 } notchdb, *NOTCHDB;
 
-extern NOTCHDB create_notchdb (int fnfrun, int maxnotches);
+extern NOTCHDB create_notchdb (int master_run, int maxnotches);
 
 extern void destroy_notchdb (NOTCHDB b);
 
 typedef struct _nbp
 {
-	int run;
-	int position;
-	int size;
-	double* in;
-	double* out;
-	double flow;
-	double fhigh;
-	double* infilt;
-	double* product;
-	double* mults;
-	double rate;
-	int wintype;
-	double gain;
-	int autoincr;
-	int maxpb;
-	NOTCHDB* ptraddr;
-	double* bplow;
-	double* bphigh;
-	int numpb;
+	int run;				// run the filter
+	int fnfrun;				// use the notches
+	int position;			// position in processing pipeline
+	int size;				// buffer size
+	double* in;				// input buffer
+	double* out;			// output buffer
+	double flow;			// low bandpass cutoff freq
+	double fhigh;			// high bandpass cutoff freq
+	double* infilt;			// filter execution buffer, input
+	double* product;		// filter execution buffer, product
+	double* impulse;		// filter impulse response
+	double* mults;			// filter mask
+	double rate;			// sample rate
+	int wintype;			// filter window type
+	double gain;			// filter gain
+	int autoincr;			// auto-increment notch width
+	int maxpb;				// maximum number of passbands
+	NOTCHDB* ptraddr;		// ptr to addr of notch-database data structure
+	double* bplow;			// array of passband lows
+	double* bphigh;			// array of passband highs
+	int numpb;				// number of passbands
 	fftw_plan CFor;
 	fftw_plan CRev;
 
@@ -73,7 +75,7 @@ typedef struct _nbp
 	int hadnotch;
 } nbp, *NBP;
 
-extern NBP create_nbp(int run, int position, int size, double* in, double* out, 
+extern NBP create_nbp(int run, int fnfrun, int position, int size, double* in, double* out, 
 	double flow, double fhigh, int rate, int wintype, double gain, int autoincr, int maxpb, NOTCHDB* ptraddr);
 
 extern void destroy_nbp (NBP a);
@@ -88,11 +90,8 @@ extern void setSamplerate_nbp (NBP a, int rate);
 
 extern void setSize_nbp (NBP a, int size);
 
-extern __declspec (dllexport) int RXANBPAddNotch (int channel, int notch, 
-	double fcenter, double fwidth, int active);
+extern void recalc_nbp_filter (NBP a);
 
-extern __declspec (dllexport) void RXANBPSetNotchesRun (int channel, int  run);
-
-extern __declspec (dllexport) void RXANBPSetAutoIncrease (int channel, int autoincr);
+__declspec (dllexport) void RXANBPSetFreqs (int channel, double flow, double fhigh);
 
 #endif

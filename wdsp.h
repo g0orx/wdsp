@@ -24,8 +24,13 @@ PORT void SetChannelTSlewDown (int channel, double time);
 PORT void fexchange0 (int channel, double* in, double* out, int* error);
 PORT void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTREAL *Qout, int* error);
 
+
+// analyzer
+PORT void XCreateAnalyzer(int disp, int *success, int m_size, int m_num_fft, int m_stitch, char *app_data_path);
+PORT void SetAnalyzer(int disp, int n_pixout, int n_fft, int typ, int *flp, int sz, int bf_sz, int win_type, double pi, int ovrlp, int clp, int fscLin, int fscHin, int n_pix, int n_stch, int calset, double fmin, double fmax, int max_w); 
 PORT void Spectrum0(int run, int disp, int ss, int LO, double* in);
-PORT void Spectrum(int disp, int ss, int LO, dINREAL* pI, dINREAL* pQ);
+PORT void Spectrum(int disp, int ss, int LO, float* pI, float* pQ);
+PORT void GetPixels(int disp, int pixout, float *pix, int *flag);
 
 // RXA
 PORT void SetRXAMode (int channel, int mode);

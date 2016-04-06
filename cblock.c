@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -28,10 +28,11 @@ warren@wpratt.com
 
 void calc_cbl (CBL a)
 {
-	a->dcI = 0.0;
-	a->dcQ = 0.0;
+	a->prevIin  = 0.0;
+	a->prevQin  = 0.0;
+	a->prevIout = 0.0;
+	a->prevQout = 0.0;
 	a->mtau = exp(-1.0 / (a->sample_rate * a->tau));
-	a->onem_mtau = 1.0 - a->mtau;
 }
 
 CBL create_cbl
@@ -64,8 +65,10 @@ void destroy_cbl(CBL a)
 
 void flush_cbl (CBL a)
 {
-	a->dcI = 0.0;
-	a->dcQ = 0.0;
+	a->prevIin  = 0.0;
+	a->prevQin  = 0.0;
+	a->prevIout = 0.0;
+	a->prevQout = 0.0;
 }
 
 void xcbl (CBL a)
@@ -73,12 +76,17 @@ void xcbl (CBL a)
 	if (a->run)
 	{
 		int i;
+		double tempI, tempQ;
 		for (i = 0; i < a->buff_size; i++)
 		{
-			if (fabs(a->dcI = a->mtau * a->dcI + a->onem_mtau * a->in_buff[2 * i + 0]) < 1.0e-100) a->dcI = 0.0;
-			if (fabs(a->dcQ = a->mtau * a->dcQ + a->onem_mtau * a->in_buff[2 * i + 1]) < 1.0e-100) a->dcQ = 0.0;
-			a->out_buff[2 * i + 0] = a->in_buff[2 * i + 0] - a->dcI;
-			a->out_buff[2 * i + 1] = a->in_buff[2 * i + 1] - a->dcQ;
+			tempI  = a->in_buff[2 * i + 0];
+			tempQ  = a->in_buff[2 * i + 1];
+			a->out_buff[2 * i + 0] = a->in_buff[2 * i + 0] - a->prevIin + a->mtau * a->prevIout;
+			a->out_buff[2 * i + 1] = a->in_buff[2 * i + 1] - a->prevQin + a->mtau * a->prevQout;
+			a->prevIin  = tempI;
+			a->prevQin  = tempQ;
+			a->prevIout = a->out_buff[2 * i + 0];
+			a->prevQout = a->out_buff[2 * i + 1];
 		}
 	}
 	else if (a->in_buff != a->out_buff)

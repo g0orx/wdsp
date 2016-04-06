@@ -346,6 +346,9 @@ void create_txa (int channel)
 
 	txa[channel].sip1.p = create_siphon (
 		1,											// run
+		0,											// position
+		0,											// mode
+		0,											// disp
 		ch[channel].dsp_size,						// input buffer size
 		txa[channel].midbuff,						// input buffer
 		4096,										// number of samples to buffer
@@ -522,7 +525,7 @@ void xtxa (int channel)
 	xgen (txa[channel].gen1.p);
 	xuslew (txa[channel].uslew.p);
 	xmeter (txa[channel].alcmeter.p);
-	xsiphon (txa[channel].sip1.p);
+	xsiphon (txa[channel].sip1.p, 0);
 	xiqc (txa[channel].iqc.p0);
 	xcfir(txa[channel].cfir.p);
 	xresample (txa[channel].rsmpout.p);

@@ -54,7 +54,7 @@ typedef struct _iob
 	int bfo;									// block_for_output, wait until output is available before proceeding
 	HANDLE Sem_OutReady;						// count = number of 'out_size' buffers processed and available for output
 	HANDLE Sem_BuffReady;						// count = number of 'dsp_size' buffers queued for processing
-
+	volatile long exec_bypass;
 	struct
 	{
 		int ustate;

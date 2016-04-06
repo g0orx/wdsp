@@ -96,6 +96,9 @@ warren@wpratt.com
 #include "utilities.h"
 #include "wcpAGC.h"
 
+// manage differences among consoles
+//#define _Thetis
+
 // channel definitions
 #define MAX_CHANNELS					32					// maximum number of supported channels
 #define DSP_MULT						2					// number of dsp_buffsizes that are held in an iobuff pseudo-ring
@@ -108,14 +111,18 @@ warren@wpratt.com
 #define dMAX_NUM_FFT					1					// maximum number of ffts for an elimination
 #define dMAX_PIXELS						2560				// maximum number of pixels that can be requested
 #define dMAX_AVERAGE					60					// maximum number of pixel frames that will be window-averaged
+#ifdef _Thetis
+#define dINREAL							double
+#else
 #define dINREAL							float
+#endif
 #define dOUTREAL						float
 #define dSAMP_BUFF_MULT					2					// ratio of input sample buffer size to fft size (for overlap)
 #define dNUM_PIXEL_BUFFS				3					// number of pixel output buffers
 #define dMAX_M							1					// number of variables to calibrate
 #define dMAX_N							100					// maximum number of frequencies at which to calibrate
 #define dMAX_CAL_SETS					2					// maximum number of calibration data sets
-
+#define dMAX_PIXOUTS					4					// maximum number of det/avg/outputs per display instance
 
 // wisdom definitions
 #define MAX_WISDOM_SIZE_DISPLAY			262144

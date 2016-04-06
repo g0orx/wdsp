@@ -33,34 +33,28 @@ void main (void *pargs)
 #endif
 {
 	int channel = (int)pargs;
-	switch (ch[channel].type)
+	while (_InterlockedAnd (&ch[channel].run, 1))
 	{
-	case 0:	// rxa
-		while (_InterlockedAnd (&ch[channel].run, 1))
+		WaitForSingleObject(ch[channel].iob.pd->Sem_BuffReady,INFINITE);
+		EnterCriticalSection (&ch[channel].csDSP);
+		if (!_InterlockedAnd (&ch[channel].iob.pd->exec_bypass, 1))
 		{
-			WaitForSingleObject(ch[channel].iob.pd->Sem_BuffReady,INFINITE);
-			EnterCriticalSection (&ch[channel].csDSP);
-			dexchange (channel, rxa[channel].outbuff, rxa[channel].inbuff);
-			xrxa (channel);
-			LeaveCriticalSection (&ch[channel].csDSP);
+			switch (ch[channel].type)
+			{
+			case 0:		// rxa
+				dexchange (channel, rxa[channel].outbuff, rxa[channel].inbuff);
+				xrxa (channel);
+				break;
+			case 1:		// txa
+				dexchange (channel, txa[channel].outbuff, txa[channel].inbuff);
+				xtxa (channel);
+				break;
+			case 31:	//
+
+				break;
+			}
 		}
-		break;
-	case 1:  // txa
-		while (_InterlockedAnd (&ch[channel].run, 1))
-		{
-			WaitForSingleObject(ch[channel].iob.pd->Sem_BuffReady,INFINITE);
-			EnterCriticalSection (&ch[channel].csDSP);
-			dexchange (channel, txa[channel].outbuff, txa[channel].inbuff);
-			xtxa (channel);
-			LeaveCriticalSection (&ch[channel].csDSP);
-		}
-		break;
-	case 31: // 
-		while (_InterlockedAnd (&ch[channel].run, 1))
-		{
-			
-		}
-		break;
+		LeaveCriticalSection (&ch[channel].csDSP);
 	}
 	_endthread();
 }

@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2014, 2015, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -81,12 +81,13 @@ void create_rxa (int channel)
 
 	// notch database
 	rxa[channel].ndb.p = create_notchdb (
-		0,												// use the notches (run notches)
+		0,												// master run for all nbp's
 		1024);											// max number of notches
 
 	// notched bandpass
 	rxa[channel].nbp0.p = create_nbp (
 		1,												// run, always runs
+		0,												// run the notches
 		0,												// position
 		ch[channel].dsp_size,							// buffer size
 		rxa[channel].midbuff,							// pointer to input buffer
@@ -96,23 +97,26 @@ void create_rxa (int channel)
 		ch[channel].dsp_rate,							// sample rate
 		0,												// wintype
 		1.0,											// gain
-		0,												// auto-increase notch width
+		1,												// auto-increase notch width
 		1025,											// max number of passbands
 		&rxa[channel].ndb.p);							// addr of database pointer
 
 	// bandpass for snba
 	rxa[channel].bpsnba.p = create_bpsnba (
 		0,												// bpsnba run flag
+		0,												// run the notches
+		0,												// position
 		ch[channel].dsp_size,							// size
 		rxa[channel].midbuff,							// input buffer
 		rxa[channel].midbuff,							// output buffer
 		ch[channel].dsp_rate,							// samplerate
-		rxa[channel].mode,								// rxa mode
-		+ 250.0,										// abs value of cutoff nearest zero ////
-		+ 5700.0,										// abs value of cutoff farthest zero ////
+		+ 250.0,										// abs value of cutoff nearest zero
+		+ 5700.0,										// abs value of cutoff farthest zero
+		- 5700.0,										// current low frequency
+		- 250.0,										// current high frequency
 		0,												// wintype
 		1.0,											// gain
-		0,												// auto-increase notch width
+		1,												// auto-increase notch width
 		1025,											// max number of passbands
 		&rxa[channel].ndb.p);							// addr of database pointer
 
@@ -234,7 +238,9 @@ void create_rxa (int channel)
 		10,												// b
 		2,												// pre
 		2,												// post
-		0.5);											// pmultmin
+		0.5,											// pmultmin
+		200.0,											// output resampler low cutoff
+		5400.0);										// output resampler high cutoff
 
 	// EQ
 	{
@@ -369,6 +375,9 @@ void create_rxa (int channel)
 	// pull phase & scope display data
 	rxa[channel].sip1.p = create_siphon (
 		1,												// run - needed only for phase display
+		0,												// position
+		0,												// mode
+		0,												// disp
 		ch[channel].dsp_size,							// size of input buffer
 		rxa[channel].midbuff,							// input buffer
 		4096,											// number of samples to store
@@ -520,15 +529,17 @@ void xrxa (int channel)
 	xresample (rxa[channel].rsmpin.p);
 	xgen (rxa[channel].gen0.p);
 	xmeter (rxa[channel].adcmeter.p);
-	xbpsnbain (rxa[channel].bpsnba.p);
+	xbpsnbain (rxa[channel].bpsnba.p, 0);
 	xnbp (rxa[channel].nbp0.p, 0);
 	xmeter (rxa[channel].smeter.p);
 	xsender (rxa[channel].sender.p);
 	xamsqcap (rxa[channel].amsq.p);
-	xbpsnbaout (rxa[channel].bpsnba.p);
+	xbpsnbaout (rxa[channel].bpsnba.p, 0);
 	xamd (rxa[channel].amd.p);
 	xfmd (rxa[channel].fmd.p);
 	xfmsq (rxa[channel].fmsq.p);
+	xbpsnbain (rxa[channel].bpsnba.p, 1);
+	xbpsnbaout (rxa[channel].bpsnba.p, 1);
 	xsnba (rxa[channel].snba.p);
 	xeq (rxa[channel].eq.p);
 	xanf (rxa[channel].anf.p, 0);
@@ -541,7 +552,7 @@ void xrxa (int channel)
 	xemnr (rxa[channel].emnr.p, 1);
 	xbandpass (rxa[channel].bp1.p, 1);
 	xmeter (rxa[channel].agcmeter.p);
-	xsiphon (rxa[channel].sip1.p);
+	xsiphon (rxa[channel].sip1.p, 0);
 	xcbl (rxa[channel].cbl.p);
 	xspeak (rxa[channel].speak.p);
 	xmpeak (rxa[channel].mpeak.p);
@@ -691,13 +702,14 @@ void setDSPBuffsize_rxa (int channel)
 
 /********************************************************************************************************
 *																										*
-*											RXA Properties												*
+*										RXA Mode & Filter Controls										*
 *																										*
 ********************************************************************************************************/
 
 PORT
 void SetRXAMode (int channel, int mode)
 {
+	// set AGC & demodulators; call other functions as needed
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].mode = mode;
 	rxa[channel].amd.p->run  = 0;
@@ -725,12 +737,13 @@ void SetRXAMode (int channel, int mode)
 		break;
 	}
 	RXAbp1Check (channel);
-	setMode_bpsnba (rxa[channel].bpsnba.p, rxa[channel].snba.p->run, rxa[channel].mode);
+	RXAbpsnbaCheck (channel);
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
 void RXAResCheck (int channel)
-{	// turn OFF/ON resamplers depending upon whether they're needed
+{	
+	// turn OFF/ON resamplers depending upon whether they're needed
 	RESAMPLE a = rxa[channel].rsmpin.p;
 	if (ch[channel].in_rate  != ch[channel].dsp_rate)	a->run = 1;
 	else												a->run = 0;
@@ -741,6 +754,7 @@ void RXAResCheck (int channel)
 
 void RXAbp1Check (int channel)
 {
+	// turn OFF/ON bandpass filter bp1 and set its gain
 	int old = rxa[channel].bp1.p->run;
 	if ((rxa[channel].amd.p->run  == 1) ||
 		(rxa[channel].snba.p->run == 1) ||
@@ -757,3 +771,67 @@ void RXAbp1Check (int channel)
 	if (!old && rxa[channel].bp1.p->run) flush_bandpass (rxa[channel].bp1.p);
 }
 
+void RXAbpsnbaCheck (int channel)
+{
+	// for BPSNBA: set run, position, freqs, run_notches
+	// call this upon change in RXA_mode, snba_run, notch_master_run
+	BPSNBA a = rxa[channel].bpsnba.p;
+	NOTCHDB b = rxa[channel].ndb.p;
+	double f_low = a->f_low;
+	double f_high = a->f_high;
+	int run_notches = a->run_notches;
+	switch (rxa[channel].mode)
+	{
+	case RXA_LSB:
+	case RXA_CWL:
+	case RXA_DIGL:
+		a->run = rxa[channel].snba.p->run;
+		a->position = 0;
+		a->f_low  = -a->abs_high_freq;
+		a->f_high = -a->abs_low_freq;
+		a->run_notches = b->master_run;
+		break;
+	case RXA_USB:
+	case RXA_CWU:
+	case RXA_DIGU:
+		a->run = rxa[channel].snba.p->run;
+		a->position = 0;
+		a->f_low  = +a->abs_low_freq;
+		a->f_high = +a->abs_high_freq;
+		a->run_notches = b->master_run;
+		break;
+	case RXA_AM:
+	case RXA_SAM:
+	case RXA_DSB:
+		a->run = rxa[channel].snba.p->run;
+		a->position = 1;
+		a->f_low  = +a->abs_low_freq;
+		a->f_high = +a->abs_high_freq;
+		a->run_notches = 0;
+		break;
+	case RXA_FM:
+		a->run = rxa[channel].snba.p->run;
+		a->position = 1;
+		a->f_low  = +a->abs_low_freq;
+		a->f_high = +a->abs_high_freq;
+		a->run_notches = 0;
+		break;
+	case RXA_DRM:
+	case RXA_SPEC:
+		a->run = 0;
+		break;
+	}
+	// 'run' and 'position' are examined at run time; no filter changes required.
+	// Recalculate filter if frequencies OR 'run_notches' changed.
+	if ((a->f_low       != f_low      ) ||
+		(a->f_high      != f_high     ) ||
+		(a->run_notches != run_notches)) recalc_bpsnba_filter (a);
+}
+
+PORT
+RXASetPassband (int channel, double f_low, double f_high)
+{
+	SetRXABandpassFreqs       (channel, f_low, f_high);
+	SetRXASNBAOutputBandwidth (channel, f_low, f_high);
+	RXANBPSetFreqs            (channel, f_low, f_high);
+}

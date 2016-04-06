@@ -31,7 +31,7 @@ warren@wpratt.com
 #define MAX_HANG_SLEW_TIME			(0.002)
 #define MAX_HANG_TIME				(0.002)
 #define MAX_SEQ_TIME				(0.025)
-#define MAX_SAMPLERATE				(384000.0)
+#define MAX_SAMPLERATE				(1536000.0)
 
 void init_nob (NOB a)
 {

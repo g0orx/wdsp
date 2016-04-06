@@ -403,7 +403,7 @@ void calc_emnr(EMNR a)
 	a->ae.msize = a->msize;
 	a->ae.lambda_y = a->g.lambda_y;
 
-	a->ae.zetaThresh = sqrt(10.0) / 10.0;
+	a->ae.zetaThresh = 0.75;
 	a->ae.psi = 10.0;
 
 	a->ae.nmask = (double *)malloc0(a->ae.msize * sizeof(double));
@@ -922,3 +922,18 @@ void SetRXAEMNRPosition (int channel, int position)
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
+PORT
+void SetRXAEMNRaeZetaThresh (int channel, double zetathresh)
+{
+	EnterCriticalSection (&ch[channel].csDSP);
+	rxa[channel].emnr.p->ae.zetaThresh = zetathresh;
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT
+void SetRXAEMNRaePsi (int channel, double psi)
+{
+	EnterCriticalSection (&ch[channel].csDSP);
+	rxa[channel].emnr.p->ae.psi = psi;
+	LeaveCriticalSection (&ch[channel].csDSP);
+}

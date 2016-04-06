@@ -40,6 +40,8 @@ extern void print_meter (const char* filename, double* meter, int enum_av, int e
 
 extern void print_message (const char* filename, const char* message, int p0, int p1, int p2);
 
+extern void print_window_gain (const char* filename, int wintype, double inv_coherent_gain, double inherent_gain);
+
 extern void print_deviation (const char* filename, double dpmax, double rate);
 
 extern void doCalccPrintSamples(int channel);
@@ -49,3 +51,9 @@ __declspec (dllexport) void print_buffer_parameters (const char* filename, int c
 extern void print_anb_parms (const char* filename, ANB a);
 
 extern void WriteAudioWDSP(double seconds, int rate, int size, double* indata, int mode, double gain);
+
+extern void WriteScaledAudio (
+	double seconds,			// number of seconds of audio to record
+	int rate,				// sample rate
+	int size,				// incoming buffer size
+	double* indata );		// pointer to incoming data buffer

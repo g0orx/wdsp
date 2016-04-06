@@ -184,17 +184,23 @@ void setOutRate_resample(RESAMPLE a, int rate)
 
 void setFCLow_resample (RESAMPLE a, double fc_low)
 {
-	decalc_resample (a);
-	a->fc_low = fc_low;
-	calc_resample (a);
+	if (fc_low != a->fc_low)
+	{
+		decalc_resample (a);
+		a->fc_low = fc_low;
+		calc_resample (a);
+	}
 }
 
 void setBandwidth_resample (RESAMPLE a, double fc_low, double fc_high)
 {
-	decalc_resample (a);
-	a->fc_low = fc_low;
-	a->fc = fc_high;
-	calc_resample (a);
+	if (fc_low != a->fc_low || fc_high != a->fcin)
+	{
+		decalc_resample (a);
+		a->fc_low = fc_low;
+		a->fcin = fc_high;
+		calc_resample (a);
+	}
 }
 
 // exported calls

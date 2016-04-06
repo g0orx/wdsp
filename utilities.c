@@ -208,6 +208,38 @@ void print_message (const char* filename, const char* message, int p0, int p1, i
 	fclose (file);
 }
 
+void print_window_gain (const char* filename, int wintype, double inv_coherent_gain, double inherent_power_gain)
+{
+	FILE* file = fopen (filename, "a");
+	double enb = inherent_power_gain * inv_coherent_gain * inv_coherent_gain;
+	switch (wintype)
+	{
+	case 0:
+		fprintf (file, "Rectangular             %.4f\t%.4f\t%.4f\n", inv_coherent_gain, inherent_power_gain, enb);
+		break;
+	case 1:
+		fprintf (file, "Blackman-Harris 4-term  %.4f\t%.4f\t%.4f\n", inv_coherent_gain, inherent_power_gain, enb);
+		break;
+	case 2:
+		fprintf (file, "Hann                    %.4f\t%.4f\t%.4f\n", inv_coherent_gain, inherent_power_gain, enb);
+		break;
+	case 3:
+		fprintf (file, "Flat Top                %.4f\t%.4f\t%.4f\n", inv_coherent_gain, inherent_power_gain, enb);
+		break;
+	case 4:
+		fprintf (file, "Hamming                 %.4f\t%.4f\t%.4f\n", inv_coherent_gain, inherent_power_gain, enb);
+		break;
+	case 5:
+		fprintf (file, "Kaiser                  %.4f\t%.4f\t%.4f\n", inv_coherent_gain, inherent_power_gain, enb);
+		break;
+	case 6:
+		fprintf (file, "Blackman-Harris 7-term  %.4f\t%.4f\t%.4f\n", inv_coherent_gain, inherent_power_gain, enb);
+		break;
+	}
+	fflush (file);
+	fclose (file);
+}
+
 void print_deviation (const char* filename, double dpmax, double rate)
 {
 	FILE* file = fopen (filename, "a");
@@ -332,6 +364,80 @@ void WriteAudioWDSP (double seconds, int rate, int size, double* indata, int mod
 	{
 		done = 1;
 		_beginthread(WriteAudioFile, 0, (void *)data);
+	}
+}
+
+void WriteScaledAudioFile (void* arg)
+{
+	typedef struct
+	{
+		int n;
+		double* ddata;
+	} *dstr;
+	dstr dstruct = (dstr)arg;
+
+	FILE* file = fopen("AudioFile", "wb");
+	int i;
+	double max = 0.0;
+	double abs_val;
+	const double conv = 2147483647.0;
+	int *idata = (int *) malloc0 (dstruct->n * sizeof (int));
+
+	for (i = 0; i < dstruct->n; i++)
+	{
+		abs_val = fabs (dstruct->ddata[i]);
+		if (abs_val > max)
+			max = abs_val;
+	}
+	for (i = 0; i < dstruct->n; i++)
+		idata[i] = dstruct->ddata[i] >= 0.0 ? (int)floor(conv * dstruct->ddata[i] / max + 0.5) : (int)ceil(conv * dstruct->ddata[i] / max - 0.5);
+
+	fwrite(idata, sizeof(int), dstruct->n, file);
+	fflush(file);
+	fclose(file);
+	
+	_aligned_free (dstruct->ddata);
+	_aligned_free (dstruct);
+	_aligned_free (idata);
+	_endthread();
+}
+
+void WriteScaledAudio (
+	double seconds,			// number of seconds of audio to record
+	int rate,				// sample rate
+	int size,				// incoming buffer size
+	double* indata )		// pointer to incoming data buffer
+{
+	static int ready;
+	typedef struct
+	{
+		int n;
+		double* ddata;
+	} dstr, *DSTR;
+	static DSTR dstruct;
+
+	static int count, complete;
+	int i;
+	
+	if (!ready)
+	{
+		dstruct = (DSTR) malloc0 (sizeof (dstr));
+		dstruct->n = 2 * (int)(seconds * rate);
+		dstruct->ddata = (double *) malloc0 (dstruct->n * sizeof (double));
+		ready = 1;
+	}
+	for (i = 0; i < size; i++)
+	{
+		if (count < dstruct->n)
+		{
+			dstruct->ddata[count++] = indata[2 * i + 0];
+			dstruct->ddata[count++] = indata[2 * i + 1];
+		}
+	}
+	if ((count >= dstruct->n) && !complete)
+	{
+		complete = 1;
+		_beginthread (WriteScaledAudioFile, 0, (void *)dstruct);
 	}
 }
 #endif

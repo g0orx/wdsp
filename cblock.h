@@ -35,11 +35,12 @@ typedef struct _cbl
 	double *out_buff;					//pointer to output buffer
 	int mode;
 	double sample_rate;					//sample rate
-	double dcI;							//dc component in I
-	double dcQ;							//dc component in Q
+	double prevIin;
+	double prevQin;
+	double prevIout;
+	double prevQout;
 	double tau;							//carrier removal time constant
 	double mtau;						//carrier removal multiplier
-	double onem_mtau;					//1.0 - carrier_removal_multiplier
 } cbl, *CBL;
 
 extern CBL create_cbl

@@ -50,10 +50,14 @@ void build_window (SIPHON a)
 		a->window[i] *= scale;
 }
 
-SIPHON create_siphon (int run, int insize, double* in, int sipsize, int fftsize, int specmode)
+SIPHON create_siphon (int run, int position, int mode, int disp, int insize, 
+	double* in, int sipsize, int fftsize, int specmode)
 {
 	SIPHON a = (SIPHON) malloc0 (sizeof (siphon));
 	a->run = run;
+	a->position = position;
+	a->mode = mode;
+	a->disp = disp;
 	a->insize = insize;
 	a->in = in;
 	a->sipsize = sipsize;	// NOTE:  sipsize MUST BE A POWER OF TWO!!
@@ -89,29 +93,37 @@ void flush_siphon (SIPHON a)
 	a->idx = 0;
 }
 
-void xsiphon (SIPHON a)
+void xsiphon (SIPHON a, int pos)
 {
 	int first, second;
 	EnterCriticalSection(&a->update);
-	if (a->run)
+	if (a->run && a->position == pos)
 	{
-		if (a->insize >= a->sipsize)
-			memcpy (a->sipbuff, &(a->in[2 * (a->insize - a->sipsize)]), a->sipsize * sizeof (complex));
-		else
+		switch (a->mode)
 		{
-			if (a->insize > (a->sipsize - a->idx))
-			{
-				first = a->sipsize - a->idx;
-				second = a->insize - first;
-			}
+		case 0:
+			if (a->insize >= a->sipsize)
+				memcpy (a->sipbuff, &(a->in[2 * (a->insize - a->sipsize)]), a->sipsize * sizeof (complex));
 			else
 			{
-				first = a->insize;
-				second = 0;
+				if (a->insize > (a->sipsize - a->idx))
+				{
+					first = a->sipsize - a->idx;
+					second = a->insize - first;
+				}
+				else
+				{
+					first = a->insize;
+					second = 0;
+				}
+				memcpy (a->sipbuff + 2 * a->idx, a->in, first * sizeof (complex));
+				memcpy (a->sipbuff, a->in + 2 * first, second * sizeof (complex));
+				if ((a->idx += a->insize) >= a->sipsize) a->idx -= a->sipsize;
 			}
-			memcpy (a->sipbuff + 2 * a->idx, a->in, first * sizeof (complex));
-			memcpy (a->sipbuff, a->in + 2 * first, second * sizeof (complex));
-			if ((a->idx += a->insize) >= a->sipsize) a->idx -= a->sipsize;
+			break;
+		case 1:
+			Spectrum0 (1, a->disp, 0, 0, a->in);
+			break;
 		}
 	}
 	LeaveCriticalSection(&a->update);
@@ -205,6 +217,33 @@ void RXAGetaSipF1 (int channel, float* out, int size)
 ********************************************************************************************************/
 
 PORT
+void TXASetSipPosition (int channel, int pos)
+{
+	SIPHON a = txa[channel].sip1.p;
+	EnterCriticalSection (&a->update);
+	a->position = pos;
+	LeaveCriticalSection (&a->update);
+}
+
+PORT
+void TXASetSipMode (int channel, int mode)
+{
+	SIPHON a = txa[channel].sip1.p;
+	EnterCriticalSection (&a->update);
+	a->mode = mode;
+	LeaveCriticalSection (&a->update);
+}
+
+PORT
+void TXASetSipDisplay (int channel, int disp)
+{
+	SIPHON a = txa[channel].sip1.p;
+	EnterCriticalSection (&a->update);
+	a->disp = disp;
+	LeaveCriticalSection (&a->update);
+}
+
+PORT
 void TXAGetaSipF (int channel, float* out, int size)
 {	// return raw samples as floats
 	SIPHON a = txa[channel].sip1.p;
@@ -275,7 +314,7 @@ __declspec (align (16)) SIPHON psiphon[MAX_EXT_SIPHONS];	// array of pointers fo
 PORT
 void create_siphonEXT (int id, int run, int insize, int sipsize, int fftsize, int specmode)
 {
-	psiphon[id] = create_siphon (run, insize, 0, sipsize, fftsize, specmode);
+	psiphon[id] = create_siphon (run, 0, 0, 0, insize, 0, sipsize, fftsize, specmode);
 }
 
 PORT
@@ -295,7 +334,7 @@ void xsiphonEXT (int id, double* buff)
 {
 	SIPHON a = psiphon[id];
 	a->in = buff;
-	xsiphon (a);
+	xsiphon (a, 0);
 }
 
 PORT

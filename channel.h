@@ -77,6 +77,6 @@ PORT void SetOutputSamplerate (int channel, int samplerate);
 
 PORT void SetAllRates (int channel, int in_rate, int dsp_rate, int out_rate);
 
-PORT void SetChannelState (int channel, int state, int dmode);
+PORT int SetChannelState (int channel, int state, int dmode);
 
 #endif

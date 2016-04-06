@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2015 Warren Pratt, NR0V
+Copyright (C) 2015, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -118,7 +118,10 @@ void asolve(int xsize, int asize, double* x, double* a)
         beta *= 1.0 - alpha * alpha;
     }
     for (i = 0; i < asize; i++)
+	{
         a[i] = - z[i + 1];
+		if (a[i] != a[i]) a[i] = 0.0;
+	}
 
 	_aligned_free (z);
 	_aligned_free (r);

@@ -28,7 +28,7 @@ warren@wpratt.com
 
 #define MAX_TAU			(0.002)		// maximum transition time, signal<->zero
 #define MAX_ADVTIME		(0.002)		// maximum deadtime (zero output) in advance of detected noise
-#define MAX_SAMPLERATE  (384000)
+#define MAX_SAMPLERATE  (1536000)
 
 void initBlanker(ANB a)
 {

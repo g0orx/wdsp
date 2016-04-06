@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2014, 2015, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -186,5 +186,7 @@ extern __declspec (dllexport) void SetRXAMode (int channel, int mode);
 extern void RXAResCheck (int channel);
 
 extern void RXAbp1Check (int channel);
+
+extern void RXAbpsnbaCheck (int channel);
 
 #endif

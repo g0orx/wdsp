@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2015 Warren Pratt, NR0V
+Copyright (C) 2015, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -43,30 +43,30 @@ void calc_snba (SNBA d)
 	d->outresamp = create_resample (d->resamprun, d->isize, d->outbuff, d->out,    d->internalrate, d->inrate,       0.0, 0, 2.0);
 	setFCLow_resample (d->outresamp, 200.0);
 	d->incr = d->xsize / d->ovrlp;
-	if (d->xsize > d->isize)	d->iasize = d->xsize;
-	else						d->iasize = d->isize + d->xsize - d->incr;
+	if (d->incr > d->isize)  d->iasize = d->incr;
+	else                     d->iasize = d->isize;
 	d->iainidx = 0;
 	d->iaoutidx = 0;
 	d->inaccum = (double *) malloc0 (d->iasize * sizeof (double));
 	d->nsamps = 0;
-	if (d->xsize > d->isize)
+	if (d->incr > d->isize)
 	{
-		if (d->isize > d->incr)		d->oasize = d->isize;
-		else						d->oasize = d->incr;
-		d->oainidx = (d->xsize - d->isize - d->incr) % d->oasize;
+		d->oasize = d->incr;
+		d->oainidx = 0;
+		d->oaoutidx = d->isize;
 	}
 	else
 	{
 		d->oasize = d->isize;
-		d->oainidx = d->xsize - d->incr;
+		d->oainidx = 0;
+		d->oaoutidx = 0;
 	}
-	d->init_oainidx = d->oainidx;
-	d->oaoutidx = 0;
+	d->init_oaoutidx = d->oaoutidx;
 	d->outaccum = (double *) malloc0 (d->oasize * sizeof (double));
 }
 
 SNBA create_snba (int run, double* in, double* out, int inrate, int internalrate, int bsize, int ovrlp, int xsize,
-	int asize, int npasses, double k1, double k2, int b, int pre, int post, double pmultmin)
+	int asize, int npasses, double k1, double k2, int b, int pre, int post, double pmultmin, double out_low_cut, double out_high_cut)
 {
 	SNBA d = (SNBA) malloc0 (sizeof (snba));
 	d->run = run;
@@ -85,6 +85,8 @@ SNBA create_snba (int run, double* in, double* out, int inrate, int internalrate
 	d->sdet.pre = pre;
 	d->sdet.post = post;
 	d->scan.pmultmin = pmultmin;
+	d->out_low_cut = out_low_cut;
+	d->out_high_cut = out_high_cut;
 
 	calc_snba (d);
 
@@ -135,8 +137,8 @@ void flush_snba (SNBA d)
 	d->iainidx = 0;
 	d->iaoutidx = 0;
 	d->nsamps = 0;
-	d->oainidx = d->init_oainidx;
-	d->oaoutidx = 0;
+	d->oainidx = 0;
+	d->oaoutidx = d->init_oaoutidx;
 
 	memset (d->inaccum,      0, d->iasize * sizeof (double));
 	memset (d->outaccum,     0, d->oasize * sizeof (double));
@@ -524,7 +526,7 @@ void xsnba (SNBA d)
 			d->iainidx = (d->iainidx + 1) % d->iasize;
 		}
 		d->nsamps += d->isize;
-		while (d->nsamps >= d->xsize)
+		while (d->nsamps >= d->incr)
 		{
 			memcpy (&d->xaux[d->xsize - d->incr], &d->inaccum[d->iaoutidx], d->incr * sizeof (double));
 			execFrame (d, d->xaux);
@@ -557,7 +559,7 @@ PORT void SetRXASNBARun (int channel, int run)
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].snba.p->run = run;
 	RXAbp1Check (channel);
-	setMode_bpsnba (rxa[channel].bpsnba.p, rxa[channel].snba.p->run, rxa[channel].mode);
+	RXAbpsnbaCheck (channel);
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
@@ -628,21 +630,35 @@ PORT void SetRXASNBApmultmin (int channel, double pmultmin)
 
 PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 {
+	SNBA a;
 	RESAMPLE d;
-	double f_low, f_high, tlow, thigh;
+	double f_low, f_high;
 	EnterCriticalSection (&ch[channel].csDSP);
-	d = rxa[channel].snba.p->outresamp;
-	tlow  = fabs (flow);
-	thigh = fabs (fhigh);
-	if (tlow > thigh)
+	a = rxa[channel].snba.p;
+	d = a->outresamp;
+
+	if (flow >= 0 && fhigh >= 0)
 	{
-		flow  = thigh;
-		fhigh = tlow;
+		if (fhigh <  a->out_low_cut) fhigh =  a->out_low_cut;
+		if (flow  > a->out_high_cut) flow  = a->out_high_cut;
+		f_low  = max ( a->out_low_cut, flow);
+		f_high = min (a->out_high_cut, fhigh);
 	}
-	if (flow  >  200.0) f_low  = flow;
-	else                f_low  = 200.0;
-	if (fhigh < 5400.0) f_high = fhigh;
-	else                f_high = 5400.0;
+	else if (flow <= 0 && fhigh <= 0)
+	{
+		if (flow  >  -a->out_low_cut) flow  =  -a->out_low_cut;
+		if (fhigh < -a->out_high_cut) fhigh = -a->out_high_cut;
+		f_low  = max ( a->out_low_cut, -fhigh);
+		f_high = min (a->out_high_cut, -flow);
+	}
+	else if (flow < 0 && fhigh > 0)
+	{
+		double absmax = max (-flow, fhigh);
+		if (absmax <  a->out_low_cut) absmax =  a->out_low_cut;
+		f_low = a->out_low_cut;
+		f_high = min (a->out_high_cut, absmax);
+	}
+
 	setBandwidth_resample (d, f_low, f_high);
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
@@ -654,50 +670,17 @@ PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 *																										*
 ********************************************************************************************************/
 
-void bpsnba_modecontrol (BPSNBA a)
-{
-	if (a->snba_run)
-	{
-		switch (a->mode)
-		{
-			case RXA_AM:
-			case RXA_SAM:
-			case RXA_DSB:
-				a->f_low  = -a->abs_high_freq;
-				a->f_high = +a->abs_high_freq;
-				a->run = 1;
-				break;
-			case RXA_LSB:
-			case RXA_CWL:
-			case RXA_DIGL:
-				a->f_low  = -a->abs_high_freq;
-				a->f_high = -a->abs_low_freq;
-				a->run = 1;
-				break;
-			case RXA_USB:
-			case RXA_CWU:
-			case RXA_DIGU:
-				a->f_low  = +a->abs_low_freq;
-				a->f_high = +a->abs_high_freq;
-				a->run = 1;
-				break;
-			case RXA_FM:
-			case RXA_DRM:
-			case RXA_SPEC:
-				a->run = 0;
-				break;
-		}
-	}
-	else
-		a->run = 0;
-}
+// This is a thin wrapper for a notched-bandpass filter (nbp).  The basic difference is that it provides
+// for its input and output to happen at different points in the processing pipeline.  This means it must 
+// include a buffer, 'buff'.  Its input and output are done via functions xbpshbain() and xbpshbaout().
 
 void calc_bpsnba (BPSNBA a)
 {
 	a->buff = (double *) malloc0 (a->size * sizeof (complex));
 	a->bpsnba = create_nbp (
-		1,							// run, always runs
-		0,							// position
+		1,							// run, always runs (use bpsnba 'run')
+		a->run_notches,				// run the notches
+		0,							// position variable for nbp (not for bpsnba), always 0
 		a->size,					// buffer size
 		a->buff,					// pointer to input buffer
 		a->out,						// pointer to output buffer
@@ -711,24 +694,27 @@ void calc_bpsnba (BPSNBA a)
 		a->ptraddr);				// addr of database pointer
 }
 
-BPSNBA create_bpsnba (int snba_run, int size, double* in, double* out, int rate, int mode, 
-	double abs_low_freq, double abs_high_freq, int wintype, double gain, int autoincr, int maxpb, NOTCHDB* ptraddr)
+BPSNBA create_bpsnba (int run, int run_notches, int position, int size, double* in, double* out, int rate,  
+	double abs_low_freq, double abs_high_freq, double f_low, double f_high, int wintype, double gain, int autoincr, 
+	int maxpb, NOTCHDB* ptraddr)
 {
 	BPSNBA a = (BPSNBA) malloc0 (sizeof (bpsnba));
-	a->snba_run = snba_run;
+	a->run = run;
+	a->run_notches = run_notches;
+	a->position = position;
 	a->size = size;
 	a->in = in;
 	a->out = out;
 	a->rate = rate;
-	a->mode = mode;
 	a->abs_low_freq = abs_low_freq;
 	a->abs_high_freq = abs_high_freq;
+	a->f_low = f_low;
+	a->f_high = f_high;
 	a->wintype = wintype;
 	a->gain = gain;
 	a->autoincr = autoincr;
 	a->maxpb = maxpb;
 	a->ptraddr = ptraddr;
-	bpsnba_modecontrol (a);
 	calc_bpsnba (a);
 	return a;
 }
@@ -773,23 +759,28 @@ void setSize_bpsnba (BPSNBA a, int size)
 	calc_bpsnba (a);
 }
 
-void setMode_bpsnba (BPSNBA a, int snba_run, int mode)
+void xbpsnbain (BPSNBA a, int position)
 {
-	decalc_bpsnba (a);
-	a->snba_run = snba_run;
-	a->mode = mode;
-	bpsnba_modecontrol (a);
-	calc_bpsnba (a);
-}
-
-void xbpsnbain (BPSNBA a)
-{
-	if (a->run)
+	if (a->run && a->position == position)
 		memcpy (a->buff, a->in, a->size * sizeof (complex));
 }
 
-void xbpsnbaout (BPSNBA a)
+void xbpsnbaout (BPSNBA a, int position)
 {
-	if (a->run)
+	if (a->run && a->position == position)
 		xnbp (a->bpsnba, 0);
+}
+
+void recalc_bpsnba_filter (BPSNBA a)
+{
+	// Call anytime one of the parameters listed below has been changed in
+	// the BPSNBA struct.
+	NBP b = a->bpsnba;
+	b->fnfrun = a->run_notches;
+	b->flow = a->f_low;
+	b->fhigh = a->f_high;
+	b->wintype = a->wintype;
+	b->gain = a->gain;
+	b->autoincr = a->autoincr;
+	recalc_nbp_filter (b);
 }
