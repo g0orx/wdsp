@@ -26,11 +26,24 @@ PORT void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTR
 
 
 // analyzer
+#define DETECTOR_MODE_PEAK 0
+#define DETECTOR_MODE_ROSENFELL 1
+#define DETECTOR_MODE_AVERAGE 2
+#define DETECTOR_MODE_SAMPLE 3
+
+#define AVERAGE_MODE_NONE 0
+#define AVERAGE_MODE_RECURSIVE 1
+#define AVERAGE_MODE_TIME_WINDOW 2
+#define AVERAGE_MODE_LOG_RECURSIVE 3
+
 PORT void XCreateAnalyzer(int disp, int *success, int m_size, int m_num_fft, int m_stitch, char *app_data_path);
 PORT void SetAnalyzer(int disp, int n_pixout, int n_fft, int typ, int *flp, int sz, int bf_sz, int win_type, double pi, int ovrlp, int clp, int fscLin, int fscHin, int n_pix, int n_stch, int calset, double fmin, double fmax, int max_w); 
 PORT void Spectrum0(int run, int disp, int ss, int LO, double* in);
 PORT void Spectrum(int disp, int ss, int LO, float* pI, float* pQ);
 PORT void GetPixels(int disp, int pixout, float *pix, int *flag);
+PORT void SetDisplayDetectorMode(int disp, int pixout, int mode);
+PORT void SetDisplayAverageMode(int disp, int pixout, int mode);
+PORT void SetDisplayNumAverage(int disp, int pixout, int num);
 
 // RXA
 PORT void SetRXAMode (int channel, int mode);
@@ -40,9 +53,7 @@ PORT void SetRXAFMSQRun (int channel, int run);
 PORT void SetRXAEMNRRun (int channel, int run);
 PORT void SetRXAEMNRgainMethod (int channel, int method);
 PORT void SetRXAEMNRnpeMethod (int channel, int method);
-PORT void SetRXAEMNRaeRun (int channel, int run);
 PORT void SetRXAEMNRPosition (int channel, int position);
-PORT void SetRXAANRRun(int channel, int run);
 PORT void SetRXAANFRun(int channel, int run);
 PORT double GetRXAMeter (int channel, int mt);
 PORT void SetRXAPanelBinaural(int channel, int bin);
@@ -50,8 +61,10 @@ PORT void SetRXAPanelPan (int channel, double pan);
 PORT void RXANBPSetFreqs (int channel, double low, double high);
 PORT void SetRXASNBAOutputBandwidth (int channel, double low, double high);
 
-
-
+PORT void SetRXAANRRun(int channel, int run);
+PORT void SetRXAEMNRaeRun (int channel, int run);
+PORT void SetRXASNBARun (int channel, int run);
+PORT void SetRXAANFRun(int channel, int run);
 
 // TXA Prototypes
 PORT void SetTXABandpassRun (int channel, int run);
