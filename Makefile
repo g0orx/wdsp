@@ -23,6 +23,7 @@ analyzer.c\
 anf.c\
 anr.c\
 bandpass.c\
+calculus.c\
 calcc.c\
 cblock.c\
 cfir.c\
@@ -75,6 +76,7 @@ analyzer.h\
 anf.h\
 anr.h\
 bandpass.h\
+calculus.h\
 calcc.h\
 cblock.h\
 cfir.h\
@@ -130,6 +132,7 @@ analyzer.o\
 anf.o\
 anr.o\
 bandpass.o\
+calculus.o\
 calcc.o\
 cblock.o\
 cfir.o\
