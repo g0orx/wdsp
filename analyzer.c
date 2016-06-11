@@ -872,9 +872,11 @@ void __cdecl sendbuf(void *arg)
 
 					InterlockedIncrement(a->pnum_threads);
 					if (a->type == 0)
-						QueueUserWorkItem(spectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
+						//QueueUserWorkItem(spectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
+						spectra((void *)(((int)arg << 12) + (a->ss << 4) + a->LO));
 					else
-						QueueUserWorkItem(Cspectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
+						//QueueUserWorkItem(Cspectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO),0);
+						Cspectra((void *)(((int)arg << 12) + (a->ss << 4) + a->LO));
 
 					if ((a->IQout_index[a->ss][a->LO] += a->incr) >= a->bsize)
 						a->IQout_index[a->ss][a->LO] -= a->bsize;

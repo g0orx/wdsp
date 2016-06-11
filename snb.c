@@ -761,14 +761,16 @@ void setSize_bpsnba (BPSNBA a, int size)
 
 void xbpsnbain (BPSNBA a, int position)
 {
-	if (a->run && a->position == position)
+	if (a->run && a->position == position) {
 		memcpy (a->buff, a->in, a->size * sizeof (complex));
+	}
 }
 
 void xbpsnbaout (BPSNBA a, int position)
 {
-	if (a->run && a->position == position)
+	if (a->run && a->position == position) {
 		xnbp (a->bpsnba, 0);
+}
 }
 
 void recalc_bpsnba_filter (BPSNBA a)

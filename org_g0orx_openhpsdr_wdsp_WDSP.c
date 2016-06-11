@@ -810,20 +810,6 @@ JNIEXPORT void JNICALL Java_org_g0orx_openhpsdr_wdsp_WDSP_GetPixels
 
 /*
  * Class:     org_g0orx_openhpsdr_wdsp_WDSP
- * Method:    GetNAPixels
- * Signature: (I[FI)V
- */
-JNIEXPORT void JNICALL Java_org_g0orx_openhpsdr_wdsp_WDSP_GetNAPixels
-  (JNIEnv *env, jobject obj, jint disp, jfloatArray pix, jintArray flag) {
-	jfloat *pixptr = (*env)->GetFloatArrayElements(env, pix, 0);
-	jint *flagptr = (*env)->GetIntArrayElements(env, flag, 0);
-	GetNAPixels(disp,pixptr,flagptr);
-	(*env)->ReleaseIntArrayElements(env,flag,flagptr,0);
-	(*env)->ReleaseFloatArrayElements(env,pix,pixptr,0);
-}
-
-/*
- * Class:     org_g0orx_openhpsdr_wdsp_WDSP
  * Method:    WDSPwisdom
  * Signature: (S)V
  */

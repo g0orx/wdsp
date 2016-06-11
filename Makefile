@@ -197,6 +197,9 @@ install: $(PROGRAM)
 install_java: $(JAVA_PROGRAM)
 	cp $(JAVA_PROGRAM) /usr/local/lib
 
+release: $(PROGRAM)
+	cp $(PROGRAM) ../pihpsdr.src/release/pihpsdr
+
 clean:
 	-rm -f *.o
 	-rm -f $(PROGRAM)

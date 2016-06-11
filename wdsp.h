@@ -66,7 +66,16 @@ PORT void SetRXAEMNRaeRun (int channel, int run);
 PORT void SetRXASNBARun (int channel, int run);
 PORT void SetRXAANFRun(int channel, int run);
 
+PORT void SetRXAShiftRun (int channel, int run);
+PORT void SetRXAShiftFreq (int channel, double fshift);
+
+PORT void SetRXAAGCMode (int channel, int mode);
+PORT void SetRXAAGCTop (int channel, double max_agc);
+PORT void SetRXAAMDSBMode(int channel, int sbmode);
+PORT void SetRXAANRVals (int channel, int taps, int delay, double gain, double leakage);
+
 // TXA Prototypes
+PORT void SetTXAMode (int channel, int mode);
 PORT void SetTXABandpassRun (int channel, int run);
 PORT void SetTXABandpassFreqs (int channel, double low, double high);
 PORT void SetTXABandpassWindow (int channel, int wintype);
@@ -77,6 +86,22 @@ PORT void SetTXACTCSSRun (int channel, int run);
 PORT void SetTXAAMSQRun (int channel, int run);
 PORT void SetTXACompressorRun (int channel, int run);
 PORT void SetTXAosctrlRun (int channel, int run);
+PORT void SetTXACFIRRun (int channel, int run);
+
+// resampler
+
+PORT void *create_resample (int run, int size, double* in, double* out, int in_rate, int out_rate, double fc, int ncoef, double gain);
+
+PORT void destroy_resample (void *a);
+
+PORT void flush_resample (void *a);
+
+PORT int xresample (void *a);
+
+
+PORT void* create_resampleFV (int in_rate, int out_rate);
+PORT void xresampleFV (float* input, float* output, int numsamps, int* outsamps, void* ptr);
+PORT void destroy_resampleFV (void* ptr);
 
 // wisdom
 char *wisdom_get_status();
