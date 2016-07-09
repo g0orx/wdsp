@@ -46,6 +46,17 @@ PORT void SetDisplayAverageMode(int disp, int pixout, int mode);
 PORT void SetDisplayNumAverage(int disp, int pixout, int num);
 
 // RXA
+enum rxaMeterType {
+        RXA_S_PK,
+        RXA_S_AV,
+        RXA_ADC_PK,
+        RXA_ADC_AV,
+        RXA_AGC_GAIN,
+        RXA_AGC_PK,
+        RXA_AGC_AV,
+        RXA_METERTYPE_LAST
+};
+
 PORT void SetRXAMode (int channel, int mode);
 PORT void SetRXABandpassRun (int channel, int run);
 PORT void SetRXABandpassFreqs (int channel, double low, double high);
@@ -75,6 +86,24 @@ PORT void SetRXAAMDSBMode(int channel, int sbmode);
 PORT void SetRXAANRVals (int channel, int taps, int delay, double gain, double leakage);
 
 // TXA Prototypes
+enum txaMeterType {
+  TXA_MIC_PK,
+  TXA_MIC_AV,
+  TXA_EQ_PK,
+  TXA_EQ_AV,
+  TXA_LVLR_PK,
+  TXA_LVLR_AV,
+  TXA_LVLR_GAIN,
+  TXA_COMP_PK,
+  TXA_COMP_AV,
+  TXA_ALC_PK,
+  TXA_ALC_AV,
+  TXA_ALC_GAIN,
+  TXA_OUT_PK,
+  TXA_OUT_AV,
+  TXA_METERTYPE_LAST
+};
+
 PORT void SetTXAMode (int channel, int mode);
 PORT void SetTXABandpassRun (int channel, int run);
 PORT void SetTXABandpassFreqs (int channel, double low, double high);
@@ -87,6 +116,7 @@ PORT void SetTXAAMSQRun (int channel, int run);
 PORT void SetTXACompressorRun (int channel, int run);
 PORT void SetTXAosctrlRun (int channel, int run);
 PORT void SetTXACFIRRun (int channel, int run);
+PORT double GetTXAMeter (int channel, int mt);
 
 // resampler
 
