@@ -412,13 +412,8 @@ void create_iobuffs (int channel)
 	n = a->r2_havesamps / a->out_size;
 	a->r2_unqueuedsamps = a->r2_havesamps - n * a->out_size;
 	InitializeCriticalSectionAndSpinCount(&a->r2_ControlSection, 2500);
-#ifdef linux
-        CreateSemaphore(&a->Sem_BuffReady, 0, 0, 1000, 0);
-        CreateSemaphore(&a->Sem_OutReady, 0, n, 1000, 0);
-#else
 	a->Sem_BuffReady = CreateSemaphore(0, 0, 1000, 0);
 	a->Sem_OutReady  = CreateSemaphore(0, n, 1000, 0);
-#endif
 	a->bfo = ch[channel].bfo;
 	create_slews (a);
 }
@@ -451,11 +446,7 @@ void flush_iobuffs (int channel)
 	n = a->r2_havesamps / a->out_size;
 	a->r2_unqueuedsamps = a->r2_havesamps - n * a->out_size;
 	CloseHandle (a->Sem_OutReady);
-#ifdef linux
-        CreateSemaphore(&a->Sem_OutReady, 0, n, 1000, 0);
-#else
 	a->Sem_OutReady  = CreateSemaphore(0, n, 1000, 0);
-#endif
 	flush_slews (a);
 }
 

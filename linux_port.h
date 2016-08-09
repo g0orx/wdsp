@@ -34,9 +34,10 @@ john.d.melton@googlemail.com
 #define CRITICAL_SECTION pthread_mutex_t
 #define LONG long
 #define DWORD long
-#define HANDLE sem_t
+#define HANDLE sem_t *
 #define WINAPI
 #define FALSE 0
+#define TEXT(x) x
 #define InterlockedIncrement(base) __sync_add_and_fetch(base,1)
 #define InterlockedDecrement(base) __sync_sub_and_fetch(base,1)
 #define InterlockedBitTestAndSet(base,bit) __sync_or_and_fetch(base,1<<bit)
@@ -54,9 +55,11 @@ john.d.melton@googlemail.com
 #define THREAD_PRIORITY_HIGHEST 0
 
 #define Sleep(ms) usleep(ms*1000)
-#define WaitForSingleObject(x, y) LinuxWaitForSingleObject(&(x), y)
-#define ReleaseSemaphore(x,y,z) LinuxReleaseSemaphore(&(x),y,z)
-#define SetEvent(x) LinuxSetEvent(&(x))
+
+#define CreateSemaphore(a,b,c,d) LinuxCreateSemaphore(a,b,c,d)
+#define WaitForSingleObject(x, y) LinuxWaitForSingleObject(x, y)
+#define ReleaseSemaphore(x,y,z) LinuxReleaseSemaphore(x,y,z)
+#define SetEvent(x) LinuxSetEvent(x)
 
 #define INFINITE -1
 
@@ -70,11 +73,16 @@ void LeaveCritiaclSection(pthread_mutex_t *mutex);
 
 void DeleteCriticalSection(pthread_mutex_t *mutex);
 
+sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,char *name);
+
 int LinuxWaitForSingleObject(sem_t *sem,int x);
 
 void LinuxReleaseSemaphore(sem_t *sem,int release_count, int* previous_count);
 
+/*
 int CreateEvent(sem_t *sem,void* security_attributes,int bManualReset,int bInitialState,char* name);
+*/
+sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,char* name);
 
 void LinuxSetEvent(sem_t* sem);
 

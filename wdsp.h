@@ -108,8 +108,6 @@ PORT void SetTXAMode (int channel, int mode);
 PORT void SetTXABandpassRun (int channel, int run);
 PORT void SetTXABandpassFreqs (int channel, double low, double high);
 PORT void SetTXABandpassWindow (int channel, int wintype);
-PORT void SetTXAPreGenRun (int channel, int run);
-PORT void SetTXAPostGenRun (int channel, int run);
 PORT void SetTXAEQRun (int channel, int run);
 PORT void SetTXACTCSSRun (int channel, int run);
 PORT void SetTXAAMSQRun (int channel, int run);
@@ -117,6 +115,35 @@ PORT void SetTXACompressorRun (int channel, int run);
 PORT void SetTXAosctrlRun (int channel, int run);
 PORT void SetTXACFIRRun (int channel, int run);
 PORT double GetTXAMeter (int channel, int mt);
+
+
+
+void SetTXAPreGenRun (int channel, int run);
+void SetTXAPreGenMode (int channel, int mode);
+void SetTXAPreGenToneMag (int channel, double mag);
+void SetTXAPreGenToneFreq (int channel, double freq);
+void SetTXAPreGenNoiseMag (int channel, double mag);
+void SetTXAPreGenSweepMag (int channel, double mag);
+void SetTXAPreGenSweepFreq (int channel, double freq1, double freq2);
+void SetTXAPreGenSweepRate (int channel, double rate);
+void SetTXAPreGenSawtoothMag (int channel, double mag);
+void SetTXAPreGenSawtoothFreq (int channel, double freq);
+void SetTXAPreGenTriangleMag (int channel, double mag);
+void SetTXAPreGenTriangleFreq (int channel, double freq);
+void SetTXAPreGenPulseMag (int channel, double mag);
+void SetTXAPreGenPulseFreq (int channel, double freq);
+void SetTXAPreGenPulseDutyCycle (int channel, double dc);
+void SetTXAPreGenPulseToneFreq (int channel, double freq);
+void SetTXAPreGenPulseTransition (int channel, double transtime);
+void SetTXAPostGenRun (int channel, int run);
+void SetTXAPostGenMode (int channel, int mode);
+void SetTXAPostGenToneMag (int channel, double mag);
+void SetTXAPostGenToneFreq (int channel, double freq);
+void SetTXAPostGenTTMag (int channel, double mag1, double mag2);
+void SetTXAPostGenTTFreq (int channel, double freq1, double freq2);
+void SetTXAPostGenSweepMag (int channel, double mag);
+void SetTXAPostGenSweepFreq (int channel, double freq1, double freq2);
+void SetTXAPostGenSweepRate (int channel, double rate);
 
 // resampler
 

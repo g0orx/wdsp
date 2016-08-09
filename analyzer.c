@@ -1063,11 +1063,7 @@ char *app_data_path
 	for (i = 0; i < a->max_stitch; i++)
 		for (j = 0; j < a->max_num_fft; j++)
 		{
-#ifdef linux
-                        CreateEvent(&a->hSnapEvent[i][j],NULL, FALSE, FALSE, "snap");
-#else
                         a->hSnapEvent[i][j] = CreateEvent(NULL, FALSE, FALSE, TEXT("snap"));
-#endif
 			a->snap[i][j] = 0;
 		}
 	InitializeCriticalSectionAndSpinCount(&a->ResampleSection, 0);

@@ -44,7 +44,7 @@ void QueueUserWorkItem(void *function,void *context,int flags) {
 void InitializeCriticalSectionAndSpinCount(pthread_mutex_t *mutex,int count) {
 	pthread_mutexattr_t mAttr;
 	pthread_mutexattr_init(&mAttr);
-	pthread_mutexattr_settype(&mAttr,PTHREAD_MUTEX_RECURSIVE);
+	pthread_mutexattr_settype(&mAttr,PTHREAD_MUTEX_RECURSIVE_NP);
 	pthread_mutex_init(mutex,&mAttr);
 	pthread_mutexattr_destroy(&mAttr);
 	// ignore count
@@ -84,10 +84,12 @@ int LinuxWaitForSingleObject(sem_t *sem,int ms) {
 	return result;
 }
 
-int CreateSemaphore(sem_t* sem,int attributes,int initial_count,int maximum_count) {
+sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,char *name) {
+        sem_t *sem;
+        sem=malloc(sizeof(sem_t));
 	int result;
 	result=sem_init(sem, 0, 0);
-	return result;
+	return sem;
 }
 
 void LinuxReleaseSemaphore(sem_t* sem,int release_count, int* previous_count) {
@@ -97,11 +99,12 @@ void LinuxReleaseSemaphore(sem_t* sem,int release_count, int* previous_count) {
 	}
 }
 
-int CreateEvent(sem_t* sem,void* security_attributes,int bManualReset,int bInitialState,char* name) {
+sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,char* name) {
 	int result;
-	result=CreateSemaphore(sem,0,0,0);
+        sem_t *sem;
+	sem=LinuxCreateSemaphore(0,0,0,0);
 	// need to handle bManualReset and bInitialState
-	return result;
+	return sem;
 }
 
 void LinuxSetEvent(sem_t* sem) {
