@@ -80,10 +80,23 @@ PORT void SetRXAANFRun(int channel, int run);
 PORT void SetRXAShiftRun (int channel, int run);
 PORT void SetRXAShiftFreq (int channel, double fshift);
 
-PORT void SetRXAAGCMode (int channel, int mode);
-PORT void SetRXAAGCTop (int channel, double max_agc);
 PORT void SetRXAAMDSBMode(int channel, int sbmode);
 PORT void SetRXAANRVals (int channel, int taps, int delay, double gain, double leakage);
+
+PORT void SetRXAAGCMode (int channel, int mode);
+PORT void SetRXAAGCFixed (int channel, double fixed_agc);
+PORT void SetRXAAGCAttack (int channel, int attack);
+PORT void SetRXAAGCDecay (int channel, int decay);
+PORT void SetRXAAGCHang (int channel, int hang);
+PORT void GetRXAAGCHangLevel(int channel, double *hangLevel);
+PORT void SetRXAAGCHangLevel(int channel, double hangLevel);
+PORT void GetRXAAGCHangThreshold(int channel, int *hangthreshold);
+PORT void SetRXAAGCHangThreshold (int channel, int hangthreshold);
+PORT void GetRXAAGCTop(int channel, double *max_agc);
+PORT void SetRXAAGCTop (int channel, double max_agc);
+PORT void SetRXAAGCSlope (int channel, int slope);
+PORT void SetRXAAGCThresh(int channel, double thresh, double size, double rate);
+PORT void GetRXAAGCThresh(int channel, double *thresh, double size, double rate);
 
 // TXA Prototypes
 enum txaMeterType {
