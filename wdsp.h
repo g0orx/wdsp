@@ -129,7 +129,16 @@ PORT void SetTXAosctrlRun (int channel, int run);
 PORT void SetTXACFIRRun (int channel, int run);
 PORT double GetTXAMeter (int channel, int mt);
 
+PORT void SetTXAALCSt (int channel, int state);
+PORT void SetTXAALCAttack (int channel, int attack);
+PORT void SetTXAALCDecay (int channel, int decay);
+PORT void SetTXAALCHang (int channel, int hang);
 
+PORT void SetTXALevelerSt (int channel, int state);
+PORT void SetTXALevelerAttack (int channel, int attack);
+PORT void SetTXALevelerDecay (int channel, int decay);
+PORT void SetTXALevelerHang (int channel, int hang);
+PORT void SetTXALevelerTop (int channel, double maxgain);
 
 void SetTXAPreGenRun (int channel, int run);
 void SetTXAPreGenMode (int channel, int mode);
