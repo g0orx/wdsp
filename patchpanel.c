@@ -28,6 +28,7 @@ warren@wpratt.com
 
 PANEL create_panel (int channel, int run, int size, double* in, double* out, double gain1, double gain2I, double gain2Q, int inselect, int copy)
 {
+fprintf(stderr,"create_panel: channel=%d run=%d gain1=%f gain2I=%f gain2Q=%f\n",channel,run,gain1,gain2I,gain2Q);
 	PANEL a = (PANEL) malloc0 (sizeof (panel));
 	a->channel = channel;
 	a->run = run;
@@ -200,6 +201,7 @@ void SetRXAPanelBinaural (int channel, int bin)
 PORT
 void SetTXAPanelRun (int channel, int run)
 {
+fprintf(stderr,"SetTXAPanelRun: channel=%d run=%d\n",channel,run);
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].panel.p->run = run;
 	LeaveCriticalSection (&ch[channel].csDSP);
@@ -208,6 +210,7 @@ void SetTXAPanelRun (int channel, int run)
 PORT
 void SetTXAPanelGain1 (int channel, double gain)
 {
+fprintf(stderr,"SetTXAPanelGain1: channel=%d gain=%f\n",channel,gain);
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].panel.p->gain1 = gain;
 	//print_message ("micgainset.txt", "Set MIC Gain to", (int)(100.0 * gain), 0, 0);

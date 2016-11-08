@@ -182,6 +182,20 @@ PORT void* create_resampleFV (int in_rate, int out_rate);
 PORT void xresampleFV (float* input, float* output, int numsamps, int* outsamps, void* ptr);
 PORT void destroy_resampleFV (void* ptr);
 
+
+// patchpanel
+
+PORT void SetRXAPanelRun (int channel, int run);
+PORT void SetRXAPanelSelect (int channel, int select);
+PORT void SetRXAPanelGain1 (int channel, double gain);
+PORT void SetRXAPanelGain2 (int channel, double gainI, double gainQ);
+PORT void SetRXAPanelPan (int channel, double pan);
+PORT void SetRXAPanelCopy (int channel, int copy);
+PORT void SetRXAPanelBinaural (int channel, int bin);
+
+PORT void SetTXAPanelRun (int channel, int run);
+PORT void SetTXAPanelGain1 (int channel, double gain);
+
 // wisdom
 char *wisdom_get_status();
 PORT void WDSPwisdom (char* directory);

@@ -28,6 +28,7 @@ warren@wpratt.com
 
 void create_txa (int channel)
 {
+fprintf(stderr,"create_txa: %d\n",channel);
 	txa[channel].mode = TXA_LSB;
 	txa[channel].inbuff  = (double *) malloc0 (1 * ch[channel].dsp_insize  * sizeof (complex));
 	txa[channel].outbuff = (double *) malloc0 (1 * ch[channel].dsp_outsize * sizeof (complex));

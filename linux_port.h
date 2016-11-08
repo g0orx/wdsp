@@ -38,10 +38,15 @@ john.d.melton@googlemail.com
 #define WINAPI
 #define FALSE 0
 #define TEXT(x) x
-#define InterlockedIncrement(base) __sync_add_and_fetch(base,1)
-#define InterlockedDecrement(base) __sync_sub_and_fetch(base,1)
-#define InterlockedBitTestAndSet(base,bit) __sync_or_and_fetch(base,1<<bit)
-#define InterlockedBitTestAndReset(base,bit) __sync_and_and_fetch(base,~(1<<bit))
+#define InterlockedIncrement(base) __sync_add_and_fetch(base,1L)
+#define InterlockedDecrement(base) __sync_sub_and_fetch(base,1L)
+
+//#define InterlockedBitTestAndSet(base,bit) __sync_or_and_fetch(base,1L<<bit)
+//#define InterlockedBitTestAndReset(base,bit) __sync_and_and_fetch(base,~(1L<<bit))
+
+#define InterlockedBitTestAndSet(base,bit) __sync_fetch_and_or(base,1L<<bit)
+#define InterlockedBitTestAndReset(base,bit) __sync_fetch_and_and(base,~(1L<<bit))
+
 #define _InterlockedAnd(base,mask) __sync_fetch_and_and(base,mask)
 #define __declspec(x)
 #define __cdecl

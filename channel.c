@@ -141,6 +141,8 @@ void flushChannel (void* p)
 	LeaveCriticalSection (&ch[channel].csEXCH);
 	LeaveCriticalSection (&ch[channel].csDSP);
 	InterlockedBitTestAndReset (&ch[channel].flushflag, 0);
+// added for linux port
+	InterlockedBitTestAndReset (&ch[channel].iob.pc->exec_bypass, 0);
 	_endthread();
 }
 
