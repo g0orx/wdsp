@@ -201,7 +201,6 @@ void SetRXAPanelBinaural (int channel, int bin)
 PORT
 void SetTXAPanelRun (int channel, int run)
 {
-fprintf(stderr,"SetTXAPanelRun: channel=%d run=%d\n",channel,run);
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].panel.p->run = run;
 	LeaveCriticalSection (&ch[channel].csDSP);
@@ -210,7 +209,6 @@ fprintf(stderr,"SetTXAPanelRun: channel=%d run=%d\n",channel,run);
 PORT
 void SetTXAPanelGain1 (int channel, double gain)
 {
-fprintf(stderr,"SetTXAPanelGain1: channel=%d gain=%f\n",channel,gain);
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].panel.p->gain1 = gain;
 	//print_message ("micgainset.txt", "Set MIC Gain to", (int)(100.0 * gain), 0, 0);
