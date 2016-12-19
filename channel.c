@@ -275,7 +275,7 @@ int SetChannelState (int channel, int state, int dmode)
 			InterlockedBitTestAndSet (&ch[channel].flushflag, 0);
 			if (dmode)
 			{
-				_beginthread (TimeOut, 0, (void *)&timeout);
+				pthread_t id=_beginthread (TimeOut, 0, (void *)&timeout);
 				while (_InterlockedAnd (&ch[channel].flushflag, 1) && !_InterlockedAnd (&timeout, 1)) Sleep(1);
 			}
 			if (_InterlockedAnd (&timeout, 1))

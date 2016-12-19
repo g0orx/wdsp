@@ -98,6 +98,17 @@ PORT void SetRXAAGCSlope (int channel, int slope);
 PORT void SetRXAAGCThresh(int channel, double thresh, double size, double rate);
 PORT void GetRXAAGCThresh(int channel, double *thresh, double size, double rate);
 
+PORT void SetRXAFMDeviation (int channel, double deviation);
+
+// Diversity prototype
+PORT void create_divEXT (int id, int run, int nr, int size);
+PORT void SetEXTDIVRun (int id, int run);
+PORT void SetEXTDIVBuffsize (int id, int size);
+PORT void SetEXTDIVNr (int id, int nr);
+PORT void SetEXTDIVOutput (int id, int output);
+PORT void xdivEXT (int id, int nsamples, double **in, double *out);
+
+
 // TXA Prototypes
 enum txaMeterType {
   TXA_MIC_PK,
@@ -140,32 +151,35 @@ PORT void SetTXALevelerDecay (int channel, int decay);
 PORT void SetTXALevelerHang (int channel, int hang);
 PORT void SetTXALevelerTop (int channel, double maxgain);
 
-void SetTXAPreGenRun (int channel, int run);
-void SetTXAPreGenMode (int channel, int mode);
-void SetTXAPreGenToneMag (int channel, double mag);
-void SetTXAPreGenToneFreq (int channel, double freq);
-void SetTXAPreGenNoiseMag (int channel, double mag);
-void SetTXAPreGenSweepMag (int channel, double mag);
-void SetTXAPreGenSweepFreq (int channel, double freq1, double freq2);
-void SetTXAPreGenSweepRate (int channel, double rate);
-void SetTXAPreGenSawtoothMag (int channel, double mag);
-void SetTXAPreGenSawtoothFreq (int channel, double freq);
-void SetTXAPreGenTriangleMag (int channel, double mag);
-void SetTXAPreGenTriangleFreq (int channel, double freq);
-void SetTXAPreGenPulseMag (int channel, double mag);
-void SetTXAPreGenPulseFreq (int channel, double freq);
-void SetTXAPreGenPulseDutyCycle (int channel, double dc);
-void SetTXAPreGenPulseToneFreq (int channel, double freq);
-void SetTXAPreGenPulseTransition (int channel, double transtime);
-void SetTXAPostGenRun (int channel, int run);
-void SetTXAPostGenMode (int channel, int mode);
-void SetTXAPostGenToneMag (int channel, double mag);
-void SetTXAPostGenToneFreq (int channel, double freq);
-void SetTXAPostGenTTMag (int channel, double mag1, double mag2);
-void SetTXAPostGenTTFreq (int channel, double freq1, double freq2);
-void SetTXAPostGenSweepMag (int channel, double mag);
-void SetTXAPostGenSweepFreq (int channel, double freq1, double freq2);
-void SetTXAPostGenSweepRate (int channel, double rate);
+PORT void SetTXAPreGenRun (int channel, int run);
+PORT void SetTXAPreGenMode (int channel, int mode);
+PORT void SetTXAPreGenToneMag (int channel, double mag);
+PORT void SetTXAPreGenToneFreq (int channel, double freq);
+PORT void SetTXAPreGenNoiseMag (int channel, double mag);
+PORT void SetTXAPreGenSweepMag (int channel, double mag);
+PORT void SetTXAPreGenSweepFreq (int channel, double freq1, double freq2);
+PORT void SetTXAPreGenSweepRate (int channel, double rate);
+PORT void SetTXAPreGenSawtoothMag (int channel, double mag);
+PORT void SetTXAPreGenSawtoothFreq (int channel, double freq);
+PORT void SetTXAPreGenTriangleMag (int channel, double mag);
+PORT void SetTXAPreGenTriangleFreq (int channel, double freq);
+PORT void SetTXAPreGenPulseMag (int channel, double mag);
+PORT void SetTXAPreGenPulseFreq (int channel, double freq);
+PORT void SetTXAPreGenPulseDutyCycle (int channel, double dc);
+PORT void SetTXAPreGenPulseToneFreq (int channel, double freq);
+PORT void SetTXAPreGenPulseTransition (int channel, double transtime);
+PORT void SetTXAPostGenRun (int channel, int run);
+PORT void SetTXAPostGenMode (int channel, int mode);
+PORT void SetTXAPostGenToneMag (int channel, double mag);
+PORT void SetTXAPostGenToneFreq (int channel, double freq);
+PORT void SetTXAPostGenTTMag (int channel, double mag1, double mag2);
+PORT void SetTXAPostGenTTFreq (int channel, double freq1, double freq2);
+PORT void SetTXAPostGenSweepMag (int channel, double mag);
+PORT void SetTXAPostGenSweepFreq (int channel, double freq1, double freq2);
+PORT void SetTXAPostGenSweepRate (int channel, double rate);
+
+PORT void SetTXAFMDeviation (int channel, double deviation);
+PORT void SetTXAFMEmphPosition (int channel, int position);
 
 // resampler
 

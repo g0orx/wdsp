@@ -116,19 +116,25 @@ pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack
 	pthread_attr_t  attr;
 	int             rc = 0;
 
-	if(stack_size!=0) {
-	    if (rc = pthread_attr_init(&attr)) {
- 	        return -1;
-	    }
+	if (rc = pthread_attr_init(&attr)) {
+ 	    return -1;
+	}
       
+	if(stack_size!=0) {
 	    if (rc = pthread_attr_setstacksize(&attr, stack_size)) {
 	        return -1;
 	    }
 	}
+
+        if( rc = pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED)) {
+            return -1;
+        }
      
-	if (rc = pthread_create(&threadid, stack_size==0?0:&attr, (void*(*)(void*))start_address, arglist)) {
+	if (rc = pthread_create(&threadid, &attr, (void*(*)(void*))start_address, arglist)) {
 	     return -1;
 	}
+
+        //pthread_attr_destroy(&attr);
 
 	return threadid;
 
