@@ -27,6 +27,7 @@ john.d.melton@googlemail.com
 
 #ifdef linux
 
+
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdint.h>
@@ -37,6 +38,7 @@ john.d.melton@googlemail.com
 #define HANDLE sem_t *
 #define WINAPI
 #define FALSE 0
+#define TRUE 1
 #define TEXT(x) x
 #define InterlockedIncrement(base) __sync_add_and_fetch(base,1L)
 #define InterlockedDecrement(base) __sync_sub_and_fetch(base,1L)
@@ -78,20 +80,18 @@ void LeaveCritiaclSection(pthread_mutex_t *mutex);
 
 void DeleteCriticalSection(pthread_mutex_t *mutex);
 
+
 sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,char *name);
 
 int LinuxWaitForSingleObject(sem_t *sem,int x);
 
 void LinuxReleaseSemaphore(sem_t *sem,int release_count, int* previous_count);
 
-/*
-int CreateEvent(sem_t *sem,void* security_attributes,int bManualReset,int bInitialState,char* name);
-*/
 sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,char* name);
 
 void LinuxSetEvent(sem_t* sem);
 
-pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist);
+pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
 
 void _endthread();
 

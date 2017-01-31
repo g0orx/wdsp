@@ -702,7 +702,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 				a->ctrl.reset = 0;
 				if (!a->ctrl.turnon)
 					if (InterlockedBitTestAndReset (&a->ctrl.running, 0))
-						_beginthread (doTurnoff, 0, (void *)a);
+						_beginthread (doTurnoff, 0, (void *)a, "WDSP doTurnoff");
 				a->info[14] = 0;
 				a->ctrl.env_maxtx = 0.0;
 				if (a->ctrl.turnon)
@@ -804,7 +804,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 				if (!a->ctrl.calcinprogress)	
 				{
 					a->ctrl.calcinprogress = 1;
-					_beginthread(doCalcCorrection, 0, (void *)a);
+					_beginthread(doCalcCorrection, 0, (void *)a, "WDSP doCalcCorrection");
 				}
 
 				if (InterlockedBitTestAndReset(&a->ctrl.calcdone, 0))
@@ -889,7 +889,7 @@ void PSSaveCorr (int channel, char* filename)
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
 	while (a->util.savefile[i++] = *filename++);
-	_beginthread(SaveCorrection, 0, (void *)a);
+	_beginthread(SaveCorrection, 0, (void *)a, "WDSP SaveCorrection");
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
 
@@ -902,7 +902,7 @@ void PSRestoreCorr (int channel, char* filename)
 	a = txa[channel].calcc.p;
 	while (a->util.restfile[i++] = *filename++);
 	a->ctrl.turnon = 1;
-	_beginthread(RestoreCorrection, 0, (void *)a);
+	_beginthread(RestoreCorrection, 0, (void *)a, "WDSP RestoreCorrection");
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
 

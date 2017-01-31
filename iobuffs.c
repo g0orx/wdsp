@@ -491,7 +491,7 @@ void fexchange0 (int channel, double* in, double* out, int* error)
 				if (!_InterlockedAnd (&a->slew.downflag, 1))
 				{
 					InterlockedBitTestAndReset (&ch[channel].exchange, 0);
-					_beginthread (flushChannel, 0, (void *)channel);
+					_beginthread (flushChannel, 0, (void *)channel, "WDSP flushChannel");
 				}
 			}
 			else
@@ -504,7 +504,7 @@ void fexchange0 (int channel, double* in, double* out, int* error)
 		if ((a->r2_outidx += a->out_size) == a->r2_active_buffsize)
 			a->r2_outidx = 0;
 		LeaveCriticalSection (&ch[channel].csEXCH);
-	}
+        }
 }
 
 PORT	//separate I/Q buffers
@@ -550,7 +550,7 @@ void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTREAL *
 				if (!_InterlockedAnd (&a->slew.downflag, 1))
 				{
 					InterlockedBitTestAndReset (&ch[channel].exchange, 0);
-					_beginthread (flushChannel, 0, (void *)channel);
+					_beginthread (flushChannel, 0, (void *)channel, "WDSP flushChannel");
 				}
 			}
 			else

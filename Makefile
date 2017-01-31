@@ -6,12 +6,19 @@ LINK=gcc
 OPTIONS=-g -fPIC -O3
 #OPTIONS=-g -fPIC
 
+#GTK_INCLUDE=GTK
+ifeq ($GTK_INCLUDE),GTK)
+GTKINCLUDES=`pkg-config --cflags gtk+-3.0`
+GTKLIBS=`pkg-config --libs gtk+-3.0`
+GTKOPTIONS=-D GTK
+endif
+
 LIBS=-lfftw3 -lpthread
 JAVA_LIBS=-L. -lwdsp
 
 INCLUDES=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux
 
-COMPILE=$(CC) $(INCLUDES)
+COMPILE=$(CC) $(INCLUDES) $(GTKINCLUDES)
 
 PROGRAM=libwdsp.so
 JAVA_PROGRAM=libwdspj.so
@@ -182,13 +189,13 @@ all: $(PROGRAM) $(HEADERS) $(SOURCES)
 java: $(JAVA_PROGRAM) $(JAVA_HEADERS) $(JAVA_SOURCES)
 
 $(PROGRAM): $(OBJS)
-	$(LINK) -shared -z noexecstack -o $(PROGRAM) $(OBJS) $(LIBS)
+	$(LINK) -shared -z noexecstack -o $(PROGRAM) $(OBJS) $(LIBS) $(GTKLIBS)
 
 $(JAVA_PROGRAM): $(JAVA_OBJS)
 	$(LINK) -shared -z noexecstack -o $(JAVA_PROGRAM) $(JAVA_OBJS) $(JAVA_LIBS)
 
 .c.o:
-	$(COMPILE) $(OPTIONS) -c -o $@ $<
+	$(COMPILE) $(OPTIONS) $(GTKOPTIONS) -c -o $@ $<
 
 install: $(PROGRAM)
 	cp wdsp.h /usr/local/include

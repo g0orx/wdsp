@@ -60,6 +60,7 @@ enum rxaMeterType {
 PORT void SetRXAMode (int channel, int mode);
 PORT void SetRXABandpassRun (int channel, int run);
 PORT void SetRXABandpassFreqs (int channel, double low, double high);
+PORT void RXASetPassband (int channel, double f_low, double f_high);
 PORT void SetRXAFMSQRun (int channel, int run);
 PORT void SetRXAEMNRRun (int channel, int run);
 PORT void SetRXAEMNRgainMethod (int channel, int method);
@@ -97,8 +98,8 @@ PORT void SetRXAAGCTop (int channel, double max_agc);
 PORT void SetRXAAGCSlope (int channel, int slope);
 PORT void SetRXAAGCThresh(int channel, double thresh, double size, double rate);
 PORT void GetRXAAGCThresh(int channel, double *thresh, double size, double rate);
-
 PORT void SetRXAFMDeviation (int channel, double deviation);
+
 
 // Diversity prototype
 PORT void create_divEXT (int id, int run, int nr, int size);

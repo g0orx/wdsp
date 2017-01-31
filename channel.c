@@ -29,7 +29,7 @@ warren@wpratt.com
 void start_thread (int channel)
 {
 #ifdef linux
-        pthread_t handle = _beginthread(wdspmain, 0, (void *)channel);
+        HANDLE handle = _beginthread(wdspmain, 0, (void *)channel, "WDSP main");
         SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 #else
         HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)channel);
@@ -275,7 +275,7 @@ int SetChannelState (int channel, int state, int dmode)
 			InterlockedBitTestAndSet (&ch[channel].flushflag, 0);
 			if (dmode)
 			{
-				pthread_t id=_beginthread (TimeOut, 0, (void *)&timeout);
+				HANDLE id=_beginthread (TimeOut, 0, (void *)&timeout, "WDSP Timeout");
 				while (_InterlockedAnd (&ch[channel].flushflag, 1) && !_InterlockedAnd (&timeout, 1)) Sleep(1);
 			}
 			if (_InterlockedAnd (&timeout, 1))

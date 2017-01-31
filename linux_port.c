@@ -111,7 +111,7 @@ void LinuxSetEvent(sem_t* sem) {
 	sem_post(sem);
 }
 
-pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist) {
+pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name) {
         pthread_t threadid;
 	pthread_attr_t  attr;
 	int             rc = 0;
@@ -135,6 +135,7 @@ pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack
 	}
 
         //pthread_attr_destroy(&attr);
+        rc=pthread_setname_np(threadid, name);
 
 	return threadid;
 
