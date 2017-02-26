@@ -27,21 +27,25 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-#ifdef linux
 static char status[80];
 
 char *wisdom_get_status() {
   return status;
 }
-#endif
 
+
+PORT
+void WDSPwisdomGetParams(int* displaySize, int* filterSize)
+{
+	*displaySize = MAX_WISDOM_SIZE_DISPLAY;
+	*filterSize = MAX_WISDOM_SIZE_FILTER;
+}
 
 PORT
 void WDSPwisdom (char* directory)
 {
 	fftw_plan tplan;
 	int psize;
-	FILE *stream;
 	double* fftin;
 	double* fftout;
 	char wisdom_file[1024];
@@ -52,62 +56,54 @@ void WDSPwisdom (char* directory)
 	{
 		fftin =  (double *) malloc0 (maxsize * sizeof (complex));
 		fftout = (double *) malloc0 (maxsize * sizeof (complex));
-#ifndef linux
-		AllocConsole();								// create console
-	    freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
-#endif
 #ifdef __ANDROID__
-                sprintf(status, "Optimizing FFT sizes through %d", maxsize);
-                utf8 = (*env)->NewStringUTF(env,status);
-                (*env)->CallVoidMethod(env, obj, update, utf8);
-                sleep(1);
-#endif
-#ifdef linux
-                fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
+		sprintf(status, "Optimizing FFT sizes through %d", maxsize);
+		utf8 = (*env)->NewStringUTF(env,status);
+		(*env)->CallVoidMethod(env, obj, update, utf8);
+#else
+		fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
 		fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
 #endif
+		Sleep(50);
 		psize = 64;
 		while (psize <= MAX_WISDOM_SIZE_FILTER)
 		{
 #ifdef __ANDROID__
-                        sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
-                        utf8 = (*env)->NewStringUTF(env,status);
-                        (*env)->CallVoidMethod(env, obj, update, utf8);
-                        sleep(1);
-#endif
-#ifdef linux
-                        sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
-		        fprintf(stdout, "%s\n", status);
+			sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
+			utf8 = (*env)->NewStringUTF(env,status);
+			(*env)->CallVoidMethod(env, obj, update, utf8);
+#else
+			sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
+			fprintf(stdout, "%s\n", status);
 			fflush(stdout);
 #endif
+			Sleep(50);
 			tplan = fftw_plan_dft_1d(psize, (fftw_complex *)fftin, (fftw_complex *)fftout, FFTW_FORWARD, FFTW_PATIENT);
 			fftw_execute (tplan);
 			fftw_destroy_plan (tplan);
 #ifdef __ANDROID__
-                        sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize);
-                        utf8 = (*env)->NewStringUTF(env,status);
-                        (*env)->CallVoidMethod(env, obj, update, utf8);
-                        sleep(1);
-#endif
-#ifdef linux
-                        sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize);
-		        fprintf(stdout, "%s\n", status);
+			sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize);
+			utf8 = (*env)->NewStringUTF(env,status);
+			(*env)->CallVoidMethod(env, obj, update, utf8);
+#else
+			sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize);
+			fprintf(stdout, "%s\n", status);
 			fflush(stdout);
 #endif
+			Sleep(50);
 			tplan = fftw_plan_dft_1d(psize, (fftw_complex *)fftin, (fftw_complex *)fftout, FFTW_BACKWARD, FFTW_PATIENT);
 			fftw_execute (tplan);
 			fftw_destroy_plan (tplan);
 #ifdef __ANDROID__
-                        sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize + 1);
-                        utf8 = (*env)->NewStringUTF(env,status);
-                        (*env)->CallVoidMethod(env, obj, update, utf8);
-                        sleep(1);
-#endif
-#ifdef linux
-                        sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize + 1);
-		        fprintf(stdout, "%s\n", status);
+			sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize + 1);
+			utf8 = (*env)->NewStringUTF(env,status);
+			(*env)->CallVoidMethod(env, obj, update, utf8);
+#else
+			sprintf(status, "Planning COMPLEX BACKWARD FFT size %d", psize + 1);
+			fprintf(stdout, "%s\n", status);
 			fflush(stdout);
 #endif
+			Sleep(50);
 			tplan = fftw_plan_dft_1d(psize + 1, (fftw_complex *)fftin, (fftw_complex *)fftout, FFTW_BACKWARD, FFTW_PATIENT);
 			fftw_execute (tplan);
 			fftw_destroy_plan (tplan);
@@ -119,41 +115,53 @@ void WDSPwisdom (char* directory)
 			if (psize > MAX_WISDOM_SIZE_FILTER)
 			{
 #ifdef __ANDROID__
-                                sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
-                                utf8 = (*env)->NewStringUTF(env,status);
-                                (*env)->CallVoidMethod(env, obj, update, utf8);
-                                sleep(1);
-#endif
-#ifdef linux
-                                sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
-		                fprintf(stdout, "%s\n", status);
+				sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
+				utf8 = (*env)->NewStringUTF(env,status);
+				(*env)->CallVoidMethod(env, obj, update, utf8);
+#else
+				sprintf(status, "Planning COMPLEX FORWARD  FFT size %d", psize);
+				fprintf(stdout, "%s\n", status);
 				fflush(stdout);
 #endif
+				Sleep(50);
 				tplan = fftw_plan_dft_1d(psize, (fftw_complex *)fftin, (fftw_complex *)fftout, FFTW_FORWARD, FFTW_PATIENT);
 				fftw_execute (tplan);
 				fftw_destroy_plan (tplan);
 			}
 #ifdef __ANDROID__
-                        sprintf(status, "Planning REAL    FORWARD  FFT size %d", psize);
-                        utf8 = (*env)->NewStringUTF(env,status);
-                        (*env)->CallVoidMethod(env, obj, update, utf8);
-                        sleep(1);
-#endif
-#ifdef linux
-                        sprintf(status, "Planning REAL    FORWARD  FFT size %d", psize);
-		        fprintf(stdout, "%s\n", status);
+			sprintf(status, "Planning REAL    FORWARD  FFT size %d", psize);
+			utf8 = (*env)->NewStringUTF(env,status);
+			(*env)->CallVoidMethod(env, obj, update, utf8);
+#else
+			sprintf(status, "Planning REAL    FORWARD  FFT size %d", psize);
+			fprintf(stdout, "%s\n", status);
 			fflush(stdout);
 #endif
+			Sleep(50);
 			tplan = fftw_plan_dft_r2c_1d(psize, fftin, (fftw_complex *)fftout, FFTW_PATIENT);
 			fftw_execute (tplan);
 			fftw_destroy_plan (tplan);
 			psize *= 2;
 		}
 		fftw_export_wisdom_to_filename(wisdom_file);
+		Sleep(50);
 		_aligned_free (fftout);
 		_aligned_free (fftin);
-#ifndef linux
-		FreeConsole();							// dismiss console
-#endif
 	}
 }
+
+#ifdef _WINDOWS_
+
+PORT
+void WDSPwisdomConsole(char* directory)
+{
+	FILE *stream;
+
+	AllocConsole();								// create console
+	freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
+
+	WDSPwisdom(directory);
+
+	FreeConsole();							// dismiss console
+}
+#endif
