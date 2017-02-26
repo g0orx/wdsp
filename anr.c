@@ -228,6 +228,7 @@ SetRXAANRPosition (int channel, int position)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].anr.p->position = position;
+	rxa[channel].bp1.p->position = position;
 	flush_anr (rxa[channel].anr.p);
 	LeaveCriticalSection (&ch[channel].csDSP);
 }

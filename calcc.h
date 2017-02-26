@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,15 +32,23 @@ typedef struct _calcc
 	int channel;
 	int runcal;
 	int size;
-	int mox;
-	int solidmox;
+	volatile long mox;
+	volatile long solidmox;
 	int rate;
 	int ints;
 	int spi;
-	int nsamps;	
+	int nsamps;
+	int npsamps;
+	int pin;
+	int map;
+	int convex;
+	int stbl;
+	int scOK;
 	double hw_scale;
+	double rx_scale;
+	double alpha;
 	double* t;
-	double* t1;
+	double* tmap;
 	double* cm;
 	double* cc;
 	double* cs;
@@ -72,6 +80,8 @@ typedef struct _calcc
 		int waitcount;
 		double env_maxtx;
 		volatile long running;
+		int bs_count;
+		volatile long current_state;
 	} ctrl;
 	struct _disp
 	{
@@ -97,7 +107,9 @@ typedef struct _calcc
 	double* temprx;				//////////////////////////////////////////////////// temporary rx complex buffer - remove with new callback3port()
 } calcc, *CALCC;
 
-extern CALCC create_calcc (int channel, int runcal, int size, int rate, int ints, int spi, double hw_scale, double moxdelay, double loopdelay, double ptol, int mox, int solidmox);
+extern CALCC create_calcc (int channel, int runcal, int size, int rate, int ints, int spi, double hw_scale, 
+	double moxdelay, double loopdelay, double ptol, int mox, int solidmox, int pin, int map, int stbl,
+	int npsamps, double alpha);
 
 extern void destroy_calcc (CALCC a);
 
@@ -115,6 +127,7 @@ extern __declspec(dllexport) void pscc (int channel, int size, double* tx, doubl
 //		 4 - feedback level warning
 //		 5 - count of attempted calibrations
 //		 6 - results from scheck()
+//       7 - results from rxscheck()
 //
 //		13 - dogcount
 //		14 - indicates iqc_Run = 1

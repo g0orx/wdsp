@@ -29,7 +29,7 @@ warren@wpratt.com
 void start_thread (int channel)
 {
 #ifdef linux
-        HANDLE handle = _beginthread(wdspmain, 0, (void *)channel, "WDSP main");
+        HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel, "WDSP main");
         SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 #else
         HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)channel);
@@ -254,13 +254,6 @@ void SetAllRates (int channel, int in_rate, int dsp_rate, int out_rate)
 	}
 }
 
-void TimeOut (void *ptimeout)
-{
-	Sleep (200);
-	InterlockedBitTestAndSet ((volatile long *)ptimeout, 0);
-	_endthread();
-}
-
 PORT
 int SetChannelState (int channel, int state, int dmode)
 {
@@ -278,10 +271,13 @@ int SetChannelState (int channel, int state, int dmode)
 			InterlockedBitTestAndSet (&ch[channel].flushflag, 0);
 			if (dmode)
 			{
-				HANDLE id=_beginthread (TimeOut, 0, (void *)&timeout, "WDSP Timeout");
-				while (_InterlockedAnd (&ch[channel].flushflag, 1) && !_InterlockedAnd (&timeout, 1)) Sleep(1);
+				while (_InterlockedAnd (&ch[channel].flushflag, 1) && count < timeout) 
+				{
+					Sleep(1);
+					count++;
+				}
 			}
-			if (_InterlockedAnd (&timeout, 1))
+			if (count >= timeout)
 			{
 				InterlockedBitTestAndReset (&ch[channel].exchange, 0);
 				InterlockedBitTestAndReset (&ch[channel].flushflag, 0);

@@ -97,7 +97,6 @@ emph.h\
 eq.h\
 fastmath.h\
 fcurve.h\
-fftw3.h\
 fir.h\
 firmin.h \
 fmd.h\
@@ -139,7 +138,6 @@ analyzer.o\
 anf.o\
 anr.o\
 bandpass.o\
-calculus.o\
 calcc.o\
 cblock.o\
 cfir.o\

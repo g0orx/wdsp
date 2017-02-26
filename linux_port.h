@@ -1,4 +1,4 @@
-/*  utilities.h
+/*  linux_port.h
 
 This file is part of a program that implements a Software-Defined Radio.
 
@@ -91,7 +91,7 @@ sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,
 
 void LinuxSetEvent(sem_t* sem);
 
-pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
+pthread_t wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
 
 void _endthread();
 

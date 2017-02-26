@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-The author can be reached by email at
+The author can be reached by email at  
 
 warren@wpratt.com
 
@@ -264,7 +264,7 @@ void SetRXAEQProfile (int channel, int nfreqs, double* F, double* G)
 	a->G = (double *) malloc0 ((a->nfreqs + 1) * sizeof (double));
 	memcpy (a->F, F, (nfreqs + 1) * sizeof (double));
 	memcpy (a->G, G, (nfreqs + 1) * sizeof (double));
-	impulse = eq_impulse (a->nc, a->nfreqs, a->F, a->G,
+	impulse = eq_impulse (a->nc, a->nfreqs, a->F, a->G, 
 		a->samplerate, 1.0 / (2.0 * a->size), a->ctfmode, a->wintype);
 	setImpulse_fircore (a->p, impulse, 1);
 	_aligned_free (impulse);
@@ -346,6 +346,7 @@ void SetRXAGrphEQ10 (int channel, int *rxeq)
 		a->G[i] = (double)rxeq[i];
 	a->ctfmode = 0;
 	impulse = eq_impulse (a->nc, a->nfreqs, a->F, a->G, a->samplerate, 1.0 / (2.0 * a->size), a->ctfmode, a->wintype);
+	// print_impulse ("rxeq.txt", a->nc, impulse, 1, 0);
 	setImpulse_fircore (a->p, impulse, 1);
 	_aligned_free (impulse);
 }

@@ -1,4 +1,4 @@
-/*  utilities.c
+/*  linux_port.c
 
 This file is part of a program that implements a Software-Defined Radio.
 
@@ -29,7 +29,7 @@ john.d.melton@googlemail.com
 
 /********************************************************************************************************
 *													*
-*	Linux Port Utilities											*
+*	Linux Port Utilities										*
 *													*
 ********************************************************************************************************/
 
@@ -111,7 +111,7 @@ void LinuxSetEvent(sem_t* sem) {
 	sem_post(sem);
 }
 
-pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name) {
+pthread_t wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name) {
         pthread_t threadid;
 	pthread_attr_t  attr;
 	int             rc = 0;

@@ -328,7 +328,6 @@ calc_fircore (FIRCORE a, int flip)
 		mp_imp (a->nc, a->impulse, a->imp, 16, 0);
 	else
 		memcpy (a->imp, a->impulse, a->nc * sizeof (complex));
-	a->buffidx = 0;
 	for (i = 0; i < a->nfor; i++)
 	{
 		// I right-justified the impulse response => take output from left side of output buff, discard right side

@@ -43,6 +43,10 @@ warren@wpratt.com
 #include <Windows.h>
 #include <process.h>
 #include <intrin.h>
+
+// normalize _beginthread between platforms, Windows doesn't have the last pararmeter, name
+uintptr_t __cdecl wdsp_beginthread(void(__cdecl *start_address)(void *), unsigned stack_size, void *arglist, char *name);
+
 #endif
 #include <math.h>
 #include <time.h>
@@ -98,7 +102,7 @@ warren@wpratt.com
 #include "wcpAGC.h"
 
 // manage differences among consoles
-//#define _Thetis
+// #define _Thetis
 
 // channel definitions
 #define MAX_CHANNELS					32					// maximum number of supported channels
@@ -110,7 +114,7 @@ warren@wpratt.com
 #define dMAX_DISPLAYS					64					// maximum number of displays = max instances
 #define dMAX_STITCH						4					// maximum number of sub-spans to stitch together
 #define dMAX_NUM_FFT					1					// maximum number of ffts for an elimination
-#define dMAX_PIXELS						2560				// maximum number of pixels that can be requested
+#define dMAX_PIXELS						4096				// maximum number of pixels that can be requested
 #define dMAX_AVERAGE					60					// maximum number of pixel frames that will be window-averaged
 #ifdef _Thetis
 #define dINREAL							double

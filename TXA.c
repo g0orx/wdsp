@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013, 2014 Warren Pratt, NR0V
+Copyright (C) 2013, 2014, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -380,7 +380,12 @@ fprintf(stderr,"create_txa: %d\n",channel);
 		0.0,										// loop delay
 		0.8,										// ptol
 		0,											// mox
-		1);											// solidmox
+		0,											// solidmox
+		1,											// pin mode
+		1,											// map mode
+		0,											// stbl mode
+		256,										// pin samples
+		0.9);										// alpha
 
 	txa[channel].iqc.p0 = txa[channel].iqc.p1 = create_iqc (
 		0,											// run

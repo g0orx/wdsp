@@ -275,6 +275,16 @@ void TXAGetaSipF1 (int channel, float* out, int size)
 }
 
 PORT
+void TXASetSipSpecmode (int channel, int mode)
+{
+	SIPHON a = txa[channel].sip1.p;
+	if (mode == 0)
+		InterlockedBitTestAndReset (&a->specmode, 0);
+	else
+		InterlockedBitTestAndSet   (&a->specmode, 0);
+}
+
+PORT
 void TXAGetSpecF1 (int channel, float* out)
 {	// return spectrum magnitudes in dB
 	SIPHON a = txa[channel].sip1.p;
@@ -285,7 +295,7 @@ void TXAGetSpecF1 (int channel, float* out)
 	LeaveCriticalSection (&a->update);
 	sip_spectrum (a);
 	mid = a->fftsize / 2;
-	if (a->specmode == 0)
+	if (!InterlockedAnd (&a->specmode, 1))
 		// swap the halves of the spectrum
 		for (i = 0, j = mid; i < mid; i++, j++)
 		{

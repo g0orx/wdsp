@@ -26,8 +26,6 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-#include "calculus.h"
-
 /********************************************************************************************************
 *																										*
 *											Special Functions											*

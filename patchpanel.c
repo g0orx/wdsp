@@ -214,3 +214,15 @@ void SetTXAPanelGain1 (int channel, double gain)
 	//print_message ("micgainset.txt", "Set MIC Gain to", (int)(100.0 * gain), 0, 0);
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
+
+PORT
+void SetTXAPanelSelect (int channel, int select)
+{
+	EnterCriticalSection (&ch[channel].csDSP);
+	if (select == 1) 
+		txa[channel].panel.p->copy = 3;
+	else
+		txa[channel].panel.p->copy = 0;
+	txa[channel].panel.p->inselect = select;
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
