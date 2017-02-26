@@ -68,6 +68,7 @@ warren@wpratt.com
 #include "eq.h"
 #include "fcurve.h"
 #include "fir.h"
+#include "firmin.h"
 #include "fmd.h"
 #include "fmmod.h"
 #include "fmsq.h"
@@ -126,7 +127,7 @@ warren@wpratt.com
 
 // wisdom definitions
 #define MAX_WISDOM_SIZE_DISPLAY			262144
-#define MAX_WISDOM_SIZE_FILTER			32769
+#define MAX_WISDOM_SIZE_FILTER			262144				// was 32769
 
 // math definitions
 #define PI								3.1415926535897932

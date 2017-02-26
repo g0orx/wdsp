@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #ifndef _fmsq_h
 #define _fmsq_h
-
+#include "firmin.h"
 typedef struct _fmsq
 {
 	int run;							// 0 if squelch system is OFF; 1 if it's ON
@@ -35,9 +35,6 @@ typedef struct _fmsq
 	double* outsig;						// squelch output signal buffer
 	double* trigger;					// buffer used to trigger mute/unmute (may be same as input; matches timing of input buffer)
 	double rate;						// sample rate
-	double* infilt;
-	double* product;
-	double* mults;
 	double* noise;
 	double fc;							// corner frequency for sig / noise detection
 	double* pllpole;					// pointer to pole frequency of the fm demodulator pll
@@ -51,8 +48,6 @@ typedef struct _fmsq
 	double longavm;
 	double onem_longavm;
 	double longnoise;
-	fftw_plan CFor;
-	fftw_plan CRev;
 	int state;							// state machine control
 	int count;
 	double tup;
@@ -69,9 +64,14 @@ typedef struct _fmsq
 	double ramp;
 	double rstep;
 	double tdelay;
+	int nc;
+	int mp;
+	FIRCORE p;
 } fmsq, *FMSQ;
 
-extern FMSQ create_fmsq (int run, int size, double* insig, double* outsig, double* trigger, int rate, double fc, double* pllpole, double tdelay, double avtau, double longtau, double tup, double tdown, double tail_thresh, double unmute_thresh, double min_tail, double max_tail);
+extern FMSQ create_fmsq (int run, int size, double* insig, double* outsig, double* trigger, int rate, double fc, 
+	double* pllpole, double tdelay, double avtau, double longtau, double tup, double tdown, double tail_thresh, 
+	double unmute_thresh, double min_tail, double max_tail, int nc, int mp);
 
 extern void destroy_fmsq (FMSQ a);
 
@@ -88,5 +88,9 @@ extern void setSize_fmsq (FMSQ a, int size);
 // RXA Properties
 
 extern __declspec (dllexport) void SetRXAFMSQThreshold (int channel, double threshold);
+
+extern __declspec (dllexport) void SetRXAFMSQNC (int channel, int nc);
+
+extern __declspec (dllexport) void SetRXAFMSQMP (int channel, int mp);
 
 #endif

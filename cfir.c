@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2014 Warren Pratt, NR0V
+Copyright (C) 2014, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -28,26 +28,24 @@ warren@wpratt.com
 
 void calc_cfir (CFIR a)
 {
+	double* impulse;
 	a->scale = 1.0 / (double)(2 * a->size);
-	a->infilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->product = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->CFor = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->infilt, (fftw_complex *)a->product, FFTW_FORWARD, FFTW_ESTIMATE);
-	a->CRev = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->product, (fftw_complex *)a->out, FFTW_BACKWARD, FFTW_ESTIMATE);
-	a->mults = cfir_mults(a->size, a->runrate, a->cicrate, a->scale, a->DD, a->R, a->Pairs, a->cutoff, a->xtype, a->xbw);
+	impulse = cfir_impulse (a->nc, a->DD, a->R, a->Pairs, a->runrate, a->cicrate, a->cutoff, a->xtype, a->xbw, 1, a->scale, a->wintype);
+	a->p = create_fircore (a->size, a->in, a->out, a->nc, a->mp, impulse);
+	_aligned_free (impulse);
 }
 
 void decalc_cfir (CFIR a)
 {
-	fftw_destroy_plan(a->CRev);
-	fftw_destroy_plan(a->CFor);
-	_aligned_free(a->mults);
-	_aligned_free(a->product);
-	_aligned_free(a->infilt);
+	destroy_fircore (a->p);
 }
 
-CFIR create_cfir (int run, int size, double* in, double* out, int runrate, int cicrate, int DD, int R, int Pairs, double cutoff, int xtype, double xbw)
+CFIR create_cfir (int run, int size, int nc, int mp, double* in, double* out, int runrate, int cicrate, 
+	int DD, int R, int Pairs, double cutoff, int xtype, double xbw, int wintype)
 //	run:  0 - no action; 1 - operate
 //	size:  number of complex samples in an input buffer to the CFIR filter
+//	nc:  number of filter coefficients
+//  mp:  minimum phase flag
 //	in:  pointer to the input buffer
 //	out:  pointer to the output buffer
 //	rate:  samplerate
@@ -61,6 +59,8 @@ CFIR create_cfir (int run, int size, double* in, double* out, int runrate, int c
 	CFIR a = (CFIR) malloc0 (sizeof (cfir));
 	a->run = run;
 	a->size = size;
+	a->nc = nc;
+	a->mp = mp;
 	a->in = in;
 	a->out = out;
 	a->runrate = runrate;
@@ -71,6 +71,7 @@ CFIR create_cfir (int run, int size, double* in, double* out, int runrate, int c
 	a->cutoff = cutoff;
 	a->xtype = xtype;
 	a->xbw = xbw;
+	a->wintype = wintype;
 	calc_cfir (a);
 	return a;
 }
@@ -83,27 +84,13 @@ void destroy_cfir (CFIR a)
 
 void flush_cfir (CFIR a)
 {
-	memset (a->infilt, 0, 2 * a->size * sizeof (complex));
+	flush_fircore (a->p);
 }
 
 void xcfir (CFIR a)
 {
 	if (a->run)
-	{
-		int i;
-		double I, Q;
-		memcpy (&(a->infilt[2 * a->size]), a->in, a->size * sizeof (complex));
-		fftw_execute (a->CFor);
-		for (i = 0; i < 2 * a->size; i++)
-		{
-			I = a->product[2 * i + 0];
-			Q = a->product[2 * i + 1];
-			a->product[2 * i + 0] = I * a->mults[2 * i + 0] - Q * a->mults[2 * i + 1];
-			a->product[2 * i + 1] = I * a->mults[2 * i + 1] + Q * a->mults[2 * i + 0];
-		}
-		fftw_execute (a->CRev);
-		memcpy (a->infilt, &(a->infilt[2 * a->size]), a->size * sizeof(complex));
-	}
+		xfircore (a->p);
 	else if (a->in != a->out)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
@@ -137,55 +124,7 @@ void setOutRate_cfir (CFIR a, int rate)
 	calc_cfir (a);
 }
 
-
-double *fir_read (int N, const char *filename, int rtype, double scale)
-	// N = number of real or complex coefficients (see rtype)
-	// *filename = filename
-	// rtype = 0:  real coefficients
-	// rtype = 1:  complex coefficients
-	// scale = a scale factor that will be applied to the returned coefficients;
-	//		if this is not needed, set it to 1.0
-	// NOTE:  The number of values in the file must NOT exceed those implied by N and rtype
-{
-	FILE *file;
-	int i;
-	double I, Q;
-	double *c_impulse = (double *) malloc0 (N * sizeof (complex));
-	file = fopen (filename, "r");
-	for (i = 0; i < N; i++)
-	{
-		// read in the complex impulse response
-		// NOTE:  IF the freq response is symmetrical about 0, the imag coeffs will all be zero.
-		switch (rtype)
-		{
-		case 0:
-			fscanf (file, "%le", &I);
-			c_impulse[i] = + scale * I;
-			break;
-		case 1:
-			fscanf (file, "%le", &I);
-			fscanf (file, "%le", &Q);
-			c_impulse[2 * i + 0] = + scale * I;
-			c_impulse[2 * i + 1] = - scale * Q;
-			break;
-		}
-	}
-	fclose (file);
-	return c_impulse;
-}
-
-void print_response (const char* filename, int N, double* response)
-{
-	FILE *file;
-	int i;
-	file = fopen (filename, "w");
-	for (i = 0; i < N; i++)
-		fprintf (file, "%.17e\n", response[i]);
-	fflush (file);
-	fclose (file);
-}
-
-double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double cicrate, double cutoff, int xtype, double xbw, int rtype, double scale)
+double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double cicrate, double cutoff, int xtype, double xbw, int rtype, double scale, int wintype)
 {
 	// N:		number of impulse response samples
 	// DD:		differential delay used in the CIC filter
@@ -261,23 +200,10 @@ double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double ci
 	else
 		for (i = u_samps, j = 1; i < N; i++, j++)
 			A[i] = A[u_samps - j];
-
-	// print_response ("cfirResponse.txt", N, A);
-	impulse = fir_fsamp(N, A, rtype, 1.0, -1);
+	impulse = fir_fsamp (N, A, rtype, 1.0, wintype);
 	// print_impulse ("cfirImpulse.txt", N, impulse, 1, 0);
 	_aligned_free (A);
 	return impulse;
-}
-
-double* cfir_mults (int size, int runrate, int cicrate, double scale, int DD, int R, int Pairs, double cutoff, int xtype, double xbw)
-{
-	// size = input/output size of the FFT-Convolution Filter
-	double* impulse;
-	double* mults;
-	impulse = cfir_impulse (size + 1, DD, R, Pairs, (double)runrate, (double)cicrate, cutoff, xtype, xbw, 1, scale);
-	mults = fftcv_mults(2 * size, impulse);
-	_aligned_free (impulse);
-	return mults;
 }
 
 /********************************************************************************************************

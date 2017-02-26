@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2014 Warren Pratt, NR0V
+Copyright (C) 2014, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,58 @@ The author can be reached by email at
 warren@wpratt.com
 
 */
+
+/********************************************************************************************************
+*																										*
+*								Partitioned Overlap-Save FM Pre-Emphasis								*
+*																										*
+********************************************************************************************************/
+
+#ifndef _emphp_h
+#define _emphp_h
+#include "firmin.h"
+typedef struct _emphp
+{
+	int run;
+	int position;
+	int size;
+	int nc;
+	int mp;
+	double* in;
+	double* out;
+	int ctype;
+	double f_low;
+	double f_high;
+	double rate;
+	FIRCORE p;
+} emphp, *EMPHP;
+
+extern EMPHP create_emphp (int run, int position, int size, int nc, int mp, 
+	double* in, double* out, int rate, int ctype, double f_low, double f_high);
+
+extern void destroy_emphp (EMPHP a);
+
+extern void flush_emphp (EMPHP a);
+
+extern void xemphp (EMPHP a, int position);
+
+extern void setBuffers_emphp (EMPHP a, double* in, double* out);
+
+extern void setSamplerate_emphp (EMPHP a, int rate);
+
+extern void setSize_emphp (EMPHP a, int size);
+
+__declspec (dllexport) void SetTXAFMEmphMP (int channel, int mp);
+
+__declspec (dllexport) void SetTXAFMEmphNC (int channel, int nc);
+
+#endif
+
+/********************************************************************************************************
+*																										*
+*										Overlap-Save FM Pre-Emphasis									*
+*																										*
+********************************************************************************************************/
 
 #ifndef _emph_h
 #define _emph_h

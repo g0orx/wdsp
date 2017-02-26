@@ -160,14 +160,19 @@ void setSize_anf (ANF a, int size)
 ********************************************************************************************************/
 
 PORT void
-SetRXAANFRun (int channel, int setit)
+SetRXAANFRun (int channel, int run)
 {
-	EnterCriticalSection (&ch[channel].csDSP);
-	rxa[channel].anf.p->run = setit;
-	// turn OFF / ON second bandpass as needed
-	RXAbp1Check (channel);
-	flush_anf (rxa[channel].anf.p);
-	LeaveCriticalSection (&ch[channel].csDSP);
+	ANF a = rxa[channel].anf.p;
+	if (a->run != run)
+	{
+		RXAbp1Check (channel, rxa[channel].amd.p->run, rxa[channel].snba.p->run, 
+			rxa[channel].emnr.p->run, run, rxa[channel].anr.p->run);
+		EnterCriticalSection (&ch[channel].csDSP);
+		a->run = run;
+		RXAbp1Set (channel);
+		flush_anf (a);
+		LeaveCriticalSection (&ch[channel].csDSP);
+	}
 }
 
 

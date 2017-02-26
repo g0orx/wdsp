@@ -556,11 +556,18 @@ void xsnba (SNBA d)
 
 PORT void SetRXASNBARun (int channel, int run)
 {
-	EnterCriticalSection (&ch[channel].csDSP);
-	rxa[channel].snba.p->run = run;
-	RXAbp1Check (channel);
-	RXAbpsnbaCheck (channel);
-	LeaveCriticalSection (&ch[channel].csDSP);
+	SNBA a = rxa[channel].snba.p;
+	if (a->run != run)
+	{
+		RXAbpsnbaCheck (channel, rxa[channel].mode, rxa[channel].ndb.p->master_run);
+		RXAbp1Check (channel, rxa[channel].amd.p->run, run, rxa[channel].emnr.p->run, 
+			rxa[channel].anf.p->run, rxa[channel].anr.p->run);
+		EnterCriticalSection (&ch[channel].csDSP);
+		a->run = run;
+		RXAbp1Set (channel);
+		RXAbpsnbaSet (channel);
+		LeaveCriticalSection (&ch[channel].csDSP);
+	}
 }
 
 PORT void SetRXASNBAovrlp (int channel, int ovrlp)
@@ -682,6 +689,8 @@ void calc_bpsnba (BPSNBA a)
 		a->run_notches,				// run the notches
 		0,							// position variable for nbp (not for bpsnba), always 0
 		a->size,					// buffer size
+		a->nc,						// number of filter coefficients
+		a->mp,						// minimum phase flag
 		a->buff,					// pointer to input buffer
 		a->out,						// pointer to output buffer
 		a->f_low,					// lower filter frequency
@@ -694,7 +703,7 @@ void calc_bpsnba (BPSNBA a)
 		a->ptraddr);				// addr of database pointer
 }
 
-BPSNBA create_bpsnba (int run, int run_notches, int position, int size, double* in, double* out, int rate,  
+BPSNBA create_bpsnba (int run, int run_notches, int position, int size, int nc, int mp, double* in, double* out, int rate,  
 	double abs_low_freq, double abs_high_freq, double f_low, double f_high, int wintype, double gain, int autoincr, 
 	int maxpb, NOTCHDB* ptraddr)
 {
@@ -703,6 +712,8 @@ BPSNBA create_bpsnba (int run, int run_notches, int position, int size, double* 
 	a->run_notches = run_notches;
 	a->position = position;
 	a->size = size;
+	a->nc = nc;
+	a->mp = mp;
 	a->in = in;
 	a->out = out;
 	a->rate = rate;
@@ -761,19 +772,17 @@ void setSize_bpsnba (BPSNBA a, int size)
 
 void xbpsnbain (BPSNBA a, int position)
 {
-	if (a->run && a->position == position) {
+	if (a->run && a->position == position)
 		memcpy (a->buff, a->in, a->size * sizeof (complex));
-	}
 }
 
 void xbpsnbaout (BPSNBA a, int position)
 {
-	if (a->run && a->position == position) {
+	if (a->run && a->position == position)
 		xnbp (a->bpsnba, 0);
 }
-}
 
-void recalc_bpsnba_filter (BPSNBA a)
+void recalc_bpsnba_filter (BPSNBA a, int update)
 {
 	// Call anytime one of the parameters listed below has been changed in
 	// the BPSNBA struct.
@@ -784,5 +793,41 @@ void recalc_bpsnba_filter (BPSNBA a)
 	b->wintype = a->wintype;
 	b->gain = a->gain;
 	b->autoincr = a->autoincr;
-	recalc_nbp_filter (b);
+	calc_nbp_impulse (b);
+	setImpulse_fircore (b->p, b->impulse, update);
+	_aligned_free (b->impulse);
+}
+
+/********************************************************************************************************
+*																										*
+*											RXA Properties												*
+*																										*
+********************************************************************************************************/
+
+PORT
+void RXABPSNBASetNC (int channel, int nc)
+{
+	BPSNBA a;
+	EnterCriticalSection (&ch[channel].csDSP);
+	a = rxa[channel].bpsnba.p;
+	if (a->nc != nc)
+	{
+		a->nc = nc;
+		a->bpsnba->nc = a->nc;
+		setNc_nbp (a->bpsnba);
+	}
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT
+void RXABPSNBASetMP (int channel, int mp)
+{
+	BPSNBA a;
+	a = rxa[channel].bpsnba.p;
+	if (a->mp != mp)
+	{
+		a->mp = mp;
+		a->bpsnba->mp = a->mp;
+		setMp_nbp (a->bpsnba);
+	}
 }

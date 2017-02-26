@@ -30,7 +30,6 @@ analyzer.c\
 anf.c\
 anr.c\
 bandpass.c\
-calculus.c\
 calcc.c\
 cblock.c\
 cfir.c\
@@ -44,6 +43,7 @@ emph.c\
 eq.c\
 fcurve.c\
 fir.c\
+firmin.c\
 fmd.c\
 fmmod.c\
 fmsq.c\
@@ -83,7 +83,6 @@ analyzer.h\
 anf.h\
 anr.h\
 bandpass.h\
-calculus.h\
 calcc.h\
 cblock.h\
 cfir.h\
@@ -100,6 +99,7 @@ fastmath.h\
 fcurve.h\
 fftw3.h\
 fir.h\
+firmin.h \
 fmd.h\
 fmmod.h\
 fmsq.h\
@@ -153,6 +153,7 @@ emph.o\
 eq.o\
 fcurve.o\
 fir.o\
+firmin.o\
 fmd.o\
 fmmod.o\
 fmsq.o\

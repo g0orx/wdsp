@@ -211,12 +211,14 @@ void SetDSPSamplerate (int channel, int dsp_rate)
 {
 	if (dsp_rate != ch[channel].dsp_rate)
 	{
+		int oldstate = SetChannelState (channel, 0, 1);
 		pre_main_destroy (channel);
 		post_main_destroy (channel);
 		ch[channel].dsp_rate = dsp_rate;
 		pre_main_build (channel);
 		setDSPSamplerate_main (channel);
 		post_main_build (channel);
+		SetChannelState (channel, oldstate, 0);
 	}
 }
 
@@ -264,7 +266,8 @@ int SetChannelState (int channel, int state, int dmode)
 {
 	IOB a = ch[channel].iob.pc;
 	int prior_state = ch[channel].state;
-	volatile long timeout = 0;
+	int count = 0;
+	const int timeout = 100;
 	if (ch[channel].state != state)
 	{
 		ch[channel].state = state;

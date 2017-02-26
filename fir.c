@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -174,8 +174,11 @@ double* fir_fsamp (int N, double* A, int rtype, double scale, int wintype)
 			c_impulse[i] = scale * c_impulse[2 * i] * window[i];
 		break;
 	case 1:
-		for (i = 0; i < N; i += 2)
-			c_impulse[i] *= scale * window[i];
+		for (i = 0; i < N; i++)
+			{
+				c_impulse[2 * i + 0] *= scale * window[i];
+				c_impulse[2 * i + 1] = 0.0;
+			}
 		break;
 	}
 	_aligned_free (window);
@@ -249,4 +252,118 @@ double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int
 		}
 	}
 	return c_impulse;
+}
+
+double *fir_read (int N, const char *filename, int rtype, double scale)
+	// N = number of real or complex coefficients (see rtype)
+	// *filename = filename
+	// rtype = 0:  real coefficients
+	// rtype = 1:  complex coefficients
+	// scale = a scale factor that will be applied to the returned coefficients;
+	//		if this is not needed, set it to 1.0
+	// NOTE:  The number of values in the file must NOT exceed those implied by N and rtype
+{
+	FILE *file;
+	int i;
+	double I, Q;
+	double *c_impulse = (double *) malloc0 (N * sizeof (complex));
+	file = fopen (filename, "r");
+	for (i = 0; i < N; i++)
+	{
+		// read in the complex impulse response
+		// NOTE:  IF the freq response is symmetrical about 0, the imag coeffs will all be zero.
+		switch (rtype)
+		{
+		case 0:
+			fscanf (file, "%le", &I);
+			c_impulse[i] = + scale * I;
+			break;
+		case 1:
+			fscanf (file, "%le", &I);
+			fscanf (file, "%le", &Q);
+			c_impulse[2 * i + 0] = + scale * I;
+			c_impulse[2 * i + 1] = - scale * Q;
+			break;
+		}
+	}
+	fclose (file);
+	return c_impulse;
+}
+
+void analytic (int N, double* in, double* out)
+{
+	int i;
+	double inv_N = 1.0 / (double)N;
+	double two_inv_N = 2.0 * inv_N;
+	double* x = (double *) malloc0 (N * sizeof (complex));
+	fftw_plan pfor = fftw_plan_dft_1d (N, (fftw_complex *) in,
+			(fftw_complex *) x, FFTW_FORWARD, FFTW_PATIENT);
+	fftw_plan prev = fftw_plan_dft_1d (N, (fftw_complex *) x,
+			(fftw_complex *) out, FFTW_BACKWARD, FFTW_PATIENT);
+	fftw_execute (pfor);
+	x[0] *= inv_N;
+	x[1] *= inv_N;
+	for (i = 1; i < N / 2; i++)
+	{
+		x[2 * i + 0] *= two_inv_N;
+		x[2 * i + 1] *= two_inv_N;
+	}
+	x[N + 0] *= inv_N;
+	x[N + 1] *= inv_N;
+	memset (&x[N + 2], 0, (N - 2) * sizeof (double));
+	fftw_execute (prev);
+	fftw_destroy_plan (prev);
+	fftw_destroy_plan (pfor);
+	_aligned_free (x);
+}
+
+void mp_imp (int N, double* fir, double* mpfir, int pfactor, int polarity)
+{
+	int i;
+	int size = N * pfactor;
+	double inv_PN = 1.0 / (double)size;
+	double* firpad  = (double *) malloc0 (size * sizeof (complex));
+	double* firfreq = (double *) malloc0 (size * sizeof (complex));
+	double* mag     = (double *) malloc0 (size * sizeof (double));
+	double* ana     = (double *) malloc0 (size * sizeof (complex));
+	double* impulse = (double *) malloc0 (size * sizeof (complex));
+	double* newfreq = (double *) malloc0 (size * sizeof (complex));
+	memcpy (firpad, fir, N * sizeof (complex));
+	fftw_plan pfor = fftw_plan_dft_1d (size, (fftw_complex *) firpad,
+			(fftw_complex *) firfreq, FFTW_FORWARD, FFTW_PATIENT);
+	fftw_plan prev = fftw_plan_dft_1d (size, (fftw_complex *) newfreq,
+			(fftw_complex *) impulse, FFTW_BACKWARD, FFTW_PATIENT);
+	// print_impulse("orig_imp.txt", N, fir, 1, 0);
+	fftw_execute (pfor);
+	for (i = 0; i < size; i++)
+	{
+		mag[i] = sqrt (firfreq[2 * i + 0] * firfreq[2 * i + 0] + firfreq[2 * i + 1] * firfreq[2 * i + 1]) * inv_PN;
+		if (mag[i] > 0.0)
+			ana[2 * i + 0] = log (mag[i]);
+		else
+			ana[2 * i + 0] = log (1.0e-300);
+	}
+	analytic (size, ana, ana);
+	for (i = 0; i < size; i++)
+	{
+		newfreq[2 * i + 0] = + mag[i] * cos (ana[2 * i + 1]);
+		if (polarity)
+			newfreq[2 * i + 1] = + mag[i] * sin (ana[2 * i + 1]);
+		else
+			newfreq[2 * i + 1] = - mag[i] * sin (ana[2 * i + 1]);
+	}
+	fftw_execute (prev);
+	if (polarity)
+		memcpy (mpfir, &impulse[2 * (pfactor - 1) * N], N * sizeof (complex));
+	else
+		memcpy (mpfir, impulse, N * sizeof (complex));
+	// print_impulse("min_imp.txt", N, mpfir, 1, 0);
+	fftw_destroy_plan (prev);
+	fftw_destroy_plan (pfor);
+	_aligned_free (newfreq);
+	_aligned_free (impulse);
+	_aligned_free (ana);
+	_aligned_free (mag);
+	_aligned_free (firfreq);
+	_aligned_free (firpad);
 }

@@ -89,8 +89,8 @@ struct _txa
 	} amsq;
 	struct
 	{
-		EQ p;
-	} eq;
+		EQP p;
+	} eqp;
 	struct
 	{
 		COMPRESSOR p;
@@ -117,7 +117,7 @@ struct _txa
 	} ammod;
 	struct
 	{
-		EMPH p;
+		EMPHP p;
 	} preemph;
 	struct
 	{

@@ -90,6 +90,8 @@ void create_rxa (int channel)
 		0,												// run the notches
 		0,												// position
 		ch[channel].dsp_size,							// buffer size
+		2048,											// number of coefficients
+		0,												// minimum phase flag
 		rxa[channel].midbuff,							// pointer to input buffer
 		rxa[channel].midbuff,							// pointer to output buffer
 		-4150.0,										// lower filter frequency
@@ -107,6 +109,8 @@ void create_rxa (int channel)
 		0,												// run the notches
 		0,												// position
 		ch[channel].dsp_size,							// size
+		2048,											// number of filter coefficients
+		0,												// minimum phase flag
 		rxa[channel].midbuff,							// input buffer
 		rxa[channel].midbuff,							// output buffer
 		ch[channel].dsp_rate,							// samplerate
@@ -199,7 +203,11 @@ void create_rxa (int channel)
 		0.02,											// tau - for dc removal
 		0.5,											// audio gain
 		1,												// run tone filter
-		254.1);											// ctcss frequency
+		254.1,											// ctcss frequency
+		2048,											// # coefs for de-emphasis filter
+		0,												// min phase flag for de-emphasis filter
+		2048,											// # coefs for audio cutoff filter
+		0);												// min phase flag for audio cutoff filter
 
 	// FM squelch
 	rxa[channel].fmsq.p = create_fmsq (
@@ -219,7 +227,9 @@ void create_rxa (int channel)
 		0.750,											// noise level to initiate tail
 		0.562,											// noise level to initiate unmute
 		0.000,											// minimum tail time
-		1.200);											// maximum tail time
+		1.200,											// maximum tail time
+		2048,											// number of coefficients for noise filter
+		0);												// minimum phase flag
 
 	// snba
 	rxa[channel].snba.p = create_snba (
@@ -247,16 +257,18 @@ void create_rxa (int channel)
 	double default_F[11] = {0.0,  32.0,  63.0, 125.0, 250.0, 500.0, 1000.0, 2000.0, 4000.0, 8000.0, 16000.0};
 	//double default_G[11] = {0.0, -12.0, -12.0, -12.0,  -1.0,  +1.0,   +4.0,   +9.0,  +12.0,  -10.0,   -10.0};
 	double default_G[11] =   {0.0,   0.0,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0,    0.0,    0.0,     0.0};
-	rxa[channel].eq.p = create_eq (
+	rxa[channel].eqp.p = create_eqp (
 		0,												// run - OFF by default
-		ch[channel].dsp_size,
+		ch[channel].dsp_size,							// buffer size
+		2048,											// number of filter coefficients
+		0,												// minimum phase flag
 		rxa[channel].midbuff,							// pointer to input buffer
 		rxa[channel].midbuff,							// pointer to output buffer
 		10,												// number of frequencies
 		default_F,										// frequency vector
 		default_G,										// gain vector
 		0,												// cutoff mode
-		1,												// method
+		0,												// wintype
 		ch[channel].dsp_rate);							// sample rate
 	}
 
@@ -364,6 +376,8 @@ void create_rxa (int channel)
 		1,												// run - used only with ( AM || ANF || ANR || EMNR)
 		0,												// position
 		ch[channel].dsp_size,							// buffer size
+		2048,											// number of coefficients
+		0,												// flag for minimum phase
 		rxa[channel].midbuff,							// pointer to input buffer
 		rxa[channel].midbuff,							// pointer to output buffer
 		-4150.0,										// lower filter frequency
@@ -470,7 +484,7 @@ void destroy_rxa (int channel)
 	destroy_emnr (rxa[channel].emnr.p);
 	destroy_anr (rxa[channel].anr.p);
 	destroy_anf (rxa[channel].anf.p);
-	destroy_eq (rxa[channel].eq.p);
+	destroy_eqp (rxa[channel].eqp.p);
 	destroy_snba (rxa[channel].snba.p);
 	destroy_fmsq (rxa[channel].fmsq.p);
 	destroy_fmd (rxa[channel].fmd.p);
@@ -508,7 +522,7 @@ void flush_rxa (int channel)
 	flush_fmd (rxa[channel].fmd.p);
 	flush_fmsq (rxa[channel].fmsq.p);
 	flush_snba (rxa[channel].snba.p);
-	flush_eq (rxa[channel].eq.p);
+	flush_eqp (rxa[channel].eqp.p);
 	flush_anf (rxa[channel].anf.p);
 	flush_anr (rxa[channel].anr.p);
 	flush_emnr (rxa[channel].emnr.p);
@@ -541,7 +555,7 @@ void xrxa (int channel)
 	xbpsnbain (rxa[channel].bpsnba.p, 1);
 	xbpsnbaout (rxa[channel].bpsnba.p, 1);
 	xsnba (rxa[channel].snba.p);
-	xeq (rxa[channel].eq.p);
+	xeqp (rxa[channel].eqp.p);
 	xanf (rxa[channel].anf.p, 0);
 	xanr (rxa[channel].anr.p, 0);
 	xemnr (rxa[channel].emnr.p, 0);
@@ -615,7 +629,7 @@ void setDSPSamplerate_rxa (int channel)
 	setBuffers_fmsq (rxa[channel].fmsq.p, rxa[channel].midbuff, rxa[channel].midbuff, rxa[channel].fmd.p->audio);
 	setSamplerate_fmsq (rxa[channel].fmsq.p, ch[channel].dsp_rate);
 	setSamplerate_snba (rxa[channel].snba.p, ch[channel].dsp_rate);
-	setSamplerate_eq (rxa[channel].eq.p, ch[channel].dsp_rate);
+	setSamplerate_eqp (rxa[channel].eqp.p, ch[channel].dsp_rate);
 	setSamplerate_anf (rxa[channel].anf.p, ch[channel].dsp_rate);
 	setSamplerate_anr (rxa[channel].anr.p, ch[channel].dsp_rate);
 	setSamplerate_emnr (rxa[channel].emnr.p, ch[channel].dsp_rate);
@@ -671,8 +685,8 @@ void setDSPBuffsize_rxa (int channel)
 	setSize_fmsq (rxa[channel].fmsq.p, ch[channel].dsp_size);
 	setBuffers_snba (rxa[channel].snba.p, rxa[channel].midbuff, rxa[channel].midbuff);
 	setSize_snba (rxa[channel].snba.p, ch[channel].dsp_size);
-	setBuffers_eq (rxa[channel].eq.p, rxa[channel].midbuff, rxa[channel].midbuff);
-	setSize_eq (rxa[channel].eq.p, ch[channel].dsp_size);
+	setBuffers_eqp (rxa[channel].eqp.p, rxa[channel].midbuff, rxa[channel].midbuff);
+	setSize_eqp (rxa[channel].eqp.p, ch[channel].dsp_size);
 	setBuffers_anf (rxa[channel].anf.p, rxa[channel].midbuff, rxa[channel].midbuff);
 	setSize_anf (rxa[channel].anf.p, ch[channel].dsp_size);
 	setBuffers_anr (rxa[channel].anr.p, rxa[channel].midbuff, rxa[channel].midbuff);
@@ -709,36 +723,42 @@ void setDSPBuffsize_rxa (int channel)
 PORT
 void SetRXAMode (int channel, int mode)
 {
-	// set AGC & demodulators; call other functions as needed
-	EnterCriticalSection (&ch[channel].csDSP);
-	rxa[channel].mode = mode;
-	rxa[channel].amd.p->run  = 0;
-	rxa[channel].fmd.p->run  = 0;
-	rxa[channel].agc.p->run  = 1;
-	switch (mode)
+	if (rxa[channel].mode != mode)
 	{
-	case RXA_AM:
-		rxa[channel].amd.p->run  = 1;
-		rxa[channel].amd.p->mode = 0;
-		break;
-	case RXA_SAM:
-		rxa[channel].amd.p->run  = 1;
-		rxa[channel].amd.p->mode = 1;
-		break;
-	case RXA_DSB:
+		int amd_run = (mode == RXA_AM) || (mode == RXA_SAM);
+		RXAbpsnbaCheck (channel, mode, rxa[channel].ndb.p->master_run);
+		RXAbp1Check (channel, amd_run, rxa[channel].snba.p->run, rxa[channel].emnr.p->run, 
+			rxa[channel].anf.p->run, rxa[channel].anr.p->run);
+		EnterCriticalSection (&ch[channel].csDSP);
+		rxa[channel].mode = mode;
+		rxa[channel].amd.p->run  = 0;
+		rxa[channel].fmd.p->run  = 0;
+		rxa[channel].agc.p->run  = 1;
+		switch (mode)
+		{
+		case RXA_AM:
+			rxa[channel].amd.p->run  = 1;
+			rxa[channel].amd.p->mode = 0;
+			break;
+		case RXA_SAM:
+			rxa[channel].amd.p->run  = 1;
+			rxa[channel].amd.p->mode = 1;
+			break;
+		case RXA_DSB:
 		
-		break;
-	case RXA_FM:
-		rxa[channel].fmd.p->run  = 1;
-		rxa[channel].agc.p->run  = 0;
-		break;
-	default:
+			break;
+		case RXA_FM:
+			rxa[channel].fmd.p->run  = 1;
+			rxa[channel].agc.p->run  = 0;
+			break;
+		default:
 
-		break;
+			break;
+		}
+		RXAbp1Set (channel);
+		RXAbpsnbaSet (channel);							// update variables
+		LeaveCriticalSection (&ch[channel].csDSP);
 	}
-	RXAbp1Check (channel);
-	RXAbpsnbaCheck (channel);
-	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
 void RXAResCheck (int channel)
@@ -752,86 +772,162 @@ void RXAResCheck (int channel)
 	else												a->run = 0;
 }
 
-void RXAbp1Check (int channel)
+void RXAbp1Check (int channel, int amd_run, int snba_run, 
+	int emnr_run, int anf_run, int anr_run)
 {
-	// turn OFF/ON bandpass filter bp1 and set its gain
-	int old = rxa[channel].bp1.p->run;
-	if ((rxa[channel].amd.p->run  == 1) ||
-		(rxa[channel].snba.p->run == 1) ||
-		(rxa[channel].emnr.p->run == 1) ||
-		(rxa[channel].anf.p->run  == 1) ||
-		(rxa[channel].anr.p->run  == 1))	rxa[channel].bp1.p->run = 1;
-	else									rxa[channel].bp1.p->run = 0;
-	if ((rxa[channel].amd.p->run  == 1) ||
-		(rxa[channel].snba.p->run == 1) ||
-		(rxa[channel].emnr.p->run == 1) ||
-		(rxa[channel].anf.p->run  == 1) ||
-		(rxa[channel].anr.p->run  == 1))	rxa[channel].bp1.p->gain = 2.0;
-	else									rxa[channel].bp1.p->gain = 1.0;
-	if (!old && rxa[channel].bp1.p->run) flush_bandpass (rxa[channel].bp1.p);
+	BANDPASS a = rxa[channel].bp1.p;
+	double gain;
+	if (amd_run  ||
+		snba_run ||
+		emnr_run ||
+		anf_run  ||
+		anr_run)	gain = 2.0;
+	else			gain = 1.0;
+	if (a->gain != gain)
+		setGain_bandpass (a, gain, 0);
 }
 
-void RXAbpsnbaCheck (int channel)
+void RXAbp1Set (int channel)
+{
+	BANDPASS a = rxa[channel].bp1.p;
+	int old = a->run;
+	if ((rxa[channel].amd.p->run  == 1) ||
+		(rxa[channel].snba.p->run == 1) ||
+		(rxa[channel].emnr.p->run == 1) ||
+		(rxa[channel].anf.p->run  == 1) ||
+		(rxa[channel].anr.p->run  == 1))	a->run = 1;
+	else									a->run = 0;
+	if (!old && a->run) flush_bandpass (a);
+	setUpdate_fircore (a->p);
+}
+
+void RXAbpsnbaCheck (int channel, int mode, int notch_run)
 {
 	// for BPSNBA: set run, position, freqs, run_notches
 	// call this upon change in RXA_mode, snba_run, notch_master_run
 	BPSNBA a = rxa[channel].bpsnba.p;
-	NOTCHDB b = rxa[channel].ndb.p;
-	double f_low = a->f_low;
-	double f_high = a->f_high;
-	int run_notches = a->run_notches;
-	switch (rxa[channel].mode)
+	double f_low = 0.0, f_high = 0.0;
+	int run_notches = 0;
+	switch (mode)
 	{
-	case RXA_LSB:
-	case RXA_CWL:
-	case RXA_DIGL:
-		a->run = rxa[channel].snba.p->run;
-		a->position = 0;
-		a->f_low  = -a->abs_high_freq;
-		a->f_high = -a->abs_low_freq;
-		a->run_notches = b->master_run;
-		break;
-	case RXA_USB:
-	case RXA_CWU:
-	case RXA_DIGU:
-		a->run = rxa[channel].snba.p->run;
-		a->position = 0;
-		a->f_low  = +a->abs_low_freq;
-		a->f_high = +a->abs_high_freq;
-		a->run_notches = b->master_run;
-		break;
-	case RXA_AM:
-	case RXA_SAM:
-	case RXA_DSB:
-		a->run = rxa[channel].snba.p->run;
-		a->position = 1;
-		a->f_low  = +a->abs_low_freq;
-		a->f_high = +a->abs_high_freq;
-		a->run_notches = 0;
-		break;
-	case RXA_FM:
-		a->run = rxa[channel].snba.p->run;
-		a->position = 1;
-		a->f_low  = +a->abs_low_freq;
-		a->f_high = +a->abs_high_freq;
-		a->run_notches = 0;
-		break;
-	case RXA_DRM:
-	case RXA_SPEC:
-		a->run = 0;
-		break;
+		case RXA_LSB:
+		case RXA_CWL:
+		case RXA_DIGL:
+			f_low  = -a->abs_high_freq;
+			f_high = -a->abs_low_freq;
+			run_notches = notch_run;
+			break;
+		case RXA_USB:
+		case RXA_CWU:
+		case RXA_DIGU:
+			f_low  = +a->abs_low_freq;
+			f_high = +a->abs_high_freq;
+			run_notches = notch_run;
+			break;
+		case RXA_AM:
+		case RXA_SAM:
+		case RXA_DSB:
+			f_low  = +a->abs_low_freq;
+			f_high = +a->abs_high_freq;
+			run_notches = 0;
+			break;
+		case RXA_FM:
+			f_low  = +a->abs_low_freq;
+			f_high = +a->abs_high_freq;
+			run_notches = 0;
+			break;
+		case RXA_DRM:
+		case RXA_SPEC:
+		
+			break;
 	}
 	// 'run' and 'position' are examined at run time; no filter changes required.
 	// Recalculate filter if frequencies OR 'run_notches' changed.
 	if ((a->f_low       != f_low      ) ||
 		(a->f_high      != f_high     ) ||
-		(a->run_notches != run_notches)) recalc_bpsnba_filter (a);
+		(a->run_notches != run_notches))	
+	{
+		a->f_low  = f_low;
+		a->f_high = f_high;
+		a->run_notches = run_notches;
+		// f_low, f_high, run_notches are needed for the filter recalculation
+		recalc_bpsnba_filter (a, 0);
+	}
 }
+
+void RXAbpsnbaSet (int channel)
+{
+	// for BPSNBA: set run, position, freqs, run_notches
+	// call this upon change in RXA_mode, snba_run, notch_master_run
+	BPSNBA a = rxa[channel].bpsnba.p;
+	switch (rxa[channel].mode)
+	{
+		case RXA_LSB:
+		case RXA_CWL:
+		case RXA_DIGL:
+			a->run = rxa[channel].snba.p->run;
+			a->position = 0;
+			break;
+		case RXA_USB:
+		case RXA_CWU:
+		case RXA_DIGU:
+			a->run = rxa[channel].snba.p->run;
+			a->position = 0;
+			break;
+		case RXA_AM:
+		case RXA_SAM:
+		case RXA_DSB:
+			a->run = rxa[channel].snba.p->run;
+			a->position = 1;
+			break;
+		case RXA_FM:
+			a->run = rxa[channel].snba.p->run;
+			a->position = 1;
+			break;
+		case RXA_DRM:
+		case RXA_SPEC:
+			a->run = 0;
+			break;
+	}
+	setUpdate_fircore (a->bpsnba->p);
+}
+
+/********************************************************************************************************
+*																										*
+*												Collectives												*
+*																										*
+********************************************************************************************************/
 
 PORT
 RXASetPassband (int channel, double f_low, double f_high)
 {
-	SetRXABandpassFreqs       (channel, f_low, f_high);
-	SetRXASNBAOutputBandwidth (channel, f_low, f_high);
-	RXANBPSetFreqs            (channel, f_low, f_high);
+	SetRXABandpassFreqs			(channel, f_low, f_high);
+	SetRXASNBAOutputBandwidth	(channel, f_low, f_high);
+	RXANBPSetFreqs				(channel, f_low, f_high);
+}
+
+PORT
+RXASetNC (int channel, int nc)
+{
+	int oldstate = SetChannelState (channel, 0, 1);
+	RXANBPSetNC					(channel, nc);
+	RXABPSNBASetNC				(channel, nc);
+	SetRXABandpassNC			(channel, nc);
+	// SetRXAEQNC					(channel, nc);
+	// SetRXAFMSQNC					(channel, nc);
+	// SetRXAFMNCde					(channel, nc);
+	SetRXAFMNCaud				(channel, nc);
+	SetChannelState (channel, oldstate, 0);
+}
+
+PORT
+RXASetMP (int channel, int mp)
+{
+	RXANBPSetMP					(channel, mp);
+	RXABPSNBASetMP				(channel, mp);
+	SetRXABandpassMP			(channel, mp);
+	SetRXAEQMP					(channel, mp);
+	SetRXAFMSQMP				(channel, mp);
+	SetRXAFMMPde				(channel, mp);
+	SetRXAFMMPaud				(channel, mp);
 }

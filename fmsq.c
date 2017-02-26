@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -29,10 +29,9 @@ warren@wpratt.com
 void calc_fmsq (FMSQ a)
 {
 	double delta, theta;
+	double* impulse;
 	int i;
 	// noise filter
-	a->infilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->product = (double *)malloc0(2 * a->size * sizeof(complex));
 	a->noise = (double *)malloc0(2 * a->size * sizeof(complex));
 	a->F[0] = 0.0;
 	a->F[1] = a->fc;
@@ -42,9 +41,9 @@ void calc_fmsq (FMSQ a)
 	a->G[1] = 0.0;
 	a->G[2] = 3.0;
 	a->G[3] = +20.0 * log10(20000.0 / *a->pllpole);
-	a->mults = eq_mults(a->size, 3, a->F, a->G, a->rate, 1.0 / (2.0 * a->size), 0, 1);
-	a->CFor = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->infilt, (fftw_complex *)a->product, FFTW_FORWARD, FFTW_PATIENT);
-	a->CRev = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->product, (fftw_complex *)a->noise, FFTW_BACKWARD, FFTW_PATIENT);
+	impulse = eq_impulse (a->nc, 3, a->F, a->G, a->rate, 1.0 / (2.0 * a->size), 0, 0);
+	a->p = create_fircore (a->size, a->trigger, a->noise, a->nc, a->mp, impulse);
+	_aligned_free (impulse);
 	// noise averaging
 	a->avm = exp(-1.0 / (a->rate * a->avtau));
 	a->onem_avm = 1.0 - a->avm;
@@ -82,17 +81,13 @@ void decalc_fmsq (FMSQ a)
 {
 	_aligned_free(a->cdown);
 	_aligned_free(a->cup);
-	fftw_destroy_plan(a->CRev);
-	fftw_destroy_plan(a->CFor);
-	_aligned_free(a->mults);
+	destroy_fircore (a->p);
 	_aligned_free(a->noise);
-	_aligned_free(a->product);
-	_aligned_free(a->infilt);
 }
 
 FMSQ create_fmsq (int run, int size, double* insig, double* outsig, double* trigger, int rate, double fc, 
 	double* pllpole, double tdelay, double avtau, double longtau, double tup, double tdown, double tail_thresh, 
-	double unmute_thresh, double min_tail, double max_tail)
+	double unmute_thresh, double min_tail, double max_tail, int nc, int mp)
 {
 	FMSQ a = (FMSQ) malloc0 (sizeof (fmsq));
 	a->run = run;
@@ -112,6 +107,8 @@ FMSQ create_fmsq (int run, int size, double* insig, double* outsig, double* trig
 	a->unmute_thresh = unmute_thresh;
 	a->min_tail = min_tail;
 	a->max_tail = max_tail;
+	a->nc = nc;
+	a->mp = mp;
 	calc_fmsq (a);
 	return a;
 }
@@ -124,7 +121,7 @@ void destroy_fmsq (FMSQ a)
 
 void flush_fmsq (FMSQ a)
 {
-	memset (a->infilt, 0, 2 * a->size * sizeof (complex));
+	flush_fircore (a->p);
 	a->avnoise = 100.0;
 	a->longnoise = 1.0;
 	a->state = 0;
@@ -146,19 +143,8 @@ void xfmsq (FMSQ a)
 	if (a->run)
 	{
 		int i;
-		double I, Q, noise, lnlimit;
-		memcpy (&(a->infilt[2 * a->size]), a->trigger, a->size * sizeof (complex));
-		fftw_execute (a->CFor);
-		for (i = 0; i < 2 * a->size; i++)
-		{
-			I = a->product[2 * i + 0];
-			Q = a->product[2 * i + 1];
-			a->product[2 * i + 0] = I * a->mults[2 * i + 0] - Q * a->mults[2 * i + 1];
-			a->product[2 * i + 1] = I * a->mults[2 * i + 1] + Q * a->mults[2 * i + 0];
-		}
-		fftw_execute (a->CRev);
-		memcpy (a->infilt, &(a->infilt[2 * a->size]), a->size * sizeof(complex));
-
+		double noise, lnlimit;
+		xfircore (a->p);
 		for (i = 0; i < a->size; i++)
 		{
 			noise = sqrt(a->noise[2 * i + 0] * a->noise[2 * i + 0] + a->noise[2 * i + 1] * a->noise[2 * i + 1]);
@@ -223,6 +209,7 @@ void setBuffers_fmsq (FMSQ a, double* in, double* out, double* trig)
 	a->insig = in;
 	a->outsig = out;
 	a->trigger = trig;
+	setBuffers_fircore (a->p, a->trigger, a->noise);
 }
 
 void setSamplerate_fmsq (FMSQ a, int rate)
@@ -260,4 +247,33 @@ void SetRXAFMSQThreshold (int channel, double threshold)
 	rxa[channel].fmsq.p->tail_thresh = threshold;
 	rxa[channel].fmsq.p->unmute_thresh = 0.9 * threshold;
 	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT
+void SetRXAFMSQNC (int channel, int nc)
+{
+	FMSQ a;
+	double* impulse;
+	EnterCriticalSection (&ch[channel].csDSP);
+	a = rxa[channel].fmsq.p;
+	if (a->nc != nc)
+	{
+		a->nc = nc;
+		impulse = eq_impulse (a->nc, 3, a->F, a->G, a->rate, 1.0 / (2.0 * a->size), 0, 0);
+		setNc_fircore (a->p, a->nc, impulse);
+		_aligned_free (impulse);
+	}
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT 
+void SetRXAFMSQMP (int channel, int mp)
+{
+	FMSQ a;
+	a = rxa[channel].fmsq.p;
+	if (a->mp != mp)
+	{
+		a->mp = mp;
+		setMp_fircore (a->p, a->mp);
+	}
 }

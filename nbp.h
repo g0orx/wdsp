@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #ifndef _nbp_h
 #define _nbp_h
-
+#include "firmin.h"
 typedef struct _notchdb
 {
 	int master_run;
@@ -51,14 +51,13 @@ typedef struct _nbp
 	int fnfrun;				// use the notches
 	int position;			// position in processing pipeline
 	int size;				// buffer size
+	int nc;					// number of filter coefficients
+	int mp;					// minimum phase flag
 	double* in;				// input buffer
 	double* out;			// output buffer
 	double flow;			// low bandpass cutoff freq
 	double fhigh;			// high bandpass cutoff freq
-	double* infilt;			// filter execution buffer, input
-	double* product;		// filter execution buffer, product
 	double* impulse;		// filter impulse response
-	double* mults;			// filter mask
 	double rate;			// sample rate
 	int wintype;			// filter window type
 	double gain;			// filter gain
@@ -68,14 +67,12 @@ typedef struct _nbp
 	double* bplow;			// array of passband lows
 	double* bphigh;			// array of passband highs
 	int numpb;				// number of passbands
-	fftw_plan CFor;
-	fftw_plan CRev;
-
+	FIRCORE p;
 	int havnotch;
 	int hadnotch;
 } nbp, *NBP;
 
-extern NBP create_nbp(int run, int fnfrun, int position, int size, double* in, double* out, 
+extern NBP create_nbp(int run, int fnfrun, int position, int size, int nc, int mp, double* in, double* out, 
 	double flow, double fhigh, int rate, int wintype, double gain, int autoincr, int maxpb, NOTCHDB* ptraddr);
 
 extern void destroy_nbp (NBP a);
@@ -90,8 +87,16 @@ extern void setSamplerate_nbp (NBP a, int rate);
 
 extern void setSize_nbp (NBP a, int size);
 
-extern void recalc_nbp_filter (NBP a);
+extern void calc_nbp_impulse (NBP a);
+
+extern void setNc_nbp (NBP a);
+
+extern void setMp_nbp (NBP a);
 
 __declspec (dllexport) void RXANBPSetFreqs (int channel, double flow, double fhigh);
+
+__declspec (dllexport) void RXANBPSetNC (int channel, int nc);
+
+__declspec (dllexport) void RXANBPSetMP (int channel, int mp);
 
 #endif

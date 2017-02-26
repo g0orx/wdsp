@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #ifndef _fmmod_h
 #define _fmmod_h
-
+#include "firmin.h"
 typedef struct _fmmod
 {
 	int run;
@@ -50,14 +50,13 @@ typedef struct _fmmod
 	// bandpass
 	int bp_run;
 	double bp_fc;
-	double* bp_infilt;
-	double* bp_product;
-	double* bp_mults;
-	fftw_plan bp_CFor;
-	fftw_plan bp_CRev;
+	int nc;
+	int mp;
+	FIRCORE p;
 }fmmod, *FMMOD;
 
-extern FMMOD create_fmmod (int run, int size, double* in, double* out, int rate, double dev, double f_low, double f_high, int ctcss_run, double ctcss_level, double ctcss_freq, int bp_run);
+extern FMMOD create_fmmod (int run, int size, double* in, double* out, int rate, double dev, double f_low, double f_high, 
+	int ctcss_run, double ctcss_level, double ctcss_freq, int bp_run, int nc, int mp);
 
 extern void destroy_fmmod (FMMOD a);
 
@@ -78,5 +77,9 @@ extern __declspec (dllexport) void SetTXAFMDeviation (int channel, double deviat
 extern __declspec (dllexport) void SetTXACTCSSFreq (int channel, double freq);
 
 extern __declspec (dllexport) void SetTXACTCSSRun (int channel, int run);
+
+extern __declspec (dllexport) void SetTXAFMMP (int channel, int mp);
+
+extern __declspec (dllexport) void SetTXAFMNC (int channel, int nc);
 
 #endif

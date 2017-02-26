@@ -27,6 +27,7 @@ warren@wpratt.com
 #ifndef _fmd_h
 #define _fmd_h
 #include "iir.h"
+#include "firmin.h"
 typedef struct _fmd
 {
 	int run;
@@ -56,28 +57,25 @@ typedef struct _fmd
 	// pll audio gain
 	double deviation;
 	double again;
-	double* audio;						// buffer to hold audio before de-emphasis
 	// for de-emphasis filter
-	double* infilt;
-	double* product;
-	double* mults;
-	double* outfilt;
-	fftw_plan CFor;
-	fftw_plan CRev;
+	double* audio;
+	FIRCORE pde;
+	int nc_de;
+	int mp_de;
 	// for audio filter
-	double* ainfilt;
-	double* aproduct;
-	double* amults;
+	FIRCORE paud;
+	int nc_aud;
+	int mp_aud;
 	double afgain;
-	fftw_plan aCFor;
-	fftw_plan aCRev;
 	// CTCSS removal
 	SNOTCH sntch;
 	int sntch_run;
 	double ctcss_freq;
 } fmd, *FMD;
 
-extern FMD create_fmd ( int run, int size, double* in, double* out, int rate, double deviation, double f_low, double f_high, double fmin, double fmax, double zeta, double omegaN, double tau, double afgain, int sntch_run, double ctcss_freq);
+extern FMD create_fmd ( int run, int size, double* in, double* out, int rate, double deviation, 
+	double f_low, double f_high, double fmin, double fmax, double zeta, double omegaN, double tau, 
+	double afgain, int sntch_run, double ctcss_freq, int nc_de, int mp_de, int nc_aud, int mp_aud);
 
 extern void destroy_fmd (FMD a);
 
@@ -94,5 +92,13 @@ extern void setSize_fmd (FMD a, int size);
 // RXA Properties
 
 extern __declspec (dllexport) void SetRXAFMDeviation (int channel, double deviation);
+
+extern __declspec (dllexport) void SetRXAFMNCde (int channel, int nc);
+
+extern __declspec (dllexport) void SetRXAFMMPde (int channel, int mp);
+
+extern __declspec (dllexport) void SetRXAFMNCaud (int channel, int nc);
+
+extern __declspec (dllexport) void SetRXAFMMPaud (int channel, int mp);
 
 #endif

@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -28,7 +28,6 @@ warren@wpratt.com
 
 void calc_fmmod (FMMOD a)
 {
-	double* impulse;
 	// ctcss gen
 	a->tscale = 1.0 / (1.0 + a->ctcss_level);
 	a->tphase = 0.0;
@@ -38,28 +37,13 @@ void calc_fmmod (FMMOD a)
 	a->sdelta = TWOPI * a->deviation / a->samplerate;
 	// bandpass
 	a->bp_fc = a->deviation + a->f_high;
-	impulse = fir_bandpass(a->size + 1, -a->bp_fc, +a->bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
-	a->bp_mults = fftcv_mults(2 * a->size, impulse);
-	a->bp_infilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->bp_product = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->bp_CFor = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->bp_infilt, (fftw_complex *)a->bp_product, FFTW_FORWARD, FFTW_PATIENT);
-	a->bp_CRev = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->bp_product, (fftw_complex *)a->out, FFTW_BACKWARD, FFTW_PATIENT);
-	_aligned_free(impulse);
-}
-
-void decalc_fmmod (FMMOD a)
-{
-	fftw_destroy_plan(a->bp_CRev);
-	fftw_destroy_plan(a->bp_CFor);
-	_aligned_free(a->bp_product);
-	_aligned_free(a->bp_infilt);
-	_aligned_free(a->bp_mults);
 }
 
 FMMOD create_fmmod (int run, int size, double* in, double* out, int rate, double dev, double f_low, double f_high, 
-	int ctcss_run, double ctcss_level, double ctcss_freq, int bp_run)
+	int ctcss_run, double ctcss_level, double ctcss_freq, int bp_run, int nc, int mp)
 {
 	FMMOD a = (FMMOD) malloc0 (sizeof (fmmod));
+	double* impulse;
 	a->run = run;
 	a->size = size;
 	a->in = in;
@@ -72,19 +56,23 @@ FMMOD create_fmmod (int run, int size, double* in, double* out, int rate, double
 	a->ctcss_level = ctcss_level;
 	a->ctcss_freq = ctcss_freq;
 	a->bp_run = bp_run;
+	a->nc = nc;
+	a->mp = mp;
 	calc_fmmod (a);
+	impulse = fir_bandpass(a->nc, -a->bp_fc, +a->bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
+	a->p = create_fircore (a->size, a->out, a->out, a->nc, a->mp, impulse);
+	_aligned_free (impulse);
 	return a;
 }
 
 void destroy_fmmod (FMMOD a)
 {
-	decalc_fmmod (a);
+	destroy_fircore (a->p);
 	_aligned_free (a);
 }
 
 void flush_fmmod (FMMOD a)
 {
-	memset (a->bp_infilt, 0, 2 * a->size * sizeof (complex));
 	a->tphase = 0.0;
 	a->sphase = 0.0;
 }
@@ -92,7 +80,6 @@ void flush_fmmod (FMMOD a)
 void xfmmod (FMMOD a)
 {
 	int i;
-	double I, Q;
 	double dp, magdp, peak;
 	if (a->run)
 	{
@@ -116,19 +103,7 @@ void xfmmod (FMMOD a)
 		}
 		//print_deviation ("peakdev.txt", peak, a->samplerate);
 		if (a->bp_run)
-		{
-			memcpy (&(a->bp_infilt[2 * a->size]), a->out, a->size * sizeof (complex));
-			fftw_execute (a->bp_CFor);
-			for (i = 0; i < 2 * a->size; i++)
-			{
-				I = a->bp_product[2 * i + 0];
-				Q = a->bp_product[2 * i + 1];
-				a->bp_product[2 * i + 0] = I * a->bp_mults[2 * i + 0] - Q * a->bp_mults[2 * i + 1];
-				a->bp_product[2 * i + 1] = I * a->bp_mults[2 * i + 1] + Q * a->bp_mults[2 * i + 0];
-			}
-			fftw_execute (a->bp_CRev);
-			memcpy (a->bp_infilt, &(a->bp_infilt[2 * a->size]), a->size * sizeof(complex));
-		}
+			xfircore (a->p);
 	}
 	else if (a->in != a->out)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
@@ -136,24 +111,31 @@ void xfmmod (FMMOD a)
 
 setBuffers_fmmod (FMMOD a, double* in, double* out)
 {
-	decalc_fmmod (a);
 	a->in = in;
 	a->out = out;
 	calc_fmmod (a);
+	setBuffers_fircore (a->p, a->out, a->out);
 }
 
 setSamplerate_fmmod (FMMOD a, int rate)
 {
-	decalc_fmmod (a);
+	double* impulse;
 	a->samplerate = rate;
 	calc_fmmod (a);
+	impulse = fir_bandpass(a->nc, -a->bp_fc, +a->bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
+	setImpulse_fircore (a->p, impulse, 1);
+	_aligned_free (impulse);
 }
 
 setSize_fmmod (FMMOD a, int size)
 {
-	decalc_fmmod (a);
+	double* impulse;
 	a->size = size;
 	calc_fmmod (a);
+	setSize_fircore (a->p, a->size);
+	impulse = fir_bandpass(a->nc, -a->bp_fc, +a->bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
+	setImpulse_fircore (a->p, impulse, 1);
+	_aligned_free (impulse);
 }
 
 /********************************************************************************************************
@@ -165,20 +147,19 @@ setSize_fmmod (FMMOD a, int size)
 PORT
 void SetTXAFMDeviation (int channel, double deviation)
 {
-	double* impulse;
-	FMMOD a;
+	FMMOD a = txa[channel].fmmod.p;
+	double bp_fc = a->f_high + deviation;
+	double* impulse = fir_bandpass (a->nc, -bp_fc, +bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
+	setImpulse_fircore (a->p, impulse, 0);
+	_aligned_free (impulse);
 	EnterCriticalSection (&ch[channel].csDSP);
-	a = txa[channel].fmmod.p;
 	a->deviation = deviation;
 	// mod
 	a->sphase = 0.0;
 	a->sdelta = TWOPI * a->deviation / a->samplerate;
 	// bandpass
-	a->bp_fc = a->deviation + a->f_high;
-	_aligned_free (a->bp_mults);
-	impulse = fir_bandpass (a->size + 1, -a->bp_fc, +a->bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
-	a->bp_mults = fftcv_mults (2 * a->size, impulse);
-	_aligned_free (impulse);
+	a->bp_fc = bp_fc;
+	setUpdate_fircore (a->p);
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
@@ -200,4 +181,33 @@ void SetTXACTCSSRun (int channel, int run)
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].fmmod.p->ctcss_run = run;
 	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT
+void SetTXAFMNC (int channel, int nc)
+{
+	FMMOD a;
+	double* impulse;
+	EnterCriticalSection (&ch[channel].csDSP);
+	a = txa[channel].fmmod.p;
+	if (a->nc != nc)
+	{
+		a->nc = nc;
+		impulse = fir_bandpass (a->nc, -a->bp_fc, +a->bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
+		setNc_fircore (a->p, a->nc, impulse);
+		_aligned_free (impulse);
+	}
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT 
+void SetTXAFMMP (int channel, int mp)
+{
+	FMMOD a;
+	a = txa[channel].fmmod.p;
+	if (a->mp != mp)
+	{
+		a->mp = mp;
+		setMp_fircore (a->p, a->mp);
+	}
 }

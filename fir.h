@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -31,3 +31,9 @@ extern double* fir_fsamp_odd (int N, double* A, int rtype, double scale, int win
 extern double* fir_fsamp (int N, double* A, int rtype, double scale, int wintype);
 
 extern double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int wintype, int rtype, double scale);
+
+extern double* get_fsamp_window(int N, int wintype);
+
+extern double *fir_read (int N, const char *filename, int rtype, double scale);
+
+extern void mp_imp (int N, double* fir, double* mpfir, int pfactor, int polarity);
