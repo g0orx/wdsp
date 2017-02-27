@@ -143,6 +143,7 @@
     <ClInclude Include="anr.h" />
     <ClInclude Include="bandpass.h" />
     <ClInclude Include="calcc.h" />
+    <ClInclude Include="calculus.h" />
     <ClInclude Include="cblock.h" />
     <ClInclude Include="cfir.h" />
     <ClInclude Include="compress.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="anr.c" />
     <ClCompile Include="bandpass.c" />
     <ClCompile Include="calcc.c" />
+    <ClCompile Include="calculus.c" />
     <ClCompile Include="cblock.c" />
     <ClCompile Include="cfir.c" />
     <ClCompile Include="comm.c" />
