@@ -31,6 +31,7 @@ anf.c\
 anr.c\
 bandpass.c\
 calcc.c\
+calculus.c\
 cblock.c\
 cfir.c\
 channel.c\
@@ -84,6 +85,7 @@ anf.h\
 anr.h\
 bandpass.h\
 calcc.h\
+calculus.h\
 cblock.h\
 cfir.h\
 channel.h\
@@ -139,6 +141,7 @@ anf.o\
 anr.o\
 bandpass.o\
 calcc.o\
+calculus.o\
 cblock.o\
 cfir.o\
 channel.o\

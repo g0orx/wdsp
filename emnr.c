@@ -25,6 +25,7 @@ warren@wpratt.com
 */
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
+#include "calculus.h"
 
 /********************************************************************************************************
 *																										*
@@ -274,10 +275,16 @@ void calc_emnr(EMNR a)
 	//
 	a->g.GG = (double *)malloc0(241 * 241 * sizeof(double));
 	a->g.GGS = (double *)malloc0(241 * 241 * sizeof(double));
-	a->g.fileb = fopen("calculus", "rb");
-	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
-	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);
-	fclose(a->g.fileb);
+
+/*
+ 	a->g.fileb = fopen("calculus", "rb");
+ 	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
+ 	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);
+ 	fclose(a->g.fileb);
+*/
+        memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
+        memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
+
 	//
 
 	a->np.incr = a->incr;
