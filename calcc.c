@@ -842,7 +842,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 	if (a->runcal)
 	{
 		a->size = size;
-		if (InterlockedAnd (&a->mox, 1) && a->txdelay->tdelay != 0.0)
+		if (_InterlockedAnd (&a->mox, 1) && a->txdelay->tdelay != 0.0)
 		{
 			SetDelayBuffs (a->rxdelay, a->size, rx, rx);
 			xdelay (a->rxdelay);
@@ -875,7 +875,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 					a->ctrl.state = LRESET;
 				else if (a->ctrl.turnon)
 					a->ctrl.state = LTURNON;
-				else if (InterlockedAnd (&a->mox, 1))
+				else if (_InterlockedAnd (&a->mox, 1))
 				{
 					a->ctrl.state = LMOXDELAY;
 					InterlockedBitTestAndSet (&a->solidmox, 0);
@@ -888,7 +888,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 					a->ctrl.state = LRESET;
 				else if (a->ctrl.turnon)
 					a->ctrl.state = LTURNON;
-				else if (!InterlockedAnd (&a->mox, 1) || !InterlockedAnd (&a->solidmox, 1))
+				else if (!_InterlockedAnd (&a->mox, 1) || !_InterlockedAnd (&a->solidmox, 1))
 					a->ctrl.state = LWAIT;
 				else if ((a->ctrl.moxcount - a->size) >= a->ctrl.moxsamps)
 					a->ctrl.state = LSETUP;
@@ -908,7 +908,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 					a->ctrl.state = LRESET;
 				else if (a->ctrl.turnon)
 					a->ctrl.state = LTURNON;
-				else if (InterlockedAnd (&a->mox, 1) && InterlockedAnd (&a->solidmox, 1))
+				else if (_InterlockedAnd (&a->mox, 1) && _InterlockedAnd (&a->solidmox, 1))
 				{
 					a->ctrl.state = LCOLLECT;
 					SetTXAiqcDogCount (channel, a->info[13] = 0);
@@ -959,7 +959,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 					a->ctrl.state = LRESET;
 				else if (a->ctrl.turnon)
 					a->ctrl.state = LTURNON;
-				else if (!InterlockedAnd (&a->mox, 1) || !InterlockedAnd (&a->solidmox, 1))
+				else if (!_InterlockedAnd (&a->mox, 1) || !_InterlockedAnd (&a->solidmox, 1))
 					a->ctrl.state = LWAIT;
 				else if (a->ctrl.full_ints == a->ints)
 					a->ctrl.state = MOXCHECK;
@@ -982,7 +982,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 					a->ctrl.state = LRESET;
 				else if (a->ctrl.turnon)
 					a->ctrl.state = LTURNON;
-				else if (!InterlockedAnd (&a->mox, 1) || !InterlockedAnd (&a->solidmox, 1))
+				else if (!_InterlockedAnd (&a->mox, 1) || !_InterlockedAnd (&a->solidmox, 1))
 					a->ctrl.state = LWAIT;
 				else
 					a->ctrl.state = LCALC;
@@ -1011,7 +1011,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 					}
 					else if (++(a->ctrl.bs_count) >= 2)
 						a->ctrl.state = LRESET;
-					else if (InterlockedAnd (&a->mox, 1) && InterlockedAnd (&a->solidmox, 1)) 
+					else if (_InterlockedAnd (&a->mox, 1) && _InterlockedAnd (&a->solidmox, 1)) 
 						a->ctrl.state = LSETUP;
 					else a->ctrl.state = LWAIT;
 				}
@@ -1027,7 +1027,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 				{
 					if (a->ctrl.automode)
 					{
-						if (InterlockedAnd (&a->mox, 1) && InterlockedAnd (&a->solidmox, 1))
+						if (_InterlockedAnd (&a->mox, 1) && _InterlockedAnd (&a->solidmox, 1))
 							a->ctrl.state = LSETUP;
 						else
 							a->ctrl.state = LWAIT;

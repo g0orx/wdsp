@@ -25,6 +25,7 @@ john.d.melton@googlemail.com
 
 */
 
+#include "linux_port.h"
 #include "comm.h"
 
 /********************************************************************************************************
@@ -74,7 +75,7 @@ int LinuxWaitForSingleObject(sem_t *sem,int ms) {
 			// didn't get the lock
 			if(ms!=0) {
 				// sleep if ms not zero
-				sleep(ms);
+				Sleep(ms);
 				// try to get the lock again
 				result=sem_trywait(sem);
 			}
@@ -146,7 +147,7 @@ void _endthread() {
 	pthread_exit((void *)&res);
 }
 
-void SetThreadPriority(pthread_t thread, int priority)  {
+void SetThreadPriority(HANDLE thread, int priority)  {
 /*
 	int policy;
 	struct sched_param param;

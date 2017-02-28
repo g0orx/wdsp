@@ -31,6 +31,8 @@ john.d.melton@googlemail.com
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #define CRITICAL_SECTION pthread_mutex_t
 #define LONG long
@@ -49,6 +51,7 @@ john.d.melton@googlemail.com
 #define InterlockedBitTestAndSet(base,bit) __sync_fetch_and_or(base,1L<<bit)
 #define InterlockedBitTestAndReset(base,bit) __sync_fetch_and_and(base,~(1L<<bit))
 
+#define InterlockedExchange(target,value) __sync_lock_test_and_set(target,value)
 #define _InterlockedAnd(base,mask) __sync_fetch_and_and(base,mask)
 #define __declspec(x)
 #define __cdecl
@@ -74,9 +77,9 @@ void QueueUserWorkItem(void *function,void *context,int flags);
 
 void InitializeCriticalSectionAndSpinCount(pthread_mutex_t *mutex,int count);
 
-void EnterCritiaclSection(pthread_mutex_t *mutex);
+void EnterCriticalSection(pthread_mutex_t *mutex);
 
-void LeaveCritiaclSection(pthread_mutex_t *mutex);
+void LeaveCriticalSection(pthread_mutex_t *mutex);
 
 void DeleteCriticalSection(pthread_mutex_t *mutex);
 
@@ -95,7 +98,8 @@ pthread_t wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned s
 
 void _endthread();
 
-void SetThreadPriority(pthread_t thread, int priority);
+//void SetThreadPriority(pthread_t thread, int priority);
+void SetThreadPriority(HANDLE thread, int priority);
 
 int CloseHandle(HANDLE hObject);
 

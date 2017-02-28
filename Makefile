@@ -3,7 +3,7 @@
 #
 CC=gcc
 LINK=gcc
-OPTIONS=-g -fPIC -O3
+OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE
 #OPTIONS=-g -fPIC
 
 #GTK_INCLUDE=GTK

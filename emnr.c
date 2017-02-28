@@ -861,20 +861,20 @@ void xemnr (EMNR a, int pos)
 		memcpy (a->out, a->in, a->bsize * sizeof (complex));
 }
 
-setBuffers_emnr (EMNR a, double* in, double* out)
+void setBuffers_emnr (EMNR a, double* in, double* out)
 {
 	a->in = in;
 	a->out = out;
 }
 
-setSamplerate_emnr (EMNR a, int rate)
+void setSamplerate_emnr (EMNR a, int rate)
 {
 	decalc_emnr (a);
 	a->rate = rate;
 	calc_emnr (a);
 }
 
-setSize_emnr (EMNR a, int size)
+void setSize_emnr (EMNR a, int size)
 {
 	decalc_emnr (a);
 	a->bsize = size;
