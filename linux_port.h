@@ -37,7 +37,7 @@ john.d.melton@googlemail.com
 #define CRITICAL_SECTION pthread_mutex_t
 #define LONG long
 #define DWORD long
-#define HANDLE sem_t *
+#define HANDLE void *
 #define WINAPI
 #define FALSE 0
 #define TRUE 1
@@ -94,11 +94,10 @@ sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,
 
 void LinuxSetEvent(sem_t* sem);
 
-pthread_t wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
+HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
 
 void _endthread();
 
-//void SetThreadPriority(pthread_t thread, int priority);
 void SetThreadPriority(HANDLE thread, int priority);
 
 int CloseHandle(HANDLE hObject);

@@ -264,7 +264,7 @@ double *fir_read (int N, const char *filename, int rtype, double scale)
 	// NOTE:  The number of values in the file must NOT exceed those implied by N and rtype
 {
 	FILE *file;
-	int i;
+	int i, ret;
 	double I, Q;
 	double *c_impulse = (double *) malloc0 (N * sizeof (complex));
 	file = fopen (filename, "r");
@@ -275,12 +275,12 @@ double *fir_read (int N, const char *filename, int rtype, double scale)
 		switch (rtype)
 		{
 		case 0:
-			fscanf (file, "%le", &I);
+			ret = fscanf (file, "%le", &I);
 			c_impulse[i] = + scale * I;
 			break;
 		case 1:
-			fscanf (file, "%le", &I);
-			fscanf (file, "%le", &Q);
+			ret = fscanf (file, "%le", &I);
+			ret = fscanf (file, "%le", &Q);
 			c_impulse[2 * i + 0] = + scale * I;
 			c_impulse[2 * i + 1] = - scale * Q;
 			break;

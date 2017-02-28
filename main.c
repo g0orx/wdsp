@@ -32,7 +32,7 @@ void wdspmain (void *pargs)
 void main (void *pargs)
 #endif
 {
-	int channel = (int)pargs;
+	int channel = (intptr_t)pargs;
 	while (_InterlockedAnd (&ch[channel].run, 1))
 	{
 		WaitForSingleObject(ch[channel].iob.pd->Sem_BuffReady,INFINITE);

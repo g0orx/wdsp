@@ -798,7 +798,7 @@ void __cdecl SaveCorrection (void *pargs)
 
 void __cdecl RestoreCorrection(void *pargs)
 {
-	int i, k;
+	int i, k, ret;
 	CALCC a = (CALCC)pargs;
 	double* pm = (double *)malloc0 (4 * a->util.ints * sizeof (double));
 	double* pc = (double *)malloc0 (4 * a->util.ints * sizeof (double));
@@ -807,11 +807,11 @@ void __cdecl RestoreCorrection(void *pargs)
 	for (i = 0; i < a->util.ints; i++)
 	{
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(pm[4 * i + k]));
+			ret = fscanf (file, "%le", &(pm[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(pc[4 * i + k]));
+			ret = fscanf (file, "%le", &(pc[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(ps[4 * i + k]));
+			ret = fscanf (file, "%le", &(ps[4 * i + k]));
 	}
 	fclose (file);
 	if (!InterlockedBitTestAndSet (&a->ctrl.running, 0))

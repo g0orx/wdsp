@@ -253,7 +253,7 @@ void __cdecl CalccPrintSamples (void *pargs)
 {
 	int i;
 	double env_tx, env_rx;
-	int channel = (int)pargs;
+	int channel = (intptr_t)pargs;
 	CALCC a = txa[channel].calcc.p;
 	FILE* file = fopen("samples.txt", "w");
 	fprintf (file, "\n");
@@ -272,7 +272,7 @@ void __cdecl CalccPrintSamples (void *pargs)
 
 void doCalccPrintSamples(int channel)
 {	// no sample buffering - use in single cal mode
-	wdsp_beginthread(CalccPrintSamples, 0, (void *)channel,"WDSP CalccPrintSamples");
+	wdsp_beginthread(CalccPrintSamples, 0, (void *)(intptr_t)channel,"WDSP CalccPrintSamples");
 }
 
 void print_anb_parms (const char* filename, ANB a)

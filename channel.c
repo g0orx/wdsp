@@ -29,10 +29,10 @@ warren@wpratt.com
 void start_thread (int channel)
 {
 #ifdef linux
-        HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel, "WDSP main");
+        HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)(intptr_t)channel, "WDSP main");
         SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 #else
-        HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)channel);
+        HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)(intptr_t)channel);
         SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 #endif
 }
@@ -132,7 +132,7 @@ void CloseChannel (int channel)
 
 void flushChannel (void* p)
 {
-	int channel = (int)p;
+	int channel = (intptr_t)p;
 	EnterCriticalSection (&ch[channel].csDSP);
 	EnterCriticalSection (&ch[channel].csEXCH);
 	flush_iobuffs (channel);
