@@ -85,8 +85,8 @@ void xcbl (CBL a)
 			a->out_buff[2 * i + 1] = a->in_buff[2 * i + 1] - a->prevQin + a->mtau * a->prevQout;
 			a->prevIin  = tempI;
 			a->prevQin  = tempQ;
-			a->prevIout = a->out_buff[2 * i + 0];
-			a->prevQout = a->out_buff[2 * i + 1];
+			if (fabs(a->prevIout = a->out_buff[2 * i + 0]) < 1.0e-100) a->prevIout = 0.0;
+			if (fabs(a->prevQout = a->out_buff[2 * i + 1]) < 1.0e-100) a->prevQout = 0.0;
 		}
 	}
 	else if (a->in_buff != a->out_buff)

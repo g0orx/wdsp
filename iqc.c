@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,20 +26,41 @@ warren@wpratt.com
 
 #include "comm.h"
 
-void calc_iqc (IQC a)
+void size_iqc (IQC a)
 {
 	int i;
-	double delta, theta;
 	a->t =	(double *) malloc0 ((a->ints + 1) * sizeof(double));
 	for (i = 0; i <= a->ints; i++)
 		a->t[i] = (double)i / (double)a->ints;
-	a->cset = 0;
 	for (i = 0; i < 2; i++)
 	{
 		a->cm[i] = (double *) malloc0 (a->ints * 4 * sizeof(double));
 		a->cc[i] = (double *) malloc0 (a->ints * 4 * sizeof(double));
 		a->cs[i] = (double *) malloc0 (a->ints * 4 * sizeof(double));
 	}
+	a->dog.cpi = (int *) malloc0 (a->ints * sizeof (int));
+	a->dog.count = 0;
+	a->dog.full_ints = 0;
+}
+
+void desize_iqc (IQC a)
+{
+	int i;
+	_aligned_free (a->dog.cpi);
+	for (i = 0; i < 2; i++)
+	{
+		_aligned_free (a->cm[i]);
+		_aligned_free (a->cc[i]);
+		_aligned_free (a->cs[i]);
+	}
+	_aligned_free (a->t);
+}
+
+void calc_iqc (IQC a)
+{
+	int i;
+	double delta, theta;
+	a->cset = 0;
 	a->count = 0;
 	a->state = 0;
 	a->busy = 0;
@@ -52,25 +73,15 @@ void calc_iqc (IQC a)
 		a->cup[i] = 0.5 * (1.0 - cos (theta));
 		theta += delta;
 	}
-	a->dog.cpi = (int *) malloc0 (a->ints * sizeof (int));
 	InitializeCriticalSectionAndSpinCount (&a->dog.cs, 2500);
-	a->dog.count = 0;
-	a->dog.full_ints = 0;
+	size_iqc (a);
 }
 
 void decalc_iqc (IQC a)
 {
-	int i;
+	desize_iqc (a);
 	DeleteCriticalSection (&a->dog.cs);
-	_aligned_free (a->dog.cpi);
 	_aligned_free (a->cup);
-	for (i = 0; i < 2; i++)
-	{
-		_aligned_free (a->cm[i]);
-		_aligned_free (a->cc[i]);
-		_aligned_free (a->cs[i]);
-	}
-	_aligned_free (a->t);
 }
 
 IQC create_iqc (int run, int size, double* in, double* out, double rate, int ints, double tup, int spi)

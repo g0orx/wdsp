@@ -1,8 +1,8 @@
-/*  fcurve.h
+/*  comm.c
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013, 2016 Warren Pratt, NR0V
+Copyright (C) 2017  Warren Pratt, NR0V, Jae Stutzman, K5JAE
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -18,17 +18,14 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-The author can be reached by email at  
-
-warren@wpratt.com
 
 */
 
-#ifndef _fcurve_h
-#define _fcurve_h
+#include "comm.h"
 
-extern double* fc_impulse (int nc, double f0, double f1, double g0, double g1, int curve, double samplerate, double scale, int ctfmode, int wintype);
-
-extern double* fc_mults (int size, double f0, double f1, double g0, double g1, int curve, double samplerate, double scale, int ctfmode, int wintype);
-
+#ifdef _WINDOWS_
+uintptr_t __cdecl wdsp_beginthread(void(__cdecl *start_address)(void *), unsigned stack_size, void *arglist, char *name)
+{
+	return _beginthread(start_address, stack_size, arglist);
+}
 #endif

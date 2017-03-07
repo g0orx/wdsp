@@ -1,4 +1,4 @@
-/*  utilities.c
+/*  linux_port.c
 
 This file is part of a program that implements a Software-Defined Radio.
 
@@ -25,11 +25,12 @@ john.d.melton@googlemail.com
 
 */
 
+#include "linux_port.h"
 #include "comm.h"
 
 /********************************************************************************************************
 *													*
-*	Linux Port Utilities											*
+*	Linux Port Utilities										*
 *													*
 ********************************************************************************************************/
 
@@ -74,7 +75,7 @@ int LinuxWaitForSingleObject(sem_t *sem,int ms) {
 			// didn't get the lock
 			if(ms!=0) {
 				// sleep if ms not zero
-				sleep(ms);
+				Sleep(ms);
 				// try to get the lock again
 				result=sem_trywait(sem);
 			}
@@ -111,33 +112,33 @@ void LinuxSetEvent(sem_t* sem) {
 	sem_post(sem);
 }
 
-pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name) {
-        pthread_t threadid;
+HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name) {
+	pthread_t threadid;
 	pthread_attr_t  attr;
-	int             rc = 0;
+	int rc = 0;
 
 	if (rc = pthread_attr_init(&attr)) {
- 	    return -1;
+ 	    return (HANDLE)-1;
 	}
       
 	if(stack_size!=0) {
 	    if (rc = pthread_attr_setstacksize(&attr, stack_size)) {
-	        return -1;
+	        return (HANDLE)-1;
 	    }
 	}
 
         if( rc = pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED)) {
-            return -1;
+            return (HANDLE)-1;
         }
      
 	if (rc = pthread_create(&threadid, &attr, (void*(*)(void*))start_address, arglist)) {
-	     return -1;
+	     return (HANDLE)-1;
 	}
 
         //pthread_attr_destroy(&attr);
         rc=pthread_setname_np(threadid, name);
 
-	return threadid;
+	return (HANDLE)threadid;
 
 }
 
@@ -146,7 +147,7 @@ void _endthread() {
 	pthread_exit((void *)&res);
 }
 
-void SetThreadPriority(pthread_t thread, int priority)  {
+void SetThreadPriority(HANDLE thread, int priority)  {
 /*
 	int policy;
 	struct sched_param param;

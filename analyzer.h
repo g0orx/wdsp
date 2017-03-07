@@ -134,7 +134,7 @@ typedef struct _dp
 	double inv_enb;
 	double norm_oneHz;										// dB factor to normalize to one Hz bandwidth
 	int sample_rate;										// sample rate; used for normalization calculations
-	int normalize;
+	int normalize[dMAX_PIXOUTS];
 }  dp, *DP;
 
 DP pdisp[dMAX_DISPLAYS];									// array of pointers to instance data
@@ -173,7 +173,7 @@ extern __declspec( dllexport )
 void Spectrum(int disp, int ss, int LO, dINREAL* pI, dINREAL* pQ);
 
 extern __declspec( dllexport )
-void Spectrum2(int disp, int ss, int LO, dINREAL* pbuff);
+void Spectrum2(int run, int disp, int ss, int LO, dINREAL* pbuff);
 
 extern __declspec( dllexport )
 void Spectrum0(int run, int disp, int ss, int LO, double* pbuff);

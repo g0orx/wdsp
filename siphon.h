@@ -45,7 +45,7 @@ typedef struct _siphon
 	double* sipout;
 	int fftsize;
 	double* specout;
-	int specmode;
+	volatile long specmode;
 	fftw_plan sipplan;
 	double* window;
 	CRITICAL_SECTION update;

@@ -255,7 +255,6 @@ RESAMPLEF create_resampleF ( int run, int size, float* in, float* out, int in_ra
 		y = x % y;
 		x = z;
     }
-
 	a->L = out_rate / x;
 	a->M = in_rate / x;
 	if (in_rate < out_rate) min_rate = in_rate;

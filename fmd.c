@@ -28,7 +28,6 @@ warren@wpratt.com
 
 void calc_fmd (FMD a)
 {
-	double* impulse;
 	// pll
 	a->omega_min = TWOPI * a->fmin / a->rate;
 	a->omega_max = TWOPI * a->fmax / a->rate;
@@ -44,22 +43,6 @@ void calc_fmd (FMD a)
 	a->fmdc = 0.0;
 	// pll audio gain
 	a->again = a->rate / (a->deviation * TWOPI);
-	a->audio = (double *)malloc0(a->size * sizeof(complex));
-	// de-emphasis filter
-	a->mults = fc_mults(a->size, a->f_low, a->f_high, +20.0 * log10(a->f_high / a->f_low), 0.0, 1, a->rate, 1.0 / (2.0 * a->size), 0, 1);
-	a->infilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->product = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->outfilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->CFor = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->infilt, (fftw_complex *)a->product, FFTW_FORWARD, FFTW_PATIENT);
-	a->CRev = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->product, (fftw_complex *)a->outfilt, FFTW_BACKWARD, FFTW_PATIENT);
-	// audio filter
-	impulse = fir_bandpass(a->size + 1, 0.8 * a->f_low, 1.1 * a->f_high, a->rate, 0, 1, a->afgain / (2.0 * a->size));
-	a->amults = fftcv_mults(2 * a->size, impulse);
-	a->ainfilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->aproduct = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->aCFor = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->ainfilt, (fftw_complex *)a->aproduct, FFTW_FORWARD, FFTW_PATIENT);
-	a->aCRev = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->aproduct, (fftw_complex *)a->out, FFTW_BACKWARD, FFTW_PATIENT);
-	_aligned_free(impulse);
 	// CTCSS Removal
 	a->sntch = create_snotch(1, a->size, a->out, a->out, (int)a->rate, a->ctcss_freq, 0.0002);
 }
@@ -67,24 +50,13 @@ void calc_fmd (FMD a)
 void decalc_fmd (FMD a)
 {
 	destroy_snotch(a->sntch);
-	fftw_destroy_plan(a->aCRev);
-	fftw_destroy_plan(a->aCFor);
-	_aligned_free(a->aproduct);
-	_aligned_free(a->ainfilt);
-	_aligned_free(a->amults);
-	fftw_destroy_plan(a->CRev);
-	fftw_destroy_plan(a->CFor);
-	_aligned_free(a->outfilt);
-	_aligned_free(a->product);
-	_aligned_free(a->infilt);
-	_aligned_free(a->mults);
-	_aligned_free(a->audio);
 }
 
 FMD create_fmd( int run, int size, double* in, double* out, int rate, double deviation, double f_low, double f_high, 
-	double fmin, double fmax, double zeta, double omegaN, double tau, double afgain, int sntch_run, double ctcss_freq)
+	double fmin, double fmax, double zeta, double omegaN, double tau, double afgain, int sntch_run, double ctcss_freq, int nc_de, int mp_de, int nc_aud, int mp_aud)
 {
 	FMD a = (FMD) malloc0 (sizeof (fmd));
+	double* impulse;
 	a->run = run;
 	a->size = size;
 	a->in = in;
@@ -101,21 +73,37 @@ FMD create_fmd( int run, int size, double* in, double* out, int rate, double dev
 	a->afgain = afgain;
 	a->sntch_run = sntch_run;
 	a->ctcss_freq = ctcss_freq;
+	a->nc_de = nc_de;
+	a->mp_de = mp_de;
+	a->nc_aud = nc_aud;
+	a->mp_aud = mp_aud;
 	calc_fmd (a);
+	// de-emphasis filter
+	a->audio = (double *) malloc0 (a->size * sizeof (complex));
+	impulse = fc_impulse (a->nc_de, a->f_low, a->f_high, +20.0 * log10(a->f_high / a->f_low), 0.0, 1, a->rate, 1.0 / (2.0 * a->size), 0, 0);
+	a->pde = create_fircore (a->size, a->audio, a->out, a->nc_de, a->mp_de, impulse);
+	_aligned_free (impulse);
+	// audio filter
+	impulse = fir_bandpass(a->nc_aud, 0.8 * a->f_low, 1.1 * a->f_high, a->rate, 0, 1, a->afgain / (2.0 * a->size));
+	a->paud = create_fircore (a->size, a->out, a->out, a->nc_aud, a->mp_aud, impulse);
+	_aligned_free (impulse);
 	return a;
 }
 
 void destroy_fmd (FMD a)
 {
+	destroy_fircore (a->paud);
+	destroy_fircore (a->pde);
+	_aligned_free (a->audio);
 	decalc_fmd (a);
 	_aligned_free (a);
 }
 
 void flush_fmd (FMD a)
 {
-	memset (a->audio,   0,     a->size * sizeof (complex));
-	memset (a->infilt,  0, 2 * a->size * sizeof (complex));
-	memset (a->ainfilt, 0, 2 * a->size * sizeof (complex));
+	memset (a->audio, 0, a->size * sizeof (complex));
+	flush_fircore (a->pde);
+	flush_fircore (a->paud);
 	a->phs = 0.0;
 	a->fil_out = 0.0;
 	a->omega = 0.0;
@@ -128,7 +116,6 @@ void xfmd (FMD a)
 	if (a->run)
 	{
 		int i;
-		double I, Q;
 		double det, del_out;
 		double vco[2], corr[2];
 		for (i = 0; i < a->size; i++)
@@ -154,29 +141,9 @@ void xfmd (FMD a)
 			a->audio[2 * i + 1] = a->audio[2 * i + 0];
 		}
 		// de-emphasis
-		memcpy (&(a->infilt[2 * a->size]), a->audio, a->size * sizeof (complex));
-		fftw_execute (a->CFor);
-		for (i = 0; i < 2 * a->size; i++)
-		{
-			I = a->product[2 * i + 0];
-			Q = a->product[2 * i + 1];
-			a->product[2 * i + 0] = I * a->mults[2 * i + 0] - Q * a->mults[2 * i + 1];
-			a->product[2 * i + 1] = I * a->mults[2 * i + 1] + Q * a->mults[2 * i + 0];
-		}
-		fftw_execute (a->CRev);
-		memcpy (a->infilt, &(a->infilt[2 * a->size]), a->size * sizeof(complex));
+		xfircore (a->pde);
 		// audio filter
-		memcpy (&(a->ainfilt[2 * a->size]), a->outfilt, a->size * sizeof (complex));
-		fftw_execute (a->aCFor);
-		for (i = 0; i < 2 * a->size; i++)
-		{
-			I = a->aproduct[2 * i + 0];
-			Q = a->aproduct[2 * i + 1];
-			a->aproduct[2 * i + 0] = I * a->amults[2 * i + 0] - Q * a->amults[2 * i + 1];
-			a->aproduct[2 * i + 1] = I * a->amults[2 * i + 1] + Q * a->amults[2 * i + 0];
-		}
-		fftw_execute (a->aCRev);
-		memcpy (a->ainfilt, &(a->ainfilt[2 * a->size]), a->size * sizeof(complex));
+		xfircore (a->paud);
 		// CTCSS Removal
 		xsnotch (a->sntch);
 	}
@@ -190,20 +157,44 @@ void setBuffers_fmd (FMD a, double* in, double* out)
 	a->in = in;
 	a->out = out;
 	calc_fmd (a);
+	setBuffers_fircore (a->pde,  a->audio, a->out);
+	setBuffers_fircore (a->paud, a->out, a->out);
 }
 
 void setSamplerate_fmd (FMD a, int rate)
 {
+	double* impulse;
 	decalc_fmd (a);
 	a->rate = rate;
 	calc_fmd (a);
+	// de-emphasis filter
+	impulse = fc_impulse (a->nc_de, a->f_low, a->f_high, +20.0 * log10(a->f_high / a->f_low), 0.0, 1, a->rate, 1.0 / (2.0 * a->size), 0, 0);
+	setImpulse_fircore (a->pde, impulse, 1);
+	_aligned_free (impulse);
+	// audio filter
+	impulse = fir_bandpass(a->nc_aud, 0.8 * a->f_low, 1.1 * a->f_high, a->rate, 0, 1, a->afgain / (2.0 * a->size));
+	setImpulse_fircore (a->paud, impulse, 1);
+	_aligned_free (impulse);
 }
 
 void setSize_fmd (FMD a, int size)
 {
+	double* impulse;
 	decalc_fmd (a);
+	_aligned_free (a->audio);
 	a->size = size;
 	calc_fmd (a);
+	a->audio = (double *) malloc0 (a->size * sizeof (complex));
+	// de-emphasis filter
+	destroy_fircore (a->pde);
+	impulse = fc_impulse (a->nc_de, a->f_low, a->f_high, +20.0 * log10(a->f_high / a->f_low), 0.0, 1, a->rate, 1.0 / (2.0 * a->size), 0, 0);
+	a->pde = create_fircore (a->size, a->audio, a->out, a->nc_de, a->mp_de, impulse);
+	_aligned_free (impulse);
+	// audio filter
+	destroy_fircore (a->paud);
+	impulse = fir_bandpass(a->nc_aud, 0.8 * a->f_low, 1.1 * a->f_high, a->rate, 0, 1, a->afgain / (2.0 * a->size));
+	a->paud = create_fircore (a->size, a->out, a->out, a->nc_aud, a->mp_aud, impulse);
+	_aligned_free (impulse);
 }
 
 /********************************************************************************************************
@@ -243,4 +234,62 @@ void SetRXACTCSSRun (int channel, int run)
 	a->sntch_run = run;
 	SetSNCTCSSRun (a->sntch, a->sntch_run);
 	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT
+void SetRXAFMNCde (int channel, int nc)
+{
+	FMD a;
+	double* impulse;
+	EnterCriticalSection (&ch[channel].csDSP);
+	a = rxa[channel].fmd.p;
+	if (a->nc_de != nc)
+	{
+		a->nc_de = nc;
+		impulse = fc_impulse (a->nc_de, a->f_low, a->f_high, +20.0 * log10(a->f_high / a->f_low), 0.0, 1, a->rate, 1.0 / (2.0 * a->size), 0, 0);
+		setNc_fircore (a->pde, a->nc_de, impulse);
+		_aligned_free (impulse);
+	}
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT
+void SetRXAFMMPde (int channel, int mp)
+{
+	FMD a;
+	a = rxa[channel].fmd.p;
+	if (a->mp_de != mp)
+	{
+		a->mp_de = mp;
+		setMp_fircore (a->pde, a->mp_de);
+	}
+}
+
+PORT
+void SetRXAFMNCaud (int channel, int nc)
+{
+	FMD a;
+	double* impulse;
+	EnterCriticalSection (&ch[channel].csDSP);
+	a = rxa[channel].fmd.p;
+	if (a->nc_aud != nc)
+	{
+		a->nc_aud = nc;
+		impulse = fir_bandpass(a->nc_aud, 0.8 * a->f_low, 1.1 * a->f_high, a->rate, 0, 1, a->afgain / (2.0 * a->size));
+		setNc_fircore (a->paud, a->nc_aud, impulse);
+		_aligned_free (impulse);
+	}
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
+PORT
+void SetRXAFMMPaud (int channel, int mp)
+{
+	FMD a;
+	a = rxa[channel].fmd.p;
+	if (a->mp_aud != mp)
+	{
+		a->mp_aud = mp;
+		setMp_fircore (a->paud, a->mp_aud);
+	}
 }

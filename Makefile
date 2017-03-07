@@ -3,7 +3,7 @@
 #
 CC=gcc
 LINK=gcc
-OPTIONS=-g -fPIC -O3
+OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE
 #OPTIONS=-g -fPIC
 
 #GTK_INCLUDE=GTK
@@ -30,8 +30,8 @@ analyzer.c\
 anf.c\
 anr.c\
 bandpass.c\
-calculus.c\
 calcc.c\
+calculus.c\
 cblock.c\
 cfir.c\
 channel.c\
@@ -44,6 +44,7 @@ emph.c\
 eq.c\
 fcurve.c\
 fir.c\
+firmin.c\
 fmd.c\
 fmmod.c\
 fmsq.c\
@@ -83,8 +84,8 @@ analyzer.h\
 anf.h\
 anr.h\
 bandpass.h\
-calculus.h\
 calcc.h\
+calculus.h\
 cblock.h\
 cfir.h\
 channel.h\
@@ -98,8 +99,8 @@ emph.h\
 eq.h\
 fastmath.h\
 fcurve.h\
-fftw3.h\
 fir.h\
+firmin.h \
 fmd.h\
 fmmod.h\
 fmsq.h\
@@ -139,8 +140,8 @@ analyzer.o\
 anf.o\
 anr.o\
 bandpass.o\
-calculus.o\
 calcc.o\
+calculus.o\
 cblock.o\
 cfir.o\
 channel.o\
@@ -153,6 +154,7 @@ emph.o\
 eq.o\
 fcurve.o\
 fir.o\
+firmin.o\
 fmd.o\
 fmmod.o\
 fmsq.o\

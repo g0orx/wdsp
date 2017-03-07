@@ -547,6 +547,15 @@ SetRXAAGCFixed (int channel, double fixed_agc)
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
+PORT void
+SetRXAAGCMaxInputLevel (int channel, double level)
+{
+	EnterCriticalSection (&ch[channel].csDSP);
+	rxa[channel].agc.p->max_input = level;
+	loadWcpAGC ( rxa[channel].agc.p );
+	LeaveCriticalSection (&ch[channel].csDSP);
+}
+
 /********************************************************************************************************
 *																										*
 *											TXA Properties												*

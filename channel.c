@@ -29,10 +29,10 @@ warren@wpratt.com
 void start_thread (int channel)
 {
 #ifdef linux
-        HANDLE handle = _beginthread(wdspmain, 0, (void *)channel, "WDSP main");
+        HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)(intptr_t)channel, "WDSP main");
         SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 #else
-        HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)channel);
+        HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)(intptr_t)channel);
         SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 #endif
 }
@@ -132,7 +132,7 @@ void CloseChannel (int channel)
 
 void flushChannel (void* p)
 {
-	int channel = (int)p;
+	int channel = (intptr_t)p;
 	EnterCriticalSection (&ch[channel].csDSP);
 	EnterCriticalSection (&ch[channel].csEXCH);
 	flush_iobuffs (channel);
@@ -211,12 +211,14 @@ void SetDSPSamplerate (int channel, int dsp_rate)
 {
 	if (dsp_rate != ch[channel].dsp_rate)
 	{
+		int oldstate = SetChannelState (channel, 0, 1);
 		pre_main_destroy (channel);
 		post_main_destroy (channel);
 		ch[channel].dsp_rate = dsp_rate;
 		pre_main_build (channel);
 		setDSPSamplerate_main (channel);
 		post_main_build (channel);
+		SetChannelState (channel, oldstate, 0);
 	}
 }
 
@@ -252,19 +254,13 @@ void SetAllRates (int channel, int in_rate, int dsp_rate, int out_rate)
 	}
 }
 
-void TimeOut (void *ptimeout)
-{
-	Sleep (200);
-	InterlockedBitTestAndSet ((volatile long *)ptimeout, 0);
-	_endthread();
-}
-
 PORT
 int SetChannelState (int channel, int state, int dmode)
 {
 	IOB a = ch[channel].iob.pc;
 	int prior_state = ch[channel].state;
-	volatile long timeout = 0;
+	int count = 0;
+	const int timeout = 100;
 	if (ch[channel].state != state)
 	{
 		ch[channel].state = state;
@@ -275,10 +271,13 @@ int SetChannelState (int channel, int state, int dmode)
 			InterlockedBitTestAndSet (&ch[channel].flushflag, 0);
 			if (dmode)
 			{
-				HANDLE id=_beginthread (TimeOut, 0, (void *)&timeout, "WDSP Timeout");
-				while (_InterlockedAnd (&ch[channel].flushflag, 1) && !_InterlockedAnd (&timeout, 1)) Sleep(1);
+				while (_InterlockedAnd (&ch[channel].flushflag, 1) && count < timeout) 
+				{
+					Sleep(1);
+					count++;
+				}
 			}
-			if (_InterlockedAnd (&timeout, 1))
+			if (count >= timeout)
 			{
 				InterlockedBitTestAndReset (&ch[channel].exchange, 0);
 				InterlockedBitTestAndReset (&ch[channel].flushflag, 0);

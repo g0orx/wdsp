@@ -70,6 +70,10 @@ extern void setSamplerate_iqc (IQC a, int rate);
 
 extern void setSize_iqc (IQC a, int size);
 
+extern void size_iqc (IQC a);
+
+extern void desize_iqc (IQC a);
+
 // TXA Properties
 
 extern __declspec (dllexport)  void GetTXAiqcValues (int channel, double* cm, double* cc, double* cs);

@@ -122,8 +122,8 @@ struct _rxa
 	} fmsq;
 	struct
 	{
-		EQ p;
-	} eq;
+		EQP p;
+	} eqp;
 	struct
 	{
 		ANF p;
@@ -185,8 +185,12 @@ extern __declspec (dllexport) void SetRXAMode (int channel, int mode);
 
 extern void RXAResCheck (int channel);
 
-extern void RXAbp1Check (int channel);
+extern void RXAbp1Check (int channel, int amd_run, int snba_run, int emnr_run, int anf_run, int anr_run);
 
-extern void RXAbpsnbaCheck (int channel);
+extern void RXAbp1Set (int channel);
+
+extern void RXAbpsnbaCheck (int channel, int mode, int notch_run);
+
+extern void RXAbpsnbaSet (int channel);
 
 #endif

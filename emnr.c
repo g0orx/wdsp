@@ -25,7 +25,6 @@ warren@wpratt.com
 */
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
-
 #include "calculus.h"
 
 /********************************************************************************************************
@@ -276,11 +275,12 @@ void calc_emnr(EMNR a)
 	//
 	a->g.GG = (double *)malloc0(241 * 241 * sizeof(double));
 	a->g.GGS = (double *)malloc0(241 * 241 * sizeof(double));
+
 /*
-	a->g.fileb = fopen("calculus", "rb");
-	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
-	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);
-	fclose(a->g.fileb);
+ 	a->g.fileb = fopen("calculus", "rb");
+ 	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
+ 	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);
+ 	fclose(a->g.fileb);
 */
         memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
         memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
@@ -861,20 +861,20 @@ void xemnr (EMNR a, int pos)
 		memcpy (a->out, a->in, a->bsize * sizeof (complex));
 }
 
-setBuffers_emnr (EMNR a, double* in, double* out)
+void setBuffers_emnr (EMNR a, double* in, double* out)
 {
 	a->in = in;
 	a->out = out;
 }
 
-setSamplerate_emnr (EMNR a, int rate)
+void setSamplerate_emnr (EMNR a, int rate)
 {
 	decalc_emnr (a);
 	a->rate = rate;
 	calc_emnr (a);
 }
 
-setSize_emnr (EMNR a, int size)
+void setSize_emnr (EMNR a, int size)
 {
 	decalc_emnr (a);
 	a->bsize = size;
@@ -890,10 +890,16 @@ setSize_emnr (EMNR a, int size)
 PORT
 void SetRXAEMNRRun (int channel, int run)
 {
-	EnterCriticalSection (&ch[channel].csDSP);
-	rxa[channel].emnr.p->run = run;
-	RXAbp1Check (channel);
-	LeaveCriticalSection (&ch[channel].csDSP);
+	EMNR a = rxa[channel].emnr.p;
+	if (a->run != run)
+	{
+		RXAbp1Check (channel, rxa[channel].amd.p->run, rxa[channel].snba.p->run, 
+			run, rxa[channel].anf.p->run, rxa[channel].anr.p->run);
+		EnterCriticalSection (&ch[channel].csDSP);
+		a->run = run;
+		RXAbp1Set (channel);
+		LeaveCriticalSection (&ch[channel].csDSP);
+	}
 }
 
 PORT

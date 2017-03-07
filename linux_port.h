@@ -1,4 +1,4 @@
-/*  utilities.h
+/*  linux_port.h
 
 This file is part of a program that implements a Software-Defined Radio.
 
@@ -31,11 +31,13 @@ john.d.melton@googlemail.com
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #define CRITICAL_SECTION pthread_mutex_t
 #define LONG long
 #define DWORD long
-#define HANDLE sem_t *
+#define HANDLE void *
 #define WINAPI
 #define FALSE 0
 #define TRUE 1
@@ -49,6 +51,7 @@ john.d.melton@googlemail.com
 #define InterlockedBitTestAndSet(base,bit) __sync_fetch_and_or(base,1L<<bit)
 #define InterlockedBitTestAndReset(base,bit) __sync_fetch_and_and(base,~(1L<<bit))
 
+#define InterlockedExchange(target,value) __sync_lock_test_and_set(target,value)
 #define _InterlockedAnd(base,mask) __sync_fetch_and_and(base,mask)
 #define __declspec(x)
 #define __cdecl
@@ -74,9 +77,9 @@ void QueueUserWorkItem(void *function,void *context,int flags);
 
 void InitializeCriticalSectionAndSpinCount(pthread_mutex_t *mutex,int count);
 
-void EnterCritiaclSection(pthread_mutex_t *mutex);
+void EnterCriticalSection(pthread_mutex_t *mutex);
 
-void LeaveCritiaclSection(pthread_mutex_t *mutex);
+void LeaveCriticalSection(pthread_mutex_t *mutex);
 
 void DeleteCriticalSection(pthread_mutex_t *mutex);
 
@@ -91,11 +94,11 @@ sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,
 
 void LinuxSetEvent(sem_t* sem);
 
-pthread_t _beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
+HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
 
 void _endthread();
 
-void SetThreadPriority(pthread_t thread, int priority);
+void SetThreadPriority(HANDLE thread, int priority);
 
 int CloseHandle(HANDLE hObject);
 

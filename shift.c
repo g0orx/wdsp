@@ -28,7 +28,6 @@ warren@wpratt.com
 
 void calc_shift (SHIFT a)
 {
-	a->phase = 0.0;
 	a->delta = TWOPI * a->shift / a->rate;
 	a->cos_delta = cos (a->delta);
 	a->sin_delta = sin (a->delta);
@@ -43,6 +42,7 @@ SHIFT create_shift (int run, int size, double* in, double* out, int rate, double
 	a->out = out;
 	a->rate = (double)rate;
 	a->shift = fshift;
+	a->phase = 0.0;
 	calc_shift (a);
 	return a;
 }
@@ -93,6 +93,7 @@ void setBuffers_shift(SHIFT a, double* in, double* out)
 void setSamplerate_shift (SHIFT a, int rate)
 {
 	a->rate = rate;
+	a->phase = 0.0;
 	calc_shift(a);
 }
 

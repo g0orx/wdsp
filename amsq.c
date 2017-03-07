@@ -177,9 +177,7 @@ void xamsq (AMSQ a)
 
 void xamsqcap (AMSQ a)
 {
-	if(a->run) {
-		memcpy (a->trigsig, a->trigger, a->size * sizeof (complex));
-	}
+	memcpy (a->trigsig, a->trigger, a->size * sizeof (complex));
 }
 
 void setBuffers_amsq (AMSQ a, double* in, double* out, double* trigger)

@@ -51,7 +51,7 @@ void calc_uslew (USLEW a)
 		a->cup[i] = 0.5 * (1.0 - cos (theta));
 		theta += delta;
 	}
-	InterlockedBitTestAndReset (&a->ch_upslew, 0);
+	InterlockedBitTestAndReset (a->ch_upslew, 0);
 }
 
 void decalc_uslew (USLEW a)
@@ -84,7 +84,7 @@ void flush_uslew (USLEW a)
 {
 	a->state = BEGIN;
 	a->runmode = 0;
-	InterlockedBitTestAndReset (&a->ch_upslew, 0);
+	InterlockedBitTestAndReset (a->ch_upslew, 0);
 }
 
 void xuslew (USLEW a)
@@ -92,7 +92,7 @@ void xuslew (USLEW a)
 	if (!a->runmode && TXAUslewCheck (a->channel))
 		a->runmode = 1;
 
-	if (a->runmode && _InterlockedAnd(&a->ch_upslew, 1))
+	if (a->runmode && _InterlockedAnd(a->ch_upslew, 1))
 	{
 		int i;
 		double I, Q;
@@ -144,7 +144,7 @@ void xuslew (USLEW a)
 			case ON:
 				a->out[2 * i + 0] = I;
 				a->out[2 * i + 1] = Q;
-				InterlockedBitTestAndReset (&a->ch_upslew, 0);
+				InterlockedBitTestAndReset (a->ch_upslew, 0);
 				a->runmode = 0;
 				break;
 			}

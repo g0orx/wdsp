@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2014 Warren Pratt, NR0V
+Copyright (C) 2014, 2016 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,11 +26,13 @@ warren@wpratt.com
 
 #ifndef _cfir_h
 #define _cfir_h
-
+#include "firmin.h"
 typedef struct _cfir
 {
 	int run;
 	int size;
+	int nc;
+	int mp;
 	double* in;
 	double* out;
 	int runrate;
@@ -42,14 +44,12 @@ typedef struct _cfir
 	double scale;
 	int xtype;
 	double xbw;
-	double* infilt;
-	double* product;
-	fftw_plan CFor;
-	fftw_plan CRev;
-	double* mults;
+	int wintype;
+	FIRCORE p;
 } cfir, *CFIR;
 
-extern CFIR create_cfir (int run, int size, double* in, double* out, int runrate, int cicrate, int DD, int R, int Pairs, double cutoff, int xtype, double xbw);
+extern CFIR create_cfir (int run, int size, int nc, int mp, double* in, double* out, int runrate, int cicrate, 
+	int DD, int R, int Pairs, double cutoff, int xtype, double xbw, int wintype);
 
 extern void destroy_cfir (CFIR a);
 
@@ -65,14 +65,7 @@ extern void setSize_cfir (CFIR a, int size);
 
 extern void setOutRate_cfir (CFIR a, int rate);
 
-extern double *fir_read (int N, const char *filename, int rtype, double scale);
-
-extern double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double cicrate, double cutoff, int xtype, double xbw, int rtype, double scale);
-
-extern double* cfir_mults (int size, int runrate, int cicrate, double scale, int DD, int R, int Pairs, double cutoff, int xtype, double xbw);
-
-// TXA Properties
-
-extern __declspec (dllexport) void SetTXACFIRRun (int channel, int run);
+extern double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double cicrate, 
+	double cutoff, int xtype, double xbw, int rtype, double scale, int wintype);
 
 #endif

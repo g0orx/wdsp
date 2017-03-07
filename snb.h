@@ -111,6 +111,8 @@ typedef struct _bpsnba
 		int run_notches;				// use the notches, vs straight bandpass
 		int position;					// position in the processing pipeline
 		int size;						// buffer size
+		int nc;							// number of filter coefficients
+		int mp;							// minimum phase flag
 		double* in;						// input buffer
 		double* out;					// output buffer
 		int rate;						// sample rate
@@ -131,7 +133,7 @@ extern void calc_bpsnba (BPSNBA a);
 
 extern void decalc_bpsnba (BPSNBA a);
 
-extern BPSNBA create_bpsnba (int run, int run_notches, int position, int size, double* in, double* out, int rate,  
+extern BPSNBA create_bpsnba (int run, int run_notches, int position, int size, int nc, int mp, double* in, double* out, int rate,  
 	double abs_low_freq, double abs_high_freq, double f_low, double f_high, int wintype, double gain, int autoincr, 
 	int maxpb, NOTCHDB* ptraddr);
 
@@ -149,6 +151,10 @@ extern void xbpsnbain (BPSNBA a, int position);
 
 extern void xbpsnbaout (BPSNBA a, int position);
 
-extern void recalc_bpsnba_filter (BPSNBA a);
+extern void recalc_bpsnba_filter (BPSNBA a, int update);
+
+__declspec (dllexport) void RXABPSNBASetNC (int channel, int nc);
+
+__declspec (dllexport) void RXABPSNBASetMP (int channel, int mp);
 
 #endif
