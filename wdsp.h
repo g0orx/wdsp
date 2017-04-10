@@ -99,7 +99,8 @@ PORT void SetRXAAGCSlope (int channel, int slope);
 PORT void SetRXAAGCThresh(int channel, double thresh, double size, double rate);
 PORT void GetRXAAGCThresh(int channel, double *thresh, double size, double rate);
 PORT void SetRXAFMDeviation (int channel, double deviation);
-
+PORT void RXASetNC(int channel, int nc);
+PORT void RXASetMP(int channel, int nc);
 
 // Diversity prototype
 PORT void create_divEXT (int id, int run, int nr, int size);
@@ -181,6 +182,24 @@ PORT void SetTXAPostGenSweepRate (int channel, double rate);
 
 PORT void SetTXAFMDeviation (int channel, double deviation);
 PORT void SetTXAFMEmphPosition (int channel, int position);
+
+PORT void TXASetNC(int channel, int nc);
+PORT void TXASetMP(int channel, int nc);
+
+// PureSignal
+PORT void SetPSRunCal (int channel, int run);
+PORT void SetPSMox (int channel, int mox);
+PORT void SetPSReset (int channel, int reset);
+PORT void SetPSMancal (int channel, int mancal);
+PORT void SetPSAutomode (int channel, int automode);
+PORT void SetPSTurnon (int channel, int turnon);
+PORT void SetPSControl (int channel, int reset, int mancal, int automode, int turnon);
+PORT void SetPSLoopDelay (int channel, double delay);
+PORT void SetPSMoxDelay (int channel, double delay);
+PORT double SetPSTXDelay (int channel, double delay);
+PORT void SetPSHWPeak (int channel, double peak);
+PORT void SetPSPtol (int channel, double ptol);
+PORT void SetPSFeedbackRate (int channel, int rate);
 
 // resampler
 
