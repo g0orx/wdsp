@@ -44,6 +44,7 @@ PORT void GetPixels(int disp, int pixout, float *pix, int *flag);
 PORT void SetDisplayDetectorMode(int disp, int pixout, int mode);
 PORT void SetDisplayAverageMode(int disp, int pixout, int mode);
 PORT void SetDisplayNumAverage(int disp, int pixout, int num);
+PORT void SetDisplayAvBackmult (int disp, int pixout, double mult);
 
 // RXA
 enum rxaMeterType {
@@ -62,6 +63,9 @@ PORT void SetRXABandpassRun (int channel, int run);
 PORT void SetRXABandpassFreqs (int channel, double low, double high);
 PORT void RXASetPassband (int channel, double f_low, double f_high);
 PORT void SetRXAFMSQRun (int channel, int run);
+PORT void SetRXAFMSQThreshold (int channel, double threshold);
+PORT void SetRXAAMSQRun (int channel, int run);
+PORT void SetRXAAMSQThreshold (int channel, double threshold);
 PORT void SetRXAEMNRRun (int channel, int run);
 PORT void SetRXAEMNRgainMethod (int channel, int method);
 PORT void SetRXAEMNRnpeMethod (int channel, int method);
@@ -101,6 +105,9 @@ PORT void GetRXAAGCThresh(int channel, double *thresh, double size, double rate)
 PORT void SetRXAFMDeviation (int channel, double deviation);
 PORT void RXASetNC(int channel, int nc);
 PORT void RXASetMP(int channel, int nc);
+PORT void SetRXAEQRun (int channel, int run);
+PORT void SetRXAGrphEQ (int channel, int *rxeq);
+PORT void RXANBPSetShiftFrequency (int channel, double shift);
 
 // Diversity prototype
 PORT void create_divEXT (int id, int run, int nr, int size);
@@ -108,6 +115,7 @@ PORT void SetEXTDIVRun (int id, int run);
 PORT void SetEXTDIVBuffsize (int id, int size);
 PORT void SetEXTDIVNr (int id, int nr);
 PORT void SetEXTDIVOutput (int id, int output);
+PORT void SetEXTDIVRotate (int id, int nr, double *Irotate, double *Qrotate);
 PORT void xdivEXT (int id, int nsamples, double **in, double *out);
 
 
@@ -180,6 +188,8 @@ PORT void SetTXAPostGenSweepMag (int channel, double mag);
 PORT void SetTXAPostGenSweepFreq (int channel, double freq1, double freq2);
 PORT void SetTXAPostGenSweepRate (int channel, double rate);
 
+PORT void SetTXAGrphEQ (int channel, int *txeq);
+
 PORT void SetTXAFMDeviation (int channel, double deviation);
 PORT void SetTXAFMEmphPosition (int channel, int position);
 
@@ -200,6 +210,9 @@ PORT double SetPSTXDelay (int channel, double delay);
 PORT void SetPSHWPeak (int channel, double peak);
 PORT void SetPSPtol (int channel, double ptol);
 PORT void SetPSFeedbackRate (int channel, int rate);
+PORT void GetPSInfo (int channel, int *info);
+
+PORT void pscc (int channel, int size, double* tx, double* rx);
 
 // resampler
 
@@ -229,6 +242,9 @@ PORT void SetRXAPanelBinaural (int channel, int bin);
 
 PORT void SetTXAPanelRun (int channel, int run);
 PORT void SetTXAPanelGain1 (int channel, double gain);
+
+// CTSCC
+void SetTXACTCSSFreq (int channel, double freq);
 
 // wisdom
 char *wisdom_get_status();
