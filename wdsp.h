@@ -196,6 +196,8 @@ PORT void SetTXAFMEmphPosition (int channel, int position);
 PORT void TXASetNC(int channel, int nc);
 PORT void TXASetMP(int channel, int nc);
 
+PORT void SetTXAAMCarrierLevel (int channel, double c_level);
+
 // PureSignal
 PORT void SetPSRunCal (int channel, int run);
 PORT void SetPSMox (int channel, int mox);
