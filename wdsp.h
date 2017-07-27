@@ -212,7 +212,11 @@ PORT double SetPSTXDelay (int channel, double delay);
 PORT void SetPSHWPeak (int channel, double peak);
 PORT void SetPSPtol (int channel, double ptol);
 PORT void SetPSFeedbackRate (int channel, int rate);
+
 PORT void GetPSInfo (int channel, int *info);
+PORT void GetPSHWPeak (int channel, double* peak);
+PORT void GetPSMaxTX (int channel, double* maxtx);
+
 
 PORT void pscc (int channel, int size, double* tx, double* rx);
 
