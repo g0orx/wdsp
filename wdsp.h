@@ -45,6 +45,7 @@ PORT void SetDisplayDetectorMode(int disp, int pixout, int mode);
 PORT void SetDisplayAverageMode(int disp, int pixout, int mode);
 PORT void SetDisplayNumAverage(int disp, int pixout, int num);
 PORT void SetDisplayAvBackmult (int disp, int pixout, double mult);
+PORT void DestroyAnalyzer(int disp);
 
 // RXA
 enum rxaMeterType {
