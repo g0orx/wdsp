@@ -61,6 +61,7 @@ uintptr_t __cdecl wdsp_beginthread(void(__cdecl *start_address)(void *), unsigne
 #include "bandpass.h"
 #include "calcc.h"
 #include "cblock.h"
+#include "cfcomp.h"
 #include "cfir.h"
 #include "channel.h"
 #include "compress.h"

@@ -29,12 +29,11 @@ warren@wpratt.com
 void start_thread (int channel)
 {
 #ifdef linux
-        HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)(intptr_t)channel, "WDSP main");
-        SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
+	HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel,"WDSP main");
 #else
-        HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)(intptr_t)channel);
-        SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
+	HANDLE handle = wdsp_beginthread(main, 0, (void *)channel,"WDSP main");
 #endif
+	SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 }
 
 void pre_main_build (int channel)
@@ -101,7 +100,7 @@ void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, 
 		InterlockedBitTestAndSet (&ch[channel].exchange, 0);
 	}
 #ifndef linux
-        _MM_SET_FLUSH_ZERO_MODE (_MM_FLUSH_ZERO_ON);
+	_MM_SET_FLUSH_ZERO_MODE (_MM_FLUSH_ZERO_ON);
 #endif
 }
 
@@ -132,7 +131,7 @@ void CloseChannel (int channel)
 
 void flushChannel (void* p)
 {
-	int channel = (intptr_t)p;
+	int channel = (int)p;
 	EnterCriticalSection (&ch[channel].csDSP);
 	EnterCriticalSection (&ch[channel].csEXCH);
 	flush_iobuffs (channel);
@@ -141,8 +140,6 @@ void flushChannel (void* p)
 	LeaveCriticalSection (&ch[channel].csEXCH);
 	LeaveCriticalSection (&ch[channel].csDSP);
 	InterlockedBitTestAndReset (&ch[channel].flushflag, 0);
-// added for linux port
-	InterlockedBitTestAndReset (&ch[channel].iob.pc->exec_bypass, 0);
 	_endthread();
 }
 

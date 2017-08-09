@@ -28,7 +28,6 @@ warren@wpratt.com
 
 PANEL create_panel (int channel, int run, int size, double* in, double* out, double gain1, double gain2I, double gain2Q, int inselect, int copy)
 {
-fprintf(stderr,"create_panel: channel=%d run=%d gain1=%f gain2I=%f gain2Q=%f\n",channel,run,gain1,gain2I,gain2Q);
 	PANEL a = (PANEL) malloc0 (sizeof (panel));
 	a->channel = channel;
 	a->run = run;

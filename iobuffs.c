@@ -384,6 +384,7 @@ void downslew2 (IOB a, OUTREAL* pIout, OUTREAL* pQout)
 void create_iobuffs (int channel)
 {
 	int n;
+fprintf(stderr,"create_iobuffs: channel=%d in_size=%d r1_outsize=%d out_size=%d\n",channel,ch[channel].in_size,ch[channel].dsp_insize,ch[channel].out_size);
 	IOB a = (IOB) malloc0 (sizeof(iob));
 	ch[channel].iob.pc = ch[channel].iob.pd = ch[channel].iob.pe = ch[channel].iob.pf = a;
 	a->channel = channel;
@@ -416,6 +417,8 @@ void create_iobuffs (int channel)
 	a->Sem_OutReady  = CreateSemaphore(0, n, 1000, 0);
 	a->bfo = ch[channel].bfo;
 	create_slews (a);
+
+fprintf(stderr,"create_iobuffs: channel=%d in_size=%d r1_outsize=%d r2_insize=%d out_size=%d\n", channel, a->in_size, a->r1_outsize, a->r2_insize, a->out_size);
 }
 
 void destroy_iobuffs (int channel)
@@ -489,13 +492,14 @@ void fexchange0 (int channel, double* in, double* out, int* error)
 				if (!_InterlockedAnd (&a->slew.downflag, 1))
 				{
 					InterlockedBitTestAndReset (&ch[channel].exchange, 0);
-					wdsp_beginthread (flushChannel, 0, (void *)(intptr_t)channel, "WDSP flushChannel");
+					wdsp_beginthread (flushChannel, 0, (void *)channel,"WDSP flushChannel");
 				}
 			}
 			else
 				memcpy (out, a->r2_baseptr + 2 * a->r2_outidx, a->out_size * sizeof (complex));
 		else
 		{
+fprintf(stderr,"fexchange0: doit=%d r2_havcesamps=%d out_size=%d\n", doit, a->r2_havesamps, a->out_size);
 			memset (out, 0, a->out_size * sizeof (complex));
 			*error += -2;
 		}
@@ -548,7 +552,7 @@ void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTREAL *
 				if (!_InterlockedAnd (&a->slew.downflag, 1))
 				{
 					InterlockedBitTestAndReset (&ch[channel].exchange, 0);
-					wdsp_beginthread (flushChannel, 0, (void *)(intptr_t)channel, "WDSP flushChannel");
+					wdsp_beginthread (flushChannel, 0, (void *)channel,"WDSP flushChannel");
 				}
 			}
 			else

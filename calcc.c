@@ -798,7 +798,7 @@ void __cdecl SaveCorrection (void *pargs)
 
 void __cdecl RestoreCorrection(void *pargs)
 {
-	int i, k, ret;
+	int i, k;
 	CALCC a = (CALCC)pargs;
 	double* pm = (double *)malloc0 (4 * a->util.ints * sizeof (double));
 	double* pc = (double *)malloc0 (4 * a->util.ints * sizeof (double));
@@ -807,11 +807,11 @@ void __cdecl RestoreCorrection(void *pargs)
 	for (i = 0; i < a->util.ints; i++)
 	{
 		for (k = 0; k < 4; k++)
-			ret = fscanf (file, "%le", &(pm[4 * i + k]));
+			fscanf (file, "%le", &(pm[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			ret = fscanf (file, "%le", &(pc[4 * i + k]));
+			fscanf (file, "%le", &(pc[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			ret = fscanf (file, "%le", &(ps[4 * i + k]));
+			fscanf (file, "%le", &(ps[4 * i + k]));
 	}
 	fclose (file);
 	if (!InterlockedBitTestAndSet (&a->ctrl.running, 0))
@@ -858,7 +858,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 				a->ctrl.reset = 0;
 				if (!a->ctrl.turnon)
 					if (InterlockedBitTestAndReset (&a->ctrl.running, 0))
-						wdsp_beginthread (doTurnoff, 0, (void *)a, "WDSP doTurnoff");
+						wdsp_beginthread (doTurnoff, 0, (void *)a,"WDSP doTurnoff");
 				a->info[14] = 0;
 				a->ctrl.env_maxtx = 0.0;
 				a->ctrl.bs_count = 0;
@@ -992,7 +992,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 				if (!a->ctrl.calcinprogress)	
 				{
 					a->ctrl.calcinprogress = 1;
-					wdsp_beginthread(doCalcCorrection, 0, (void *)a, "WDSP doCalcCorrection");
+					wdsp_beginthread(doCalcCorrection, 0, (void *)a,"WDSP doCalcCorrection");
 				}
 
 				if (InterlockedBitTestAndReset(&a->ctrl.calcdone, 0))
@@ -1081,7 +1081,7 @@ void PSSaveCorr (int channel, char* filename)
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
 	while (a->util.savefile[i++] = *filename++);
-	wdsp_beginthread(SaveCorrection, 0, (void *)a, "WDSP SaveCorrection");
+	wdsp_beginthread(SaveCorrection, 0, (void *)a,"WDSP PSSaveCorr");
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
 
@@ -1094,7 +1094,7 @@ void PSRestoreCorr (int channel, char* filename)
 	a = txa[channel].calcc.p;
 	while (a->util.restfile[i++] = *filename++);
 	a->ctrl.turnon = 1;
-	wdsp_beginthread(RestoreCorrection, 0, (void *)a, "WDSP RestoreCorrection");
+	wdsp_beginthread(RestoreCorrection, 0, (void *)a,"WDSP PSRestorCorr");
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
 

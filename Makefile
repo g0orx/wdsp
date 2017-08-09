@@ -33,8 +33,10 @@ bandpass.c\
 calcc.c\
 calculus.c\
 cblock.c\
+cfcomp.c\
 cfir.c\
 channel.c\
+comm.c\
 compress.c\
 delay.c\
 div.c\
@@ -72,6 +74,7 @@ slew.c\
 snb.c\
 TXA.c\
 utilities.c\
+version.c\
 wcpAGC.c\
 wisdom.c
 
@@ -87,6 +90,7 @@ bandpass.h\
 calcc.h\
 calculus.h\
 cblock.h\
+cfcomp.h\
 cfir.h\
 channel.h\
 comm.h\
@@ -143,8 +147,10 @@ bandpass.o\
 calcc.o\
 calculus.o\
 cblock.o\
+cfcomp.o\
 cfir.o\
 channel.o\
+comm.o\
 compress.o\
 delay.o\
 div.o\
@@ -181,6 +187,7 @@ slew.o\
 snb.o\
 TXA.o\
 utilities.o\
+version.o\
 wcpAGC.o\
 wisdom.o
 
@@ -202,6 +209,7 @@ $(JAVA_PROGRAM): $(JAVA_OBJS)
 install: $(PROGRAM)
 	cp wdsp.h /usr/local/include
 	cp $(PROGRAM) /usr/local/lib
+	ldconfig
 
 install_java: $(JAVA_PROGRAM)
 	cp $(JAVA_PROGRAM) /usr/local/lib
