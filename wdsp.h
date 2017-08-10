@@ -48,7 +48,6 @@ extern void SetDisplayNumAverage(int disp, int pixout, int num);
 extern void SetDisplayAvBackmult (int disp, int pixout, double mult);
 extern void DestroyAnalyzer(int disp);
 
-/*
 // RXA
 enum rxaMeterType {
         RXA_S_PK,
@@ -60,7 +59,6 @@ enum rxaMeterType {
         RXA_AGC_AV,
         RXA_METERTYPE_LAST
 };
-*/
 
 extern void SetRXAMode (int channel, int mode);
 extern void SetRXABandpassRun (int channel, int run);
@@ -123,7 +121,6 @@ extern void SetEXTDIVRotate (int id, int nr, double *Irotate, double *Qrotate);
 extern void xdivEXT (int id, int nsamples, double **in, double *out);
 
 
-/*
 // TXA Prototypes
 enum txaMeterType {
   TXA_MIC_PK,
@@ -142,7 +139,6 @@ enum txaMeterType {
   TXA_OUT_AV,
   TXA_METERTYPE_LAST
 };
-*/
 
 extern void SetTXAMode (int channel, int mode);
 extern void SetTXABandpassRun (int channel, int run);
