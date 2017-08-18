@@ -111,7 +111,7 @@ extern void SetRXAEQRun (int channel, int run);
 extern void SetRXAGrphEQ (int channel, int *rxeq);
 extern void RXANBPSetShiftFrequency (int channel, double shift);
 
-// Diversity prototype
+// Diversity prototypes
 extern void create_divEXT (int id, int run, int nr, int size);
 extern void SetEXTDIVRun (int id, int run);
 extern void SetEXTDIVBuffsize (int id, int size);
@@ -119,6 +119,36 @@ extern void SetEXTDIVNr (int id, int nr);
 extern void SetEXTDIVOutput (int id, int output);
 extern void SetEXTDIVRotate (int id, int nr, double *Irotate, double *Qrotate);
 extern void xdivEXT (int id, int nsamples, double **in, double *out);
+
+// Noise Blanker prototypes
+extern void create_anbEXT( int id, int run, int buffsize, double samplerate, double tau, double hangtime, double advtime, double backtau, double threshold);
+extern void destroy_anbEXT (int id);
+extern void flush_anbEXT (int id);
+extern void xanbEXT (int id, double* in, double* out);
+extern void SetEXTANBRun (int id, int run);
+extern void SetEXTANBSamplerate (int id, int rate);
+extern void SetEXTANBTau (int id, double tau);
+extern void SetEXTANBHangtime (int id, double time);
+extern void SetEXTANBAdvtime (int id, double time);
+extern void SetEXTANBBacktau (int id, double tau);
+extern void SetEXTANBThreshold (int id, double thresh);
+extern void xanbEXTF (int id, float *I, float *Q);
+
+extern void create_nobEXT( int id, int run, int mode, int buffsize, double samplerate, double slewtime, double hangtime, double advtime, double backtau, double threshold);
+extern void destroy_nobEXT (int id);
+extern void flush_nobEXT (int id);
+extern void xnobEXT (int id, double* in, double* out);
+extern void SetEXTNOBRun (int id, int run);
+extern void SetEXTNOBMode (int id, int mode);
+extern void SetEXTNOBBuffsize (int id, int size);
+extern void SetEXTNOBSamplerate (int id, int rate);
+extern void SetEXTNOBTau (int id, double tau);
+extern void SetEXTNOBHangtime (int id, double time);
+extern void SetEXTNOBAdvtime (int id, double time);
+extern void SetEXTNOBBacktau (int id, double tau);
+extern void SetEXTNOBThreshold (int id, double thresh);
+extern void xnobEXTF (int id, float *I, float *Q);
+
 
 
 // TXA Prototypes
