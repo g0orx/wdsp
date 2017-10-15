@@ -160,6 +160,9 @@ enum txaMeterType {
   TXA_LVLR_PK,
   TXA_LVLR_AV,
   TXA_LVLR_GAIN,
+  TXA_CFC_PK,
+  TXA_CFC_AV,
+  TXA_CFC_GAIN,
   TXA_COMP_PK,
   TXA_COMP_AV,
   TXA_ALC_PK,
@@ -177,6 +180,7 @@ extern void SetTXABandpassWindow (int channel, int wintype);
 extern void SetTXAEQRun (int channel, int run);
 extern void SetTXACTCSSRun (int channel, int run);
 extern void SetTXAAMSQRun (int channel, int run);
+extern void SetTXACompressorGain (int channel, double gain);
 extern void SetTXACompressorRun (int channel, int run);
 extern void SetTXAosctrlRun (int channel, int run);
 extern void SetTXACFIRRun (int channel, int run);
