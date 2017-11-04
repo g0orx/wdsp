@@ -384,7 +384,6 @@ void downslew2 (IOB a, OUTREAL* pIout, OUTREAL* pQout)
 void create_iobuffs (int channel)
 {
 	int n;
-fprintf(stderr,"create_iobuffs: channel=%d in_size=%d r1_outsize=%d out_size=%d\n",channel,ch[channel].in_size,ch[channel].dsp_insize,ch[channel].out_size);
 	IOB a = (IOB) malloc0 (sizeof(iob));
 	ch[channel].iob.pc = ch[channel].iob.pd = ch[channel].iob.pe = ch[channel].iob.pf = a;
 	a->channel = channel;
@@ -418,7 +417,6 @@ fprintf(stderr,"create_iobuffs: channel=%d in_size=%d r1_outsize=%d out_size=%d\
 	a->bfo = ch[channel].bfo;
 	create_slews (a);
 
-fprintf(stderr,"create_iobuffs: channel=%d in_size=%d r1_outsize=%d r2_insize=%d out_size=%d\n", channel, a->in_size, a->r1_outsize, a->r2_insize, a->out_size);
 }
 
 void destroy_iobuffs (int channel)
