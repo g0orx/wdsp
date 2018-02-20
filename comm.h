@@ -115,7 +115,7 @@ uintptr_t __cdecl wdsp_beginthread(void(__cdecl *start_address)(void *), unsigne
 #define dMAX_DISPLAYS					64					// maximum number of displays = max instances
 #define dMAX_STITCH						4					// maximum number of sub-spans to stitch together
 #define dMAX_NUM_FFT					1					// maximum number of ffts for an elimination
-#define dMAX_PIXELS						4096				// maximum number of pixels that can be requested
+#define dMAX_PIXELS						8192 // was 4096				// maximum number of pixels that can be requested
 #define dMAX_AVERAGE					60					// maximum number of pixel frames that will be window-averaged
 #ifdef _Thetis
 #define dINREAL							double

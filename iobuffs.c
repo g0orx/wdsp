@@ -497,7 +497,6 @@ void fexchange0 (int channel, double* in, double* out, int* error)
 				memcpy (out, a->r2_baseptr + 2 * a->r2_outidx, a->out_size * sizeof (complex));
 		else
 		{
-fprintf(stderr,"fexchange0: doit=%d r2_havcesamps=%d out_size=%d\n", doit, a->r2_havesamps, a->out_size);
 			memset (out, 0, a->out_size * sizeof (complex));
 			*error += -2;
 		}
