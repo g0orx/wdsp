@@ -275,14 +275,15 @@ void calc_emnr(EMNR a)
 	//
 	a->g.GG = (double *)malloc0(241 * 241 * sizeof(double));
 	a->g.GGS = (double *)malloc0(241 * 241 * sizeof(double));
-/*
+#ifdef linux
+        memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
+        memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
+#else
 	a->g.fileb = fopen("calculus", "rb");
 	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
 	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);
 	fclose(a->g.fileb);
-*/
-        memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
-        memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
+#endif
 	//
 
 	a->np.incr = a->incr;
@@ -859,20 +860,20 @@ void xemnr (EMNR a, int pos)
 		memcpy (a->out, a->in, a->bsize * sizeof (complex));
 }
 
-void setBuffers_emnr (EMNR a, double* in, double* out)
+setBuffers_emnr (EMNR a, double* in, double* out)
 {
 	a->in = in;
 	a->out = out;
 }
 
-void setSamplerate_emnr (EMNR a, int rate)
+setSamplerate_emnr (EMNR a, int rate)
 {
 	decalc_emnr (a);
 	a->rate = rate;
 	calc_emnr (a);
 }
 
-void setSize_emnr (EMNR a, int size)
+setSize_emnr (EMNR a, int size)
 {
 	decalc_emnr (a);
 	a->bsize = size;

@@ -1331,7 +1331,7 @@ void CloseBuffer(int disp, int ss, int LO)
 	{
 		a->dispatcher = 1;
 		LeaveCriticalSection(&a->SetAnalyzerSection);
-		wdsp_beginthread(sendbuf, 0, (void *)disp,"WDSP sendbuf");
+		wdsp_beginthread(sendbuf, 0, (void *)disp);
 	}
 	else
 		LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1370,7 +1370,7 @@ void Spectrum(int disp, int ss, int LO, dINREAL* pI, dINREAL* pQ)
 	{
 		a->dispatcher = 1;
 		LeaveCriticalSection(&a->SetAnalyzerSection);
-		wdsp_beginthread(sendbuf, 0, (void *)disp, "WDSP sendbuf");
+		wdsp_beginthread(sendbuf, 0, (void *)disp);
 	}
 	else
 		LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1415,7 +1415,7 @@ void Spectrum2(int run, int disp, int ss, int LO, dINREAL* pbuff)
 		{
 			a->dispatcher = 1;
 			LeaveCriticalSection(&a->SetAnalyzerSection);
-			wdsp_beginthread(sendbuf, 0, (void *)disp, "WDSP sendbuf");
+			wdsp_beginthread(sendbuf, 0, (void *)disp);
 		}
 		else
 			LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1461,7 +1461,7 @@ void Spectrum0(int run, int disp, int ss, int LO, double* pbuff)
 		{
 			a->dispatcher = 1;
 			LeaveCriticalSection(&a->SetAnalyzerSection);
-			wdsp_beginthread(sendbuf, 0, (void *)disp, "WDSP sendbuf");
+			wdsp_beginthread(sendbuf, 0, (void *)disp);
 		}
 		else
 			LeaveCriticalSection(&a->SetAnalyzerSection);

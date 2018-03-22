@@ -112,7 +112,7 @@ void LinuxSetEvent(sem_t* sem) {
 	sem_post(sem);
 }
 
-HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name) {
+HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist) {
 	pthread_t threadid;
 	pthread_attr_t  attr;
 	int rc = 0;
@@ -136,7 +136,7 @@ HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stac
 	}
 
         //pthread_attr_destroy(&attr);
-        rc=pthread_setname_np(threadid, name);
+        rc=pthread_setname_np(threadid, "WDSP");
 
 	return (HANDLE)threadid;
 

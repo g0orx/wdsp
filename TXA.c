@@ -395,8 +395,8 @@ void create_txa (int channel)
 		0,											// disp
 		ch[channel].dsp_size,						// input buffer size
 		txa[channel].midbuff,						// input buffer
-		4096,										// number of samples to buffer
-		4096,										// fft size for spectrum
+		16384,										// number of samples to buffer
+		16384,										// fft size for spectrum
 		1);											// specmode
 
 	txa[channel].calcc.p = create_calcc (			
@@ -904,7 +904,7 @@ void TXASetupBPFilters (int channel)
 ********************************************************************************************************/
 
 PORT
-void TXASetNC (int channel, int nc)
+TXASetNC (int channel, int nc)
 {
 	int oldstate = SetChannelState (channel, 0, 1);
 	SetTXABandpassNC			(channel, nc);
@@ -915,7 +915,7 @@ void TXASetNC (int channel, int nc)
 }
 
 PORT
-void TXASetMP (int channel, int mp)
+TXASetMP (int channel, int mp)
 {
 	SetTXABandpassMP			(channel, mp);
 	SetTXAFMEmphMP				(channel, mp);

@@ -109,7 +109,7 @@ void xfmmod (FMMOD a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_fmmod (FMMOD a, double* in, double* out)
+setBuffers_fmmod (FMMOD a, double* in, double* out)
 {
 	a->in = in;
 	a->out = out;
@@ -117,7 +117,7 @@ void setBuffers_fmmod (FMMOD a, double* in, double* out)
 	setBuffers_fircore (a->p, a->out, a->out);
 }
 
-void setSamplerate_fmmod (FMMOD a, int rate)
+setSamplerate_fmmod (FMMOD a, int rate)
 {
 	double* impulse;
 	a->samplerate = rate;
@@ -127,7 +127,7 @@ void setSamplerate_fmmod (FMMOD a, int rate)
 	_aligned_free (impulse);
 }
 
-void setSize_fmmod (FMMOD a, int size)
+setSize_fmmod (FMMOD a, int size)
 {
 	double* impulse;
 	a->size = size;

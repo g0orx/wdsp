@@ -281,6 +281,12 @@ extern void SetRXAPanelBinaural (int channel, int bin);
 extern void SetTXAPanelRun (int channel, int run);
 extern void SetTXAPanelGain1 (int channel, double gain);
 
+// variable smapler
+
+extern void* create_varsampV (int in_rate, int out_rate, int R);
+extern void xvarsampV (double* input, double* output, int numsamps, double var, int* outsamps, void* ptr);
+extern void destroy_varsampV (void* ptr);
+
 // CTSCC
 extern void SetTXACTCSSFreq (int channel, double freq);
 

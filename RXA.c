@@ -899,7 +899,7 @@ void RXAbpsnbaSet (int channel)
 ********************************************************************************************************/
 
 PORT
-void RXASetPassband (int channel, double f_low, double f_high)
+RXASetPassband (int channel, double f_low, double f_high)
 {
 	SetRXABandpassFreqs			(channel, f_low, f_high);
 	SetRXASNBAOutputBandwidth	(channel, f_low, f_high);
@@ -907,7 +907,7 @@ void RXASetPassband (int channel, double f_low, double f_high)
 }
 
 PORT
-void RXASetNC (int channel, int nc)
+RXASetNC (int channel, int nc)
 {
 	int oldstate = SetChannelState (channel, 0, 1);
 	RXANBPSetNC					(channel, nc);
@@ -921,7 +921,7 @@ void RXASetNC (int channel, int nc)
 }
 
 PORT
-void RXASetMP (int channel, int mp)
+RXASetMP (int channel, int mp)
 {
 	RXANBPSetMP					(channel, mp);
 	RXABPSNBASetMP				(channel, mp);

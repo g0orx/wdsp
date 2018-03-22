@@ -27,7 +27,7 @@ warren@wpratt.com
 #include "comm.h"
 
 #ifdef linux
-void wdspmain (void *pargs)
+void wdspmain(void *pargs)
 #else
 void main (void *pargs)
 #endif

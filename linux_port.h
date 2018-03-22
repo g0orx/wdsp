@@ -52,6 +52,7 @@ john.d.melton@googlemail.com
 #define InterlockedBitTestAndReset(base,bit) __sync_fetch_and_and(base,~(1L<<bit))
 
 #define InterlockedExchange(target,value) __sync_lock_test_and_set(target,value)
+#define InterlockedAnd(base,mask) __sync_fetch_and_and(base,mask)
 #define _InterlockedAnd(base,mask) __sync_fetch_and_and(base,mask)
 #define __declspec(x)
 #define __cdecl
@@ -94,7 +95,7 @@ sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,
 
 void LinuxSetEvent(sem_t* sem);
 
-HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist, char *name);
+HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist);
 
 void _endthread();
 

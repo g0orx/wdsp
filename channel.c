@@ -29,9 +29,9 @@ warren@wpratt.com
 void start_thread (int channel)
 {
 #ifdef linux
-	HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel,"WDSP main");
+        HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel);
 #else
-	HANDLE handle = wdsp_beginthread(main, 0, (void *)channel,"WDSP main");
+	HANDLE handle = (HANDLE) wdsp_beginthread(main, 0, (void *)channel);
 #endif
 	SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 }

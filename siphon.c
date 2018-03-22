@@ -295,7 +295,7 @@ void TXAGetSpecF1 (int channel, float* out)
 	LeaveCriticalSection (&a->update);
 	sip_spectrum (a);
 	mid = a->fftsize / 2;
-	if (!_InterlockedAnd (&a->specmode, 1))
+	if (!InterlockedAnd (&a->specmode, 1))
 		// swap the halves of the spectrum
 		for (i = 0, j = mid; i < mid; i++, j++)
 		{

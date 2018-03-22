@@ -66,6 +66,7 @@ nobII.c\
 osctrl.c\
 patchpanel.c\
 resample.c\
+rmatch.c\
 RXA.c\
 sender.c\
 shift.c\
@@ -74,6 +75,7 @@ slew.c\
 snb.c\
 TXA.c\
 utilities.c\
+varsamp.c\
 version.c\
 wcpAGC.c\
 wisdom.c
@@ -124,6 +126,7 @@ nobII.h\
 osctrl.h\
 patchpanel.h\
 resample.h\
+rmatch.h\
 RXA.h\
 sender.h\
 shift.h\
@@ -179,6 +182,7 @@ nobII.o\
 osctrl.o\
 patchpanel.o\
 resample.o\
+rmatch.o\
 RXA.o\
 sender.o\
 shift.o\
@@ -188,6 +192,7 @@ snb.o\
 TXA.o\
 utilities.o\
 version.o\
+varsamp.o\
 wcpAGC.o\
 wisdom.o
 

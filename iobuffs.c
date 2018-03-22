@@ -416,7 +416,6 @@ void create_iobuffs (int channel)
 	a->Sem_OutReady  = CreateSemaphore(0, n, 1000, 0);
 	a->bfo = ch[channel].bfo;
 	create_slews (a);
-
 }
 
 void destroy_iobuffs (int channel)
@@ -490,7 +489,7 @@ void fexchange0 (int channel, double* in, double* out, int* error)
 				if (!_InterlockedAnd (&a->slew.downflag, 1))
 				{
 					InterlockedBitTestAndReset (&ch[channel].exchange, 0);
-					wdsp_beginthread (flushChannel, 0, (void *)channel,"WDSP flushChannel");
+					wdsp_beginthread (flushChannel, 0, (void *)channel);
 				}
 			}
 			else
@@ -549,7 +548,7 @@ void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTREAL *
 				if (!_InterlockedAnd (&a->slew.downflag, 1))
 				{
 					InterlockedBitTestAndReset (&ch[channel].exchange, 0);
-					wdsp_beginthread (flushChannel, 0, (void *)channel,"WDSP flushChannel");
+					wdsp_beginthread (flushChannel, 0, (void *)channel);
 				}
 			}
 			else

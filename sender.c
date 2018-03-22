@@ -26,12 +26,12 @@ warren@wpratt.com
 
 #include "comm.h"
 
-void calc_sender (SENDER a)
+calc_sender (SENDER a)
 {
 	a->out = (double *) malloc0 (a->size * sizeof (complex));
 }
 
-void decalc_sender (SENDER a)
+decalc_sender (SENDER a)
 {
 	_aligned_free (a->out);
 }
