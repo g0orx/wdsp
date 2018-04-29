@@ -904,7 +904,7 @@ void TXASetupBPFilters (int channel)
 ********************************************************************************************************/
 
 PORT
-TXASetNC (int channel, int nc)
+void TXASetNC (int channel, int nc)
 {
 	int oldstate = SetChannelState (channel, 0, 1);
 	SetTXABandpassNC			(channel, nc);
@@ -915,7 +915,7 @@ TXASetNC (int channel, int nc)
 }
 
 PORT
-TXASetMP (int channel, int mp)
+void TXASetMP (int channel, int mp)
 {
 	SetTXABandpassMP			(channel, mp);
 	SetTXAFMEmphMP				(channel, mp);
