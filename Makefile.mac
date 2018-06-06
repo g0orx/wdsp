@@ -1,14 +1,21 @@
 #
 # libwdsp.dylib Makefile (Mac OS X)
 #
+
 CC=gcc
 LINK=gcc
 OPTIONS=-g -fPIC -O3
 
+#
+# Added /usr/local/lib since there we have libs like fftw3 installed
+#
 LIBS=-L/usr/local/lib -L. -lfftw3 -lpthread
 JAVA_LIBS=-L. -lwdsp
 
-INCLUDES=-I/usr/local/include -I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux -I/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/Include -I/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/Include/darwin
+#
+# You probably need to locate where the JAVA includes reside on *your* system
+#
+INCLUDES=-I/usr/local/include -I/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/Include -I/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/Include/darwin
 
 COMPILE=$(CC) $(INCLUDES)
 
@@ -23,9 +30,12 @@ anf.c\
 anr.c\
 bandpass.c\
 calcc.c\
+calculus.c\
 cblock.c\
+cfcomp.c\
 cfir.c\
 channel.c\
+comm.c\
 compress.c\
 delay.c\
 div.c\
@@ -55,6 +65,7 @@ nobII.c\
 osctrl.c\
 patchpanel.c\
 resample.c\
+rmatch.c\
 RXA.c\
 sender.c\
 shift.c\
@@ -63,6 +74,8 @@ slew.c\
 snb.c\
 TXA.c\
 utilities.c\
+varsamp.c\
+version.c\
 wcpAGC.c\
 wisdom.c
 
@@ -76,7 +89,9 @@ anf.h\
 anr.h\
 bandpass.h\
 calcc.h\
+calculus.h\
 cblock.h\
+cfcomp.h\
 cfir.h\
 channel.h\
 comm.h\
@@ -89,9 +104,8 @@ emph.h\
 eq.h\
 fastmath.h\
 fcurve.h\
-fftw3.h\
 fir.h\
-firmin.h\
+firmin.h \
 fmd.h\
 fmmod.h\
 fmsq.h\
@@ -111,6 +125,7 @@ nobII.h\
 osctrl.h\
 patchpanel.h\
 resample.h\
+rmatch.h\
 RXA.h\
 sender.h\
 shift.h\
@@ -132,9 +147,12 @@ anf.o\
 anr.o\
 bandpass.o\
 calcc.o\
+calculus.o\
 cblock.o\
+cfcomp.o\
 cfir.o\
 channel.o\
+comm.o\
 compress.o\
 delay.o\
 div.o\
@@ -163,6 +181,7 @@ nobII.o\
 osctrl.o\
 patchpanel.o\
 resample.o\
+rmatch.o\
 RXA.o\
 sender.o\
 shift.o\
@@ -171,6 +190,8 @@ slew.o\
 snb.o\
 TXA.o\
 utilities.o\
+version.o\
+varsamp.o\
 wcpAGC.o\
 wisdom.o
 

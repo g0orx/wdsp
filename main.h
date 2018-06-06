@@ -27,7 +27,7 @@ warren@wpratt.com
 #ifndef _mainloop_h
 #define _mainloop_h
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 extern void wdspmain (void *pargs);
 #else
 extern void main (void *pargs);

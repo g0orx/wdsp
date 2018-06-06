@@ -24,7 +24,7 @@ warren@wpratt.com
 
 */
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>

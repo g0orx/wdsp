@@ -604,13 +604,13 @@ DWORD WINAPI spectra (void *pargs)
 		LeaveCriticalSection (&(a->EliminateSection[ss]));
 
 		EnterCriticalSection (&a->StitchSection);
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 		a->stitch_flag |= 1L << ss;
 #else
 		a->stitch_flag |= 1i64 << ss;
 #endif
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 		if (a->stitch_flag == ((1L << a->num_stitch) - 1))
 #else
 		if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
@@ -689,13 +689,13 @@ DWORD WINAPI Cspectra (void *pargs)
 		LeaveCriticalSection (&(a->EliminateSection[ss]));
 
 		EnterCriticalSection (&a->StitchSection);
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 		a->stitch_flag |= 1L << ss;
 #else
 		a->stitch_flag |= 1i64 << ss;
 #endif
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 		if (a->stitch_flag == ((1L << a->num_stitch) - 1))
 #else
 		if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
@@ -871,13 +871,13 @@ void __cdecl sendbuf(void *arg)
 					
 					InterlockedIncrement(a->pnum_threads);
 					if (a->type == 0)
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
                                                 spectra((void *)(((intptr_t)arg << 12) + (a->ss << 4) + a->LO));
 #else
 						QueueUserWorkItem(spectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
 #endif
 					else
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
                                                 Cspectra((void *)(((intptr_t)arg << 12) + (a->ss << 4) + a->LO));
 #else
 						QueueUserWorkItem(Cspectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
