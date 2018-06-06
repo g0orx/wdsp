@@ -34,7 +34,7 @@ john.d.melton@googlemail.com
 *													*
 ********************************************************************************************************/
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 
 void QueueUserWorkItem(void *function,void *context,int flags) {
 	pthread_t t;
@@ -45,7 +45,12 @@ void QueueUserWorkItem(void *function,void *context,int flags) {
 void InitializeCriticalSectionAndSpinCount(pthread_mutex_t *mutex,int count) {
 	pthread_mutexattr_t mAttr;
 	pthread_mutexattr_init(&mAttr);
+#ifdef __APPLE__
+	// DL1YCF: MacOS X does not have PTHREAD_MUTEX_RECURSIVE_NP
+	pthread_mutexattr_settype(&mAttr,PTHREAD_MUTEX_RECURSIVE);
+#else
 	pthread_mutexattr_settype(&mAttr,PTHREAD_MUTEX_RECURSIVE_NP);
+#endif
 	pthread_mutex_init(mutex,&mAttr);
 	pthread_mutexattr_destroy(&mAttr);
 	// ignore count
@@ -86,11 +91,21 @@ int LinuxWaitForSingleObject(sem_t *sem,int ms) {
 }
 
 sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,char *name) {
+#ifdef __APPLE__
+        //DL1YCF
+	//This routine is invoked with name=NULL several times, so we have to make
+	//a unique name of tpye WDSPxxxxx for each invocation.
+	static int semcount=0;
+	char sname[12];
+        sprintf(sname,"WDSP%05d",semcount++);
+        return sem_open(sname, O_CREAT, 0700, initial_count);
+#else
         sem_t *sem;
         sem=malloc(sizeof(sem_t));
 	int result;
 	result=sem_init(sem, 0, 0);
 	return sem;
+#endif
 }
 
 void LinuxReleaseSemaphore(sem_t* sem,int release_count, int* previous_count) {
@@ -136,7 +151,11 @@ HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stac
 	}
 
         //pthread_attr_destroy(&attr);
+#ifndef __APPLE__
+	// DL1YCF: this function does not exist on MacOS. You can only name the
+        //         current thread.
         rc=pthread_setname_np(threadid, "WDSP");
+#endif
 
 	return (HANDLE)threadid;
 

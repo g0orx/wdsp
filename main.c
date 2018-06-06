@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #include "comm.h"
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 void wdspmain(void *pargs)
 #else
 void main (void *pargs)

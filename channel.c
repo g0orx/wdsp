@@ -28,7 +28,7 @@ warren@wpratt.com
 
 void start_thread (int channel)
 {
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
         HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel);
 #else
 	HANDLE handle = (HANDLE) wdsp_beginthread(main, 0, (void *)channel);
@@ -99,7 +99,7 @@ void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, 
 		InterlockedBitTestAndReset (&ch[channel].iob.pc->exec_bypass, 0);
 		InterlockedBitTestAndSet (&ch[channel].exchange, 0);
 	}
-#ifndef linux
+#if !defined(linux) && !defined(__APPLE__)
 	_MM_SET_FLUSH_ZERO_MODE (_MM_FLUSH_ZERO_ON);
 #endif
 }

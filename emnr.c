@@ -275,7 +275,7 @@ void calc_emnr(EMNR a)
 	//
 	a->g.GG = (double *)malloc0(241 * 241 * sizeof(double));
 	a->g.GGS = (double *)malloc0(241 * 241 * sizeof(double));
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
         memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
         memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
 #else

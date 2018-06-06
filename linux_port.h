@@ -25,7 +25,7 @@ john.d.melton@googlemail.com
 
 */
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 
 
 #include <pthread.h>
