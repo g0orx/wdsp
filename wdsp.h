@@ -256,6 +256,17 @@ extern void GetPSMaxTX (int channel, double* maxtx);
 
 extern void pscc (int channel, int size, double* tx, double* rx);
 
+// EER
+extern create_eerEXT (int id, int run, int size, int rate, double mgain, double pgain, int rundelays, double mdelay, double pdelay, int amiq);
+extern xeerEXTF (int id, float* inI, float* inQ, float* outI, float* outQ, float* outMI, float* outMQ, int mox, int size);
+extern void SetEERRun (int id, int run);
+extern void SetEERAMIQ (int id, int amiq);
+extern void SetEERRunDelays (int id, int run);
+extern void SetEERPgain (int id, double gain);
+extern void SetEERPdelay (int id, double delay);
+extern void SetEERMgain (int id, double gain);
+extern void SetEERMdelay (int id, double delay);
+
 // resampler
 
 extern void *create_resample (int run, int size, double* in, double* out, int in_rate, int out_rate, double fc, int ncoef, double gain);
