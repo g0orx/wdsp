@@ -212,6 +212,7 @@ $(JAVA_PROGRAM): $(JAVA_OBJS)
 
 install: $(PROGRAM)
 	cp wdsp.h /usr/local/include
+	install_name_tool -id /usr/local/lib/$(PROGRAM) $(PROGRAM)
 	cp $(PROGRAM) /usr/local/lib
 
 install_java: $(JAVA_PROGRAM)

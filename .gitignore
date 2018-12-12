@@ -1,0 +1,3 @@
+*.o
+libwdsp.a
+libwdsp.dylib
