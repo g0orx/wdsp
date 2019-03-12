@@ -25,7 +25,10 @@ warren@wpratt.com
 */
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
+
+#if defined(linux) || defined(__APPLE__)
 #include "calculus.h"
+#endif
 
 /********************************************************************************************************
 *																										*

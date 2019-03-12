@@ -31,7 +31,7 @@ void start_thread (int channel)
 #if defined(linux) || defined(__APPLE__)
         HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel);
 #else
-	HANDLE handle = (HANDLE) wdsp_beginthread(main, 0, (void *)channel);
+        HANDLE handle = (HANDLE) wdsp_beginthread(main, 0, (void *)channel);
 #endif
 	SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 }

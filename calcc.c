@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013, 2014, 2016 Warren Pratt, NR0V
+Copyright (C) 2013, 2014, 2016, 2019 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -842,7 +842,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 	if (a->runcal)
 	{
 		a->size = size;
-		if (InterlockedAnd (&a->mox, 1) && a->txdelay->tdelay != 0.0)
+		if (InterlockedAnd (&a->mox, 1) && (a->txdelay->tdelay != 0.0 || a->rxdelay->tdelay != 0.0))
 		{
 			SetDelayBuffs (a->rxdelay, a->size, rx, rx);
 			xdelay (a->rxdelay);
@@ -858,7 +858,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 				a->ctrl.reset = 0;
 				if (!a->ctrl.turnon)
 					if (InterlockedBitTestAndReset (&a->ctrl.running, 0))
-						wdsp_beginthread (doTurnoff, 0, (void *)a);
+						_beginthread (doTurnoff, 0, (void *)a);
 				a->info[14] = 0;
 				a->ctrl.env_maxtx = 0.0;
 				a->ctrl.bs_count = 0;
@@ -992,7 +992,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 				if (!a->ctrl.calcinprogress)	
 				{
 					a->ctrl.calcinprogress = 1;
-					wdsp_beginthread(doCalcCorrection, 0, (void *)a);
+					_beginthread(doCalcCorrection, 0, (void *)a);
 				}
 
 				if (InterlockedBitTestAndReset(&a->ctrl.calcdone, 0))
@@ -1081,7 +1081,7 @@ void PSSaveCorr (int channel, char* filename)
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
 	while (a->util.savefile[i++] = *filename++);
-	wdsp_beginthread(SaveCorrection, 0, (void *)a);
+	_beginthread(SaveCorrection, 0, (void *)a);
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
 
@@ -1094,7 +1094,7 @@ void PSRestoreCorr (int channel, char* filename)
 	a = txa[channel].calcc.p;
 	while (a->util.restfile[i++] = *filename++);
 	a->ctrl.turnon = 1;
-	wdsp_beginthread(RestoreCorrection, 0, (void *)a);
+	_beginthread(RestoreCorrection, 0, (void *)a);
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
 
@@ -1214,7 +1214,17 @@ double SetPSTXDelay (int channel, double delay)
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
 	a->txdel = delay;
-	adelay = SetDelayValue (a->txdelay, a->txdel);
+	if (a->txdel >= 0.0)
+	{
+		adelay = SetDelayValue (a->txdelay, a->txdel);
+		SetDelayValue (a->rxdelay, 0.0);
+	}
+	else
+	{
+		adelay = -SetDelayValue (a->rxdelay, -a->txdel);
+		SetDelayValue (a->txdelay, 0.0);
+	}
+	//adelay = SetDelayValue (a->txdelay, a->txdel);
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 	return adelay;
 }

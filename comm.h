@@ -62,6 +62,7 @@ warren@wpratt.com
 #include "channel.h"
 #include "compress.h"
 #include "delay.h"
+#include "dexp.h"
 #include "div.h"
 #include "eer.h"
 #include "emnr.h"
@@ -75,6 +76,7 @@ warren@wpratt.com
 #include "fmsq.h"
 #include "gain.h"
 #include "gen.h"
+#include "icfir.h"
 #include "iir.h"
 #include "iobuffs.h"
 #include "iqc.h"
@@ -95,13 +97,14 @@ warren@wpratt.com
 #include "siphon.h"
 #include "slew.h"
 #include "snb.h"
+#include "syncbuffs.h"
 #include "TXA.h"
 #include "utilities.h"
 #include "varsamp.h"
 #include "wcpAGC.h"
 
 // manage differences among consoles
-// #define _Thetis
+#define _Thetis
 
 // channel definitions
 #define MAX_CHANNELS					32					// maximum number of supported channels

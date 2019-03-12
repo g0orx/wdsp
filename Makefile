@@ -39,6 +39,7 @@ channel.c\
 comm.c\
 compress.c\
 delay.c\
+dexp.c\
 div.c\
 eer.c\
 emnr.c\
@@ -52,6 +53,7 @@ fmmod.c\
 fmsq.c\
 gain.c\
 gen.c\
+icfir.c\
 iir.c\
 iobuffs.c\
 iqc.c\
@@ -73,6 +75,7 @@ shift.c\
 siphon.c\
 slew.c\
 snb.c\
+syncbuffs.c\
 TXA.c\
 utilities.c\
 varsamp.c\
@@ -98,6 +101,7 @@ channel.h\
 comm.h\
 compress.h\
 delay.h\
+dexp.h\
 div.h\
 eer.h\
 emnr.h\
@@ -112,6 +116,7 @@ fmmod.h\
 fmsq.h\
 gain.h\
 gen.h\
+icfir.h\
 iir.h\
 iobuffs.h\
 iqc.h\
@@ -126,6 +131,7 @@ nobII.h\
 osctrl.h\
 patchpanel.h\
 resample.h\
+resource.h\
 rmatch.h\
 RXA.h\
 sender.h\
@@ -133,6 +139,7 @@ shift.h\
 siphon.h\
 slew.h\
 snb.h\
+syncbuffs.h\
 TXA.h\
 utilities.h\
 wcpAGC.h
@@ -156,6 +163,7 @@ channel.o\
 comm.o\
 compress.o\
 delay.o\
+dexp.o\
 div.o\
 eer.o\
 emnr.o\
@@ -169,6 +177,7 @@ fmmod.o\
 fmsq.o\
 gain.o\
 gen.o\
+icfir.o\
 iir.o\
 iobuffs.o\
 iqc.o\
@@ -189,6 +198,7 @@ shift.o\
 siphon.o\
 slew.o\
 snb.o\
+syncbuffs.o\
 TXA.o\
 utilities.o\
 version.o\

@@ -60,6 +60,7 @@ DestroyCriticalSection (LPCRITICAL_SECTION cs_ptr)
 }
 #endif
 
+
 /********************************************************************************************************
 *																										*
 *										Test & Debug Utilities											*
@@ -271,7 +272,7 @@ void __cdecl CalccPrintSamples (void *pargs)
 
 void doCalccPrintSamples(int channel)
 {	// no sample buffering - use in single cal mode
-	wdsp_beginthread(CalccPrintSamples, 0, (void *)channel);
+	_beginthread(CalccPrintSamples, 0, (void *)channel);
 }
 
 void print_anb_parms (const char* filename, ANB a)
@@ -362,7 +363,7 @@ void WriteAudioWDSP (double seconds, int rate, int size, double* indata, int mod
 	if ((audiocount == n) && !done)
 	{
 		done = 1;
-		wdsp_beginthread(WriteAudioFile, 0, (void *)data);
+		_beginthread(WriteAudioFile, 0, (void *)data);
 	}
 }
 
@@ -436,7 +437,7 @@ void WriteScaledAudio (
 	if ((count >= dstruct->n) && !complete)
 	{
 		complete = 1;
-		wdsp_beginthread (WriteScaledAudioFile, 0, (void *)dstruct);
+		_beginthread (WriteScaledAudioFile, 0, (void *)dstruct);
 	}
 }
 #endif

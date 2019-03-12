@@ -605,7 +605,7 @@ DWORD WINAPI spectra (void *pargs)
 
 		EnterCriticalSection (&a->StitchSection);
 #if defined(linux) || defined(__APPLE__)
-		a->stitch_flag |= 1L << ss;
+                a->stitch_flag |= 1L << ss;
 #else
 		a->stitch_flag |= 1i64 << ss;
 #endif
@@ -690,7 +690,7 @@ DWORD WINAPI Cspectra (void *pargs)
 
 		EnterCriticalSection (&a->StitchSection);
 #if defined(linux) || defined(__APPLE__)
-		a->stitch_flag |= 1L << ss;
+                a->stitch_flag |= 1L << ss;
 #else
 		a->stitch_flag |= 1i64 << ss;
 #endif
@@ -871,17 +871,9 @@ void __cdecl sendbuf(void *arg)
 					
 					InterlockedIncrement(a->pnum_threads);
 					if (a->type == 0)
-#if defined(linux) || defined(__APPLE__)
-                                                spectra((void *)(((intptr_t)arg << 12) + (a->ss << 4) + a->LO));
-#else
 						QueueUserWorkItem(spectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
-#endif
 					else
-#if defined(linux) || defined(__APPLE__)
-                                                Cspectra((void *)(((intptr_t)arg << 12) + (a->ss << 4) + a->LO));
-#else
 						QueueUserWorkItem(Cspectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
-#endif
 
 					if((a->IQout_index[a->ss][a->LO] += a->incr) >= a->bsize)
 						a->IQout_index[a->ss][a->LO] -= a->bsize;
@@ -1331,7 +1323,7 @@ void CloseBuffer(int disp, int ss, int LO)
 	{
 		a->dispatcher = 1;
 		LeaveCriticalSection(&a->SetAnalyzerSection);
-		wdsp_beginthread(sendbuf, 0, (void *)disp);
+		_beginthread(sendbuf, 0, (void *)disp);
 	}
 	else
 		LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1370,7 +1362,7 @@ void Spectrum(int disp, int ss, int LO, dINREAL* pI, dINREAL* pQ)
 	{
 		a->dispatcher = 1;
 		LeaveCriticalSection(&a->SetAnalyzerSection);
-		wdsp_beginthread(sendbuf, 0, (void *)disp);
+		_beginthread(sendbuf, 0, (void *)disp);
 	}
 	else
 		LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1415,7 +1407,7 @@ void Spectrum2(int run, int disp, int ss, int LO, dINREAL* pbuff)
 		{
 			a->dispatcher = 1;
 			LeaveCriticalSection(&a->SetAnalyzerSection);
-			wdsp_beginthread(sendbuf, 0, (void *)disp);
+			_beginthread(sendbuf, 0, (void *)disp);
 		}
 		else
 			LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1461,7 +1453,7 @@ void Spectrum0(int run, int disp, int ss, int LO, double* pbuff)
 		{
 			a->dispatcher = 1;
 			LeaveCriticalSection(&a->SetAnalyzerSection);
-			wdsp_beginthread(sendbuf, 0, (void *)disp);
+			_beginthread(sendbuf, 0, (void *)disp);
 		}
 		else
 			LeaveCriticalSection(&a->SetAnalyzerSection);

@@ -130,7 +130,11 @@ int xvarsamp (VARSAMP a, double var)
 	a->old_inv_cvar = a->inv_cvar;
 	a->cvar = a->var * a->nom_ratio;
 	a->inv_cvar = 1.0 / a->cvar;
-	if (a->varmode) a->dicvar = (a->inv_cvar - a->old_inv_cvar) / (double)a->size;
+	if (a->varmode) 
+	{
+		a->dicvar = (a->inv_cvar - a->old_inv_cvar) / (double)a->size;
+		a->inv_cvar = a->old_inv_cvar;
+	}
 	else            a->dicvar = 0.0;
 	if (a->run)
 	{
