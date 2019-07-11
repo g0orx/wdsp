@@ -91,6 +91,7 @@ int LinuxWaitForSingleObject(sem_t *sem,int ms) {
 }
 
 sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,char *name) {
+        sem_t *sem;
 #ifdef __APPLE__
         //DL1YCF
 	//This routine is invoked with name=NULL several times, so we have to make
@@ -98,14 +99,18 @@ sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,c
 	static int semcount=0;
 	char sname[12];
         sprintf(sname,"WDSP%05d",semcount++);
-        return sem_open(sname, O_CREAT, 0700, initial_count);
+	sem_unlink(sname);
+        sem=sem_open(sname, O_CREAT | O_EXCL, 0700, initial_count);
+	if (sem == SEM_FAILED) {
+	  perror("WDSP:CreateSemaphore");
+	}
 #else
         sem_t *sem;
         sem=malloc(sizeof(sem_t));
 	int result;
 	result=sem_init(sem, 0, 0);
-	return sem;
 #endif
+	return sem;
 }
 
 void LinuxReleaseSemaphore(sem_t* sem,int release_count, int* previous_count) {
