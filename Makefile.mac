@@ -14,8 +14,9 @@ JAVA_LIBS=-L. -lwdsp
 
 #
 # You probably need to locate where the JAVA includes reside on *your* system
+# since the version number (here: 8.0_74) changes frequently.
 #
-INCLUDES=-I/usr/local/include -I/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/Include -I/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/Include/darwin
+INCLUDES=-I/usr/local/include -I/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/Include -I/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/Include/darwin
 
 COMPILE=$(CC) $(INCLUDES)
 
