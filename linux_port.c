@@ -105,7 +105,6 @@ sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,c
 	  perror("WDSP:CreateSemaphore");
 	}
 #else
-        sem_t *sem;
         sem=malloc(sizeof(sem_t));
 	int result;
 	result=sem_init(sem, 0, 0);
