@@ -290,6 +290,7 @@ extern void SetRXAPanelCopy (int channel, int copy);
 extern void SetRXAPanelBinaural (int channel, int bin);
 
 extern void SetTXAPanelRun (int channel, int run);
+extern void SetTXAPanelSelect (int channel, int select);
 extern void SetTXAPanelGain1 (int channel, double gain);
 
 // variable smapler
