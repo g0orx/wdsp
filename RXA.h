@@ -56,7 +56,7 @@ enum rxaMeterType
 	RXA_METERTYPE_LAST
 };
 
-struct _rxa
+extern struct _rxa
 {
 	double* inbuff;
 	double* outbuff;

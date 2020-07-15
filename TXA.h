@@ -68,7 +68,7 @@ enum txaMeterType
 	TXA_METERTYPE_LAST
 };
 
-struct _txa
+extern struct _txa
 {
 	double* inbuff;
 	double* outbuff;

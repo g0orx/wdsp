@@ -28,7 +28,7 @@ warren@wpratt.com
 #define _setupchannel_h
 #include "comm.h"
 
-struct _ch
+extern struct _ch
 {
 	int type;
 	volatile long run;			// when 1, thread loops; when 0, thread terminates
