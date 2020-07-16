@@ -26,6 +26,8 @@ warren@wpratt.com
 
 #include "comm.h"
 
+struct _rxa rxa[MAX_CHANNELS];
+
 void create_rxa (int channel)
 {
 	rxa[channel].mode = RXA_LSB;

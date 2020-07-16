@@ -90,7 +90,7 @@ typedef struct _dexp
 	CRITICAL_SECTION cs_update;
 } dexp, *DEXP;
 
-extern DEXP pdexp[4];
+extern DEXP pdexp[];
 
 __declspec (dllexport) void create_dexp (int id, int run_dexp, int size, double* in, double* out, int rate, double dettau, double tattack, double tdecay, 
 	double thold, double exp_ratio, double hyst_ratio, double attack_thresh, int nc, int wtype, double lowcut, double highcut, 

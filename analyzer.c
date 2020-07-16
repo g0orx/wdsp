@@ -28,6 +28,8 @@ warren@wpratt.com
 
 #include "comm.h"
 
+DP pdisp[dMAX_DISPLAYS];
+
 double bessi0(double x)
 {
 	double ax,ans;

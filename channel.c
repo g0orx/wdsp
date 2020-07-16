@@ -26,6 +26,8 @@ warren@wpratt.com
 
 #include "comm.h"
 
+struct _ch ch[MAX_CHANNELS];
+
 void start_thread (int channel)
 {
 #if defined(linux) || defined(__APPLE__)

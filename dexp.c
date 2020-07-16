@@ -26,6 +26,8 @@ warren@wpratt.com
 
 #include "comm.h"
 
+DEXP pdexp[4];
+
 DELRING calc_delring (int rsize, int size, int delay, double* in, double* out)
 {
 	DELRING a = (DELRING) malloc0 (sizeof (delring));

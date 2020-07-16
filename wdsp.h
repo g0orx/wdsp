@@ -1,3 +1,9 @@
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define INREAL float
 #define OUTREAL float
 #define dINREAL float
@@ -306,3 +312,6 @@ extern void SetTXACTCSSFreq (int channel, double freq);
 char *wisdom_get_status();
 extern void WDSPwisdom (char* directory);
 
+#ifdef __cplusplus
+}
+#endif

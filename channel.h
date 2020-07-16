@@ -28,7 +28,7 @@ warren@wpratt.com
 #define _setupchannel_h
 #include "comm.h"
 
-extern struct _ch
+struct _ch
 {
 	int type;
 	volatile long run;			// when 1, thread loops; when 0, thread terminates
@@ -55,7 +55,9 @@ extern struct _ch
 		IOB pc, pd, pe, pf;		// copies for console calls, dsp, exchange, and flush thread
 		volatile long ch_upslew;
 	} iob;
-} ch[MAX_CHANNELS];
+};
+
+extern struct _ch ch[];
 
 PORT void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, int dsp_rate, int output_samplerate, int type, int state, double tdelayup, double tslewup, double tdelaydown, double tslewdown, int bfo);
 
