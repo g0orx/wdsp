@@ -1,8 +1,6 @@
 #
 # libwdsp.dylib Makefile (Mac OS X)
 #
-CC=gcc
-LINK=gcc
 OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE
 #OPTIONS=-g -fPIC
 
@@ -16,7 +14,7 @@ endif
 LIBS=-L/usr/local/lib -lfftw3 -lpthread
 JAVA_LIBS=-L. -lwdsp
 
-INCLUDES=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux
+INCLUDES?=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux
 
 COMPILE=$(CC) $(INCLUDES) $(GTKINCLUDES)
 
