@@ -108,6 +108,9 @@ sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,c
         sem=malloc(sizeof(sem_t));
 	int result;
 	result=sem_init(sem, 0, 0);
+        if (result < 0) {
+	  perror("WDSP:CreateSemaphore");
+        }
 #endif
 	return sem;
 }
@@ -182,6 +185,22 @@ void SetThreadPriority(HANDLE thread, int priority)  {
 }
 
 int CloseHandle(HANDLE hObject) {
+#ifdef __APPLE__
+//
+// Note a new Semaphore is allocated at each RX/TX transition, so after
+// about 200 RX/TX transitions, MacOS runs out of file descriptors (no
+// new semaphores can be allocated, and rigctl cannot make any new
+// connections).
+//
+if (sem_close(hObject) < 0) {
+  perror("CloseHandle");
+}
+#else
+// possibly it would also be a good idea to do sem_destroy() here
+#endif
+
+// this is actually a void function (return value never used).
+return 0;
 }
 
 #endif
