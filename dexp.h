@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2018 Warren Pratt, NR0V
+Copyright (C) 2018, 2019 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -88,13 +88,25 @@ typedef struct _dexp
 	int vox_count;
 	// update critical section
 	CRITICAL_SECTION cs_update;
+	// anti-vox
+	int antivox_run;					// 'run' for anti-vox
+	int antivox_new;					// internal variable indicating new anti-vox data is available
+	int antivox_size;					// size of anti-vox data buffer
+	double antivox_rate;				// sample-rate of anti-vox data
+	double antivox_tau;					// time-constant of anti-vox smoothing
+	double antivox_gain;				// anti-vox gain factor
+	double antivox_mult;				// multiplier for anti-vox smoothing
+	double antivox_onemmult;			// one minus antivox_mult
+	double antivox_level;				// current anti-vox smoothed signal level
+	double* antivox_data;				// buffer to hold new anti-vox data
 } dexp, *DEXP;
 
 extern DEXP pdexp[];
 
 __declspec (dllexport) void create_dexp (int id, int run_dexp, int size, double* in, double* out, int rate, double dettau, double tattack, double tdecay, 
 	double thold, double exp_ratio, double hyst_ratio, double attack_thresh, int nc, int wtype, double lowcut, double highcut, 
-	int run_filt, int run_vox, int run_audelay, double audelay, void (__stdcall *pushvox)(int id, int active));
+	int run_filt, int run_vox, int run_audelay, double audelay, void (__stdcall *pushvox)(int id, int active),
+	int antivox_run, int antivox_size, int antivox_rate, double antivox_gain, double antivox_tau);
 
 __declspec (dllexport) void destroy_dexp (int id);
 
@@ -105,5 +117,7 @@ __declspec (dllexport) void xdexp (int id);
 __declspec (dllexport) void SetDEXPSize (int id, int size);
 
 __declspec (dllexport) void SetDEXPRate (int id, double rate);
+
+__declspec (dllexport) void SendAntiVOXData (int id, int nsamples, double* data);
 
 #endif

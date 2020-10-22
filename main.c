@@ -32,6 +32,13 @@ void wdspmain(void *pargs)
 void main (void *pargs)
 #endif
 {
+#if !defined(linux) && !defined(__APPLE__)
+	DWORD taskIndex = 0;
+	HANDLE hTask = AvSetMmThreadCharacteristics(TEXT("Pro Audio"), &taskIndex);
+	if (hTask != 0) AvSetMmThreadPriority(hTask, 2);
+	else SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+
+#endif
 	int channel = (int)pargs;
 	while (_InterlockedAnd (&ch[channel].run, 1))
 	{
