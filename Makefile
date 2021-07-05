@@ -1,6 +1,9 @@
 #
 # libwdsp.so Makefile (Linux)
 #
+PREFIX=/usr/local
+LIBDIR=$(DESTDIR)$(PREFIX)/lib
+INCLUDEDIR=$(DESTDIR)$(PREFIX)/include
 CC=gcc
 LINK=gcc
 OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE
@@ -213,24 +216,27 @@ all: $(PROGRAM) $(HEADERS) $(SOURCES)
 java: $(JAVA_PROGRAM) $(JAVA_HEADERS) $(JAVA_SOURCES)
 
 $(PROGRAM): $(OBJS)
-	$(LINK) -shared -z noexecstack -o $(PROGRAM) $(OBJS) $(LIBS) $(GTKLIBS)
+	$(LINK) -shared -z noexecstack $(LDFLAGS) -o $(PROGRAM) $(OBJS) $(LIBS) $(GTKLIBS)
 
 $(JAVA_PROGRAM): $(JAVA_OBJS)
-	$(LINK) -shared -z noexecstack -o $(JAVA_PROGRAM) $(JAVA_OBJS) $(JAVA_LIBS)
+	$(LINK) -shared -z noexecstack $(LDFLAGS) -o $(JAVA_PROGRAM) $(JAVA_OBJS) $(JAVA_LIBS)
 
 .c.o:
-	$(COMPILE) $(OPTIONS) $(GTKOPTIONS) -c -o $@ $<
+	$(COMPILE) $(OPTIONS) $(GTKOPTIONS) $(CFLAGS) -c -o $@ $<
 
-install: $(PROGRAM)
-	cp wdsp.h /usr/local/include
-	cp $(PROGRAM) /usr/local/lib
-	ldconfig
+install-dirs:
+	mkdir -p $(LIBDIR) $(INCLUDEDIR)
 
-install_java: $(JAVA_PROGRAM)
-	cp $(JAVA_PROGRAM) /usr/local/lib
+install: $(PROGRAM) install-dirs
+	cp -a wdsp.h $(INCLUDEDIR)
+	cp -a $(PROGRAM) $(LIBDIR)
+	ldconfig || :
+
+install_java: $(JAVA_PROGRAM) install-dirs
+	cp -a $(JAVA_PROGRAM) $(LIBDIR)
 
 release: $(PROGRAM)
-	cp $(PROGRAM) ../pihpsdr.src/release/pihpsdr
+	cp -a $(PROGRAM) ../pihpsdr.src/release/pihpsdr
 
 clean:
 	-rm -f *.o
