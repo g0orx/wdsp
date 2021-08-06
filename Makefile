@@ -1,8 +1,8 @@
 #
 # libwdsp.so Makefile (Linux)
 #
-CC=gcc
-LINK=gcc
+CC=gcc-10
+LINK=gcc-10
 OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE
 #OPTIONS=-g -fPIC
 
@@ -230,7 +230,7 @@ install_java: $(JAVA_PROGRAM)
 	cp $(JAVA_PROGRAM) /usr/local/lib
 
 release: $(PROGRAM)
-	cp $(PROGRAM) ../pihpsdr.src/release/pihpsdr
+	cp $(PROGRAM) ../pihpsdr/release/pihpsdr
 
 clean:
 	-rm -f *.o

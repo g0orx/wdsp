@@ -29,7 +29,7 @@ warren@wpratt.com
 #if defined(linux) || defined(__APPLE__)
 #include "calculus.h"
 #endif
-
+	
 /********************************************************************************************************
 *																										*
 *											Special Functions											*
@@ -282,6 +282,7 @@ void calc_emnr(EMNR a)
         memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
         memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
 #else
+
 	a->g.fileb = fopen("calculus", "rb");
 	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
 	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);

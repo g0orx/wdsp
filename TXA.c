@@ -25,6 +25,7 @@ warren@wpratt.com
 */
 
 #include "comm.h"
+
 struct _txa txa[MAX_CHANNELS];
 
 void create_txa (int channel)

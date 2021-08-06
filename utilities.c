@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013, 2019 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -58,8 +58,8 @@ DestroyCriticalSection (LPCRITICAL_SECTION cs_ptr)
 {	// used by VAC
 	free ((char *)cs_ptr);
 }
-#endif
 
+#endif
 
 /********************************************************************************************************
 *																										*
@@ -84,6 +84,19 @@ void print_impulse (const char* filename, int N, double* impulse, int rtype, int
 	fprintf (file, "\n\n\n\n");
 	fflush (file);
 	fclose (file);
+}
+
+PORT
+void analyze_bandpass_filter (int N, double f_low, double f_high, double samplerate, int wintype, int rtype, double scale)
+{
+	double* linphase_imp = (double *) malloc0 (N * sizeof (complex));
+	double* minphase_imp = (double *) malloc0 (N * sizeof (complex));
+	linphase_imp = fir_bandpass (N, f_low, f_high, samplerate, wintype, rtype, scale);
+	mp_imp (N, linphase_imp, minphase_imp, 16, 0);
+	print_impulse ("linear_phase_impulse.txt",  N, linphase_imp, 1, 0);
+	print_impulse ("minimum_phase_impulse.txt", N, minphase_imp, 1, 0);
+	_aligned_free (minphase_imp);
+	_aligned_free (linphase_imp);
 }
 
 void print_peak_val (const char* filename, int N, double* buff, double thresh)
@@ -290,6 +303,7 @@ void print_anb_parms (const char* filename, ANB a)
 }
 
 #if !defined(linux) && !defined(__APPLE__)
+
 // Audacity:  Import Raw Data, Signed 32-bit PCM, Little-endian, Mono/Stereo per mode selection, 48K rate
 
 int audiocount = 0;

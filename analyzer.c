@@ -609,14 +609,15 @@ DWORD WINAPI spectra (void *pargs)
 #if defined(linux) || defined(__APPLE__)
                 a->stitch_flag |= 1L << ss;
 #else
-		a->stitch_flag |= 1i64 << ss;
+                a->stitch_flag |= 1i64 << ss;
 #endif
 
 #if defined(linux) || defined(__APPLE__)
-		if (a->stitch_flag == ((1L << a->num_stitch) - 1))
+                if (a->stitch_flag == ((1L << a->num_stitch) - 1))
 #else
-		if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
+                if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
 #endif
+
 		{
 			a->stitch_flag = 0;
 			LeaveCriticalSection(&a->StitchSection);
@@ -694,13 +695,13 @@ DWORD WINAPI Cspectra (void *pargs)
 #if defined(linux) || defined(__APPLE__)
                 a->stitch_flag |= 1L << ss;
 #else
-		a->stitch_flag |= 1i64 << ss;
+                a->stitch_flag |= 1i64 << ss;
 #endif
 
 #if defined(linux) || defined(__APPLE__)
-		if (a->stitch_flag == ((1L << a->num_stitch) - 1))
+                if (a->stitch_flag == ((1L << a->num_stitch) - 1))
 #else
-		if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
+                if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
 #endif
 		{
 			a->stitch_flag = 0;

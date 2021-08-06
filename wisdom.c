@@ -2,7 +2,7 @@
 
 This file is part of a program that implements a Software-Defined Radio.
 
-Copyright (C) 2013 Warren Pratt, NR0V
+Copyright (C) 2013-2019 Warren Pratt, NR0V
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -27,12 +27,6 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-static char status[80];
-
-char *wisdom_get_status() {
-  return status;
-}
-
 PORT
 void WDSPwisdom (char* directory)
 {
@@ -50,10 +44,10 @@ void WDSPwisdom (char* directory)
 		fftin =  (double *) malloc0 (maxsize * sizeof (complex));
 		fftout = (double *) malloc0 (maxsize * sizeof (complex));
 #ifdef _WINDOWS_
-		AllocConsole();								// create console
-	    freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
-		fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
-		fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
+                AllocConsole();                                                         // create console
+            freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
+                fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
+                fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
 #endif
 #ifdef __ANDROID__
                 sprintf(status, "Optimizing FFT sizes through %d", maxsize);
@@ -103,6 +97,8 @@ void WDSPwisdom (char* directory)
 			fftw_destroy_plan (tplan);
 			psize *= 2;
 		}
+		fprintf(stdout, "\nFFTW planning complete.\n");
+		fflush(stdout);
 		fftw_export_wisdom_to_filename(wisdom_file);
 		_aligned_free (fftout);
 		_aligned_free (fftin);

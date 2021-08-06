@@ -82,11 +82,11 @@ void xdelay (DELAY a)
 			Itmp = 0.0;
 			Qtmp = 0.0;
 			if ((n = a->idx_in + a->snum) >= a->rsize) n -= a->rsize;
-			for (j = 0, k = 0; j < a->cpp; j++, k += a->L)
+			for (j = 0, k = a->L - 1 - a->phnum; j < a->cpp; j++, k+= a->L)
 			{
-				if ((idx = n - j) < 0) idx += a->rsize;
-				Itmp += a->ring[2 * idx + 0] * a->h[k + a->phnum];
-				Qtmp += a->ring[2 * idx + 1] * a->h[k + a->phnum];
+				if ((idx = n + j) >= a->rsize) idx -= a->rsize;
+				Itmp += a->ring[2 * idx + 0] * a->h[k];
+				Qtmp += a->ring[2 * idx + 1] * a->h[k];
 			}
 			a->out[2 * i + 0] = Itmp;
 			a->out[2 * i + 1] = Qtmp;
