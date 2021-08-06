@@ -1,8 +1,8 @@
 #
 # libwdsp.so Makefile (Linux)
 #
-CC=gcc-10
-LINK=gcc-10
+CC=gcc
+LINK=gcc
 OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE
 #OPTIONS=-g -fPIC
 
