@@ -27,12 +27,6 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-static char status[80];
-
-char *wisdom_get_status() {
-  return status;
-}
-
 PORT
 void WDSPwisdom (char* directory)
 {
@@ -50,10 +44,10 @@ void WDSPwisdom (char* directory)
 		fftin =  (double *) malloc0 (maxsize * sizeof (complex));
 		fftout = (double *) malloc0 (maxsize * sizeof (complex));
 #ifdef _WINDOWS_
-		AllocConsole();								// create console
-	    freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
-		fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
-		fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
+                AllocConsole();                                                         // create console
+            freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
+                fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
+                fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
 #endif
 #ifdef __ANDROID__
                 sprintf(status, "Optimizing FFT sizes through %d", maxsize);

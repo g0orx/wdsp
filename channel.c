@@ -31,10 +31,11 @@ struct _ch ch[MAX_CHANNELS];
 void start_thread (int channel)
 {
 #if defined(linux) || defined(__APPLE__)
-        HANDLE handle = wdsp_beginthread(wdspmain, 0, (void *)channel);
+	HANDLE handle = (HANDLE) _beginthread(wdspmain, 0, (void *)channel);
 #else
-        HANDLE handle = (HANDLE) wdsp_beginthread(main, 0, (void *)channel);
+	HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)channel);
 #endif
+
 	//SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 }
 
@@ -102,7 +103,7 @@ void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, 
 		InterlockedBitTestAndSet (&ch[channel].exchange, 0);
 	}
 #if !defined(linux) && !defined(__APPLE__)
-	_MM_SET_FLUSH_ZERO_MODE (_MM_FLUSH_ZERO_ON);
+        _MM_SET_FLUSH_ZERO_MODE (_MM_FLUSH_ZERO_ON);
 #endif
 }
 

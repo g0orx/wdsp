@@ -58,8 +58,8 @@ DestroyCriticalSection (LPCRITICAL_SECTION cs_ptr)
 {	// used by VAC
 	free ((char *)cs_ptr);
 }
-#endif
 
+#endif
 
 /********************************************************************************************************
 *																										*
@@ -303,6 +303,7 @@ void print_anb_parms (const char* filename, ANB a)
 }
 
 #if !defined(linux) && !defined(__APPLE__)
+
 // Audacity:  Import Raw Data, Signed 32-bit PCM, Little-endian, Mono/Stereo per mode selection, 48K rate
 
 int audiocount = 0;
