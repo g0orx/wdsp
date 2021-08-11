@@ -1,13 +1,16 @@
 #
-# libwdsp.so Makefile (Linux)
+# Makefile for WDSP library (libwdsp.so on Linux and libwdsp.dylib on MacOS)
 #
-PREFIX=/usr/local
-LIBDIR=$(DESTDIR)$(PREFIX)/lib
-INCLUDEDIR=$(DESTDIR)$(PREFIX)/include
-CC=gcc
-LINK=gcc
-OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE
-#OPTIONS=-g -fPIC
+
+# get the OS Name
+UNAME_S := $(shell uname -s)
+
+PREFIX?=/usr/local
+LIBDIR=$(PREFIX)/lib
+INCLUDEDIR=$(PREFIX)/include
+
+CC?=gcc					# this will always be set upon entry
+LINK?=$(CC)				# if unset upon entry, use $(CC)
 
 #GTK_INCLUDE=GTK
 ifeq ($GTK_INCLUDE),GTK)
@@ -16,15 +19,25 @@ GTKLIBS=`pkg-config --libs gtk+-3.0`
 GTKOPTIONS=-D GTK
 endif
 
-LIBS=-lfftw3 -lpthread
+ifeq ($(UNAME_S), Darwin)
+OPTIONS=-g -O3 -D _GNU_SOURCE   	# MacOS: do not need PIC
+LIBS=`pkg-config --libs fftw3`  	# MacOS: get FFTW library path from pkg-config
+PROGRAM=libwdsp.dylib			# MacOS: shared libs end in .dylib
+JAVA_PROGRAM=libwdspj.dylib		# MacOS: shared libs end in .dylib
+NOEXECSTACK=				# MacOS: Compiler does not have -z option
+else
+OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE	# Linux: legacy compiler options for WDSP
+LIBS=-lfftw3 -lpthread			# Linux: assume FFTW3 lib is found this way
+PROGRAM=libwdsp.so			# Linux: shared libs end in .so
+JAVA_PROGRAM=libwdspj.so		# Linux: shared libs end in .so
+NOEXECSTACK=	-z noexecstack		# Linux: link option for gcc
+endif
+
 JAVA_LIBS=-L. -lwdsp
 
 INCLUDES=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux
 
 COMPILE=$(CC) $(INCLUDES) $(GTKINCLUDES)
-
-PROGRAM=libwdsp.so
-JAVA_PROGRAM=libwdspj.so
 
 SOURCES= amd.c\
 ammod.c\
@@ -216,10 +229,10 @@ all: $(PROGRAM) $(HEADERS) $(SOURCES)
 java: $(JAVA_PROGRAM) $(JAVA_HEADERS) $(JAVA_SOURCES)
 
 $(PROGRAM): $(OBJS)
-	$(LINK) -shared -z noexecstack $(LDFLAGS) -o $(PROGRAM) $(OBJS) $(LIBS) $(GTKLIBS)
+	$(LINK) -shared $(NOEXECSTACK) $(LDFLAGS) -o $(PROGRAM) $(OBJS) $(LIBS) $(GTKLIBS)
 
 $(JAVA_PROGRAM): $(JAVA_OBJS)
-	$(LINK) -shared -z noexecstack $(LDFLAGS) -o $(JAVA_PROGRAM) $(JAVA_OBJS) $(JAVA_LIBS)
+	$(LINK) -shared $(NOEXECSTACK) $(LDFLAGS) -o $(JAVA_PROGRAM) $(JAVA_OBJS) $(JAVA_LIBS)
 
 .c.o:
 	$(COMPILE) $(OPTIONS) $(GTKOPTIONS) $(CFLAGS) -c -o $@ $<
@@ -229,8 +242,13 @@ install-dirs:
 
 install: $(PROGRAM) install-dirs
 	cp wdsp.h $(INCLUDEDIR)
+ifeq ($(UNAME_S), Darwin)
+	/usr/bin/install_name_tool -id $(LIBDIR)/$(PROGRAM) $(PROGRAM)
+	cp $(PROGRAM) $(LIBDIR)
+else
 	cp $(PROGRAM) $(LIBDIR)
 	ldconfig || :
+endif
 
 install_java: $(JAVA_PROGRAM)
 	cp $(JAVA_PROGRAM) /usr/local/lib
