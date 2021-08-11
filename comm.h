@@ -43,7 +43,6 @@ warren@wpratt.com
 #include <Windows.h>
 #include <process.h>
 #include <intrin.h>
-#include <avrt.h>
 #endif
 #include <math.h>
 #include <time.h>
