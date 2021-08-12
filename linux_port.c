@@ -108,6 +108,9 @@ sem_t *LinuxCreateSemaphore(int attributes,int initial_count,int maximum_count,c
         sem=malloc(sizeof(sem_t));
 	int result;
 	result=sem_init(sem, 0, 0);
+        if (result < 0) {
+	  perror("WDSP:CreateSemaphore");
+        }
 #endif
 	return sem;
 }
@@ -182,6 +185,39 @@ void SetThreadPriority(HANDLE thread, int priority)  {
 }
 
 int CloseHandle(HANDLE hObject) {
+//
+// This routine is *ONLY* called to release semaphores
+//
+#ifdef __APPLE__
+//
+// A semaphore is closed and re-allocated on each RX->TX transition.
+// After about 200 RX/TX transitions, MacOS runs out of file descriptors
+// since MacOS only has named semaphores. As a consequence,
+// no new semaphores can be allocated, and other parts of the program cannot
+// open new files ore make new connections.
+// Therefore we should close the semaphore.
+//
+if (sem_close((sem_t *)hObject) < 0) {
+  perror("WDSP:CloseHandle:SemCLose");
+}
+#else
+//
+// Although the number of semaphores seems "unlimited" on RapianOS,
+// this is nevertheless a memory leak (a sem_t is allocated before
+// sem_init is called, see above).
+// So destroy the semaphore and (if this was successful) release the memory.
+//
+
+if (sem_destroy((sem_t *)hObject) < 0) {
+  perror("WDSP:CloseHandle:SemDestroy");
+} else {
+  // if sem_destroy failed, do not release storage
+  free(hObject);
+}
+#endif
+
+// this is actually a void function (return value never used).
+return 0;
 }
 
 #endif
