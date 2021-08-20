@@ -35,6 +35,8 @@ john.d.melton@googlemail.com
 #include <unistd.h>
 
 #define CRITICAL_SECTION pthread_mutex_t
+#define byte unsigned char
+#define String char *
 #define LONG long
 #define DWORD long
 #define HANDLE void *
