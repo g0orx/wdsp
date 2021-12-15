@@ -24,21 +24,21 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Interleaved|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -91,7 +91,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WIN32;_MBCS;NDEBUG;_WINDOWS;_USRDLL;SPECHPSDR_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.;../../lib/portaudio_VS2008/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Java\jdk1.8.0_221\include\win32;C:\Program Files %28x86%29\Java\jdk1.8.0_221\include;./fftw;.;../../lib/portaudio_VS2008/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <CompileAs>CompileAsC</CompileAs>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -103,9 +103,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>../../bin/Release/wdsp.dll</OutputFile>
-      <AdditionalDependencies>libfftw3-3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../Release;</AdditionalLibraryDirectories>
+      <OutputFile>./Release/wdsp.dll</OutputFile>
+      <AdditionalDependencies>./fftw/libfftw3-3.lib;avrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\um\x86\avrt.lib;../Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Interleaved|Win32'">
@@ -145,6 +145,7 @@
     <ClInclude Include="calcc.h" />
     <ClInclude Include="calculus.h" />
     <ClInclude Include="cblock.h" />
+    <ClInclude Include="cfcomp.h" />
     <ClInclude Include="cfir.h" />
     <ClInclude Include="compress.h" />
     <ClInclude Include="delay.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="nbp.h" />
     <ClInclude Include="nob.h" />
     <ClInclude Include="nobII.h" />
+    <ClInclude Include="org_g0orx_openhpsdr_wdsp_WDSP.h" />
     <ClInclude Include="osctrl.h" />
     <ClInclude Include="patchpanel.h" />
     <ClInclude Include="resample.h" />
@@ -200,6 +202,7 @@
     <ClCompile Include="calcc.c" />
     <ClCompile Include="calculus.c" />
     <ClCompile Include="cblock.c" />
+    <ClCompile Include="cfcomp.c" />
     <ClCompile Include="cfir.c" />
     <ClCompile Include="comm.c" />
     <ClCompile Include="compress.c" />
@@ -228,6 +231,7 @@
     <ClCompile Include="nbp.c" />
     <ClCompile Include="nob.c" />
     <ClCompile Include="nobII.c" />
+    <ClCompile Include="org_g0orx_openhpsdr_wdsp_WDSP.c" />
     <ClCompile Include="osctrl.c" />
     <ClCompile Include="patchpanel.c" />
     <ClCompile Include="resample.c" />

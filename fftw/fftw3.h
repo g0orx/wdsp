@@ -132,8 +132,8 @@ typedef enum fftw_r2r_kind_do_not_use_me X(r2r_kind);			   \
 									   \
 typedef fftw_write_char_func_do_not_use_me X(write_char_func);		   \
 typedef fftw_read_char_func_do_not_use_me X(read_char_func);		   \
-                                                                           \
-FFTW_EXTERN void X(execute)(const X(plan) p);                              \
+									   \
+FFTW_EXTERN void X(execute)(const X(plan) p);				   \
 									   \
 FFTW_EXTERN X(plan) X(plan_dft)(int rank, const int *n,			   \
 		    C *in, C *out, int sign, unsigned flags);		   \
@@ -320,7 +320,6 @@ FFTW_EXTERN void X(set_timelimit)(double t);				   \
 FFTW_EXTERN void X(plan_with_nthreads)(int nthreads);			   \
 FFTW_EXTERN int X(init_threads)(void);					   \
 FFTW_EXTERN void X(cleanup_threads)(void);				   \
-FFTW_EXTERN void X(make_planner_thread_safe)(void);                        \
 									   \
 FFTW_EXTERN int X(export_wisdom_to_filename)(const char *filename);	   \
 FFTW_EXTERN void X(export_wisdom_to_file)(FILE *output_file);		   \
@@ -362,7 +361,7 @@ FFTW_DEFINE_API(FFTW_MANGLE_LONG_DOUBLE, long double, fftwl_complex)
 /* __float128 (quad precision) is a gcc extension on i386, x86_64, and ia64
    for gcc >= 4.6 (compiled in FFTW with --enable-quad-precision) */
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) \
- && !(defined(__ICC) || defined(__INTEL_COMPILER) || defined(__CUDACC__) || defined(__PGI)) \
+ && !(defined(__ICC) || defined(__INTEL_COMPILER)) \
  && (defined(__i386__) || defined(__x86_64__) || defined(__ia64__))
 #  if !defined(FFTW_NO_Complex) && defined(_Complex_I) && defined(complex) && defined(I)
 /* note: __float128 is a typedef, which is not supported with the _Complex

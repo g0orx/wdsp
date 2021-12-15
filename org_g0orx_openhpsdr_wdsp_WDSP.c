@@ -719,13 +719,14 @@ JNIEXPORT void JNICALL Java_org_g0orx_openhpsdr_wdsp_WDSP_Spectrum
  * Method:    Spectrum2
  * Signature: (III[F)V
  */
-
+ /*
 JNIEXPORT void JNICALL Java_org_g0orx_openhpsdr_wdsp_WDSP_Spectrum2
   (JNIEnv *env, jobject obj, jint channel, jint ss, jint LO, jfloatArray buffer) {
 	jfloat *fbuffer=(*env)->GetFloatArrayElements(env,buffer,0);
 	Spectrum2(channel,ss,LO,fbuffer);
 	(*env)->ReleaseFloatArrayElements(env,buffer,fbuffer,0);
 }
+*/
 
 /*
  * Class:     org_g0orx_openhpsdr_wdsp_WDSP

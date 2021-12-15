@@ -25,6 +25,7 @@ warren@wpratt.com
 */
 
 #include "comm.h"
+#include <avrt.h>
 
 #if defined(linux) || defined(__APPLE__)
 void wdspmain(void *pargs)

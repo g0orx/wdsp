@@ -1,0 +1,84 @@
+﻿  amd.c
+  ammod.c
+  amsq.c
+  analyzer.c
+  anf.c
+  anr.c
+  bandpass.c
+  calcc.c
+  calculus.c
+  cblock.c
+  cfcomp.c
+  cfir.c
+  comm.c
+  compress.c
+  delay.c
+  div.c
+  eer.c
+  emnr.c
+  emph.c
+  eq.c
+  Compiling...
+  channel.c
+  fcurve.c
+  firmin.c
+  fmd.c
+  gain.c
+  gen.c
+  iir.c
+  iqc.c
+  linux_port.c
+  lmath.c
+  meterlog10.c
+  fir.c
+  fmmod.c
+  iobuffs.c
+  main.c
+  meter.c
+  nbp.c
+  nob.c
+  nobII.c
+  org_g0orx_openhpsdr_wdsp_WDSP.c
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(149,20): warning C4013: 'SetChannelTDelayUp' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(169,22): warning C4013: 'SetChannelTDelayDown' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(179,21): warning C4013: 'SetChannelTSlewDown' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(219,19): warning C4013: 'SetRXABandpassRun' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(289,15): warning C4013: 'SetRXAFMSQRun' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(309,13): warning C4013: 'SetRXAEQRun' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(321,17): warning C4013: 'SetRXAEQProfile' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(334,14): warning C4013: 'SetRXAGrphEQ' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(346,16): warning C4013: 'SetRXAGrphEQ10' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(712,27): warning C4133: 'function': incompatible types - from 'jfloat *' to 'double *'
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(712,30): warning C4133: 'function': incompatible types - from 'jfloat *' to 'double *'
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(748,19): warning C4013: 'SetTXABandpassRun' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(758,21): warning C4013: 'SetTXABandpassFreqs' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(770,77): warning C4090: 'function': different 'const' qualifiers
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(794,13): warning C4013: 'SetAnalyzer' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(807,11): warning C4013: 'GetPixels' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(820,12): warning C4013: 'WDSPwisdom' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(831,22): warning C4013: 'SetRXAEMNRRun' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(841,29): warning C4013: 'SetRXAEMNRgainMethod' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(851,28): warning C4013: 'SetRXAEMNRnpeMethod' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(861,24): warning C4013: 'SetRXAEMNRaeRun' undefined; assuming extern returning int
+C:\dev\git\forks\wdsp\org_g0orx_openhpsdr_wdsp_WDSP.c(871,27): warning C4013: 'SetRXAEMNRPosition' undefined; assuming extern returning int
+  Compiling...
+  osctrl.c
+  patchpanel.c
+  resample.c
+  RXA.c
+  sender.c
+  shift.c
+  siphon.c
+  fmsq.c
+  slew.c
+  snb.c
+  TXA.c
+  utilities.c
+  wcpAGC.c
+  wisdom.c
+     Creating library C:\dev\git\forks\wdsp\Release\wdsp.lib and object C:\dev\git\forks\wdsp\Release\wdsp.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 943 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  wdsp.vcxproj -> C:\dev\git\forks\wdsp\Release\wdsp.dll

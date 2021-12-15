@@ -128,6 +128,8 @@ void WDSPwisdom (char* directory)
 	}
 }
 
+#if defined(linux) || defined(__APPLE__)
 char *wisdom_get_status() {
 	return status;
 }
+#endif
