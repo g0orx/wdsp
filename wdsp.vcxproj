@@ -175,7 +175,7 @@
     <ClInclude Include="nbp.h" />
     <ClInclude Include="nob.h" />
     <ClInclude Include="nobII.h" />
-    <ClInclude Include="org_g0orx_openhpsdr_wdsp_WDSP.h" />
+    <ClInclude Include="org_radioberry_openhpsdr_dsp_WDSP.h" />
     <ClInclude Include="osctrl.h" />
     <ClInclude Include="patchpanel.h" />
     <ClInclude Include="resample.h" />
@@ -231,7 +231,7 @@
     <ClCompile Include="nbp.c" />
     <ClCompile Include="nob.c" />
     <ClCompile Include="nobII.c" />
-    <ClCompile Include="org_g0orx_openhpsdr_wdsp_WDSP.c" />
+    <ClCompile Include="org_radioberry_openhpsdr_dsp_WDSP.c" />
     <ClCompile Include="osctrl.c" />
     <ClCompile Include="patchpanel.c" />
     <ClCompile Include="resample.c" />
