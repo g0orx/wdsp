@@ -1,5 +1,3 @@
-#include "calculus.h"
-
 //
 // The original WDSP comes with a file named "calculus" that contains
 // data for the noise reduction filters and is read in file emnr.c.
@@ -13,7 +11,7 @@
 // 64-bit "double" data type has about 15 significant digits.
 //
 // To this end the contents of the file "calculus" have just been read
-// and printed. Within emnr.c, one then uses a "memcpy" instead of a "fread".
+// and printed.
 //
 // What follows can be generated from the file "calculus" using the program
 // coded in "make_calculus.c".
