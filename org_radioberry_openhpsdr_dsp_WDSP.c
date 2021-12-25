@@ -3,6 +3,19 @@
 #include "comm.h"
 #include "meter.h"
 
+
+	/*
+	 * Class:     org_openhpsdr_dsp_Wdsp
+	 * Method:    GetWDSPVersion
+	 * Signature: ()I
+	 */
+JNIEXPORT jint JNICALL Java_org_openhpsdr_dsp_Wdsp_GetWDSPVersion
+(JNIEnv*, jobject) {
+	return GetWDSPVersion();
+}
+
+
+
 /*
  * Class:     org_radioberry_openhpsdr_wdsp_WDSP
  * Method:    OpenChannel
