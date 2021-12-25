@@ -26,9 +26,7 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-#if defined(linux) || defined(__APPLE__)
 #include "calculus.h"
-#endif
 	
 /********************************************************************************************************
 *																										*
@@ -275,20 +273,12 @@ void calc_emnr(EMNR a)
 		a->g.prev_gamma[i] = 1.0;
 	}
 	a->g.gmax = 10000.0;
-	//
-	a->g.GG = (double *)malloc0(241 * 241 * sizeof(double));
-	a->g.GGS = (double *)malloc0(241 * 241 * sizeof(double));
-#if defined(linux) || defined(__APPLE__)
-        memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
-        memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
-#else
 
-	a->g.fileb = fopen("calculus", "rb");
-	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
-	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);
-	fclose(a->g.fileb);
-#endif
-	//
+        //
+        // data for GG and GGS is present as static data
+        //
+        a->g.GG = GG;
+        a->g.GGS = GGS;
 
 	a->np.incr = a->incr;
 	a->np.rate = a->rate;
@@ -446,9 +436,6 @@ void decalc_emnr(EMNR a)
 	_aligned_free(a->np.alphaHat);
 	_aligned_free(a->np.alphaOptHat);
 	_aligned_free(a->np.p);
-
-	_aligned_free(a->g.GGS);
-	_aligned_free(a->g.GG);
 	_aligned_free(a->g.prev_mask);
 	_aligned_free(a->g.prev_gamma);
 	_aligned_free(a->g.lambda_d);
@@ -684,7 +671,7 @@ void aepf(EMNR a)
 	memcpy (a->mask + n, a->ae.nmask, (a->ae.msize - 2 * n) * sizeof (double));
 }
 
-double getKey(double* type, double gamma, double xi)
+double getKey(const double* type, double gamma, double xi)
 {
 	int ngamma1, ngamma2, nxi1, nxi2;
 	double tg, tx, dg, dx;
