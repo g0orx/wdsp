@@ -99,7 +99,7 @@ version.c\
 wcpAGC.c\
 wisdom.c
 
-JAVA_SOURCES= org_g0orx_openhpsdr_wdsp_WDSP.c
+JAVA_SOURCES= org_openhpsdr_dsp_Wdsp.c
 
 HEADERS=amd.h\
 ammod.h\
@@ -160,7 +160,7 @@ TXA.h\
 utilities.h\
 wcpAGC.h
 
-JAVA_HEADERS= org_g0orx_openhpsdr_wdsp_WDSP.h
+JAVA_HEADERS= org_openhpsdr_dsp_Wdsp.h
 
 OBJS=linux_port.o\
 amd.o\
@@ -222,7 +222,7 @@ varsamp.o\
 wcpAGC.o\
 wisdom.o
 
-JAVA_OBJS= org_g0orx_openhpsdr_wdsp_WDSP.o
+JAVA_OBJS= org_openhpsdr_dsp_Wdsp.o
 
 all: $(PROGRAM) $(HEADERS) $(SOURCES)
 
