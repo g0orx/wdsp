@@ -196,7 +196,7 @@ double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int
 	double delta = PI / m;
 	double cosphi;
 	double posi, posj;
-	double sinc, window, coef;
+	double sinc, window=0.0, coef;
 
 	if (N & 1)
 	{

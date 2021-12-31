@@ -30,10 +30,10 @@ struct _ch ch[MAX_CHANNELS];
 
 void start_thread (int channel)
 {
-#if defined(linux) || defined(__APPLE__)
-	HANDLE handle = (HANDLE) _beginthread(wdspmain, 0, (void *)channel);
+#if defined(linux) || defined(__APPLE__) || defined(_WIN32LINK)
+	HANDLE handle = (HANDLE) _beginthread(wdspmain, 0, (void *)(uintptr_t)channel);
 #else
-	HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)channel);
+	HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)(uintptr_t)channel);
 #endif
 
 	//SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
@@ -134,7 +134,7 @@ void CloseChannel (int channel)
 
 void flushChannel (void* p)
 {
-	int channel = (int)p;
+	int channel = (int)(uintptr_t)p;
 	EnterCriticalSection (&ch[channel].csDSP);
 	EnterCriticalSection (&ch[channel].csEXCH);
 	flush_iobuffs (channel);

@@ -834,7 +834,7 @@ void __cdecl RestoreCorrection(void *pargs)
 PORT
 void pscc (int channel, int size, double* tx, double* rx)
 {
-	int i, n, m;
+	int i, n=0, m;
 	double env;
 	CALCC a;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
@@ -1080,7 +1080,7 @@ void PSSaveCorr (int channel, char* filename)
 	int i = 0;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
-	while (a->util.savefile[i++] = *filename++);
+	while ((a->util.savefile[i++] = *filename++));
 	_beginthread(SaveCorrection, 0, (void *)a);
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
@@ -1092,7 +1092,7 @@ void PSRestoreCorr (int channel, char* filename)
 	int i = 0;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
-	while (a->util.restfile[i++] = *filename++);
+	while ((a->util.restfile[i++] = *filename++));
 	a->ctrl.turnon = 1;
 	_beginthread(RestoreCorrection, 0, (void *)a);
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);

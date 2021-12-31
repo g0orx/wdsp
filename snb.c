@@ -639,7 +639,7 @@ PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 {
 	SNBA a;
 	RESAMPLE d;
-	double f_low, f_high;
+	double f_low=0.0, f_high=0.0;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = rxa[channel].snba.p;
 	d = a->outresamp;

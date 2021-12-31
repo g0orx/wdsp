@@ -115,7 +115,7 @@ void flush_amd (AMD a)
 void xamd (AMD a)
 {
 	int i;
-	double audio;
+	double audio = 0.0;
 	double vco[2];
 	double corr[2];
 	double det;

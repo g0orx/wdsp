@@ -26,19 +26,19 @@ warren@wpratt.com
 
 #include "comm.h"
 
-#if defined(linux) || defined(__APPLE__)
+#if defined(linux) || defined(__APPLE__) || defined(_WIN32LINK)
 void wdspmain(void *pargs)
 #else
 void main (void *pargs)
 #endif
 {
-#ifdef _WINDOWS_
+#if defined(_WINDOWS_) || defined(_WIN32)
 	DWORD taskIndex = 0;
 	HANDLE hTask = AvSetMmThreadCharacteristics(TEXT("Pro Audio"), &taskIndex);
 	if (hTask != 0) AvSetMmThreadPriority(hTask, 2);
 	else SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 #endif
-	int channel = (int)pargs;
+	int channel = (int)(uintptr_t)pargs;
 	while (_InterlockedAnd (&ch[channel].run, 1))
 	{
 		WaitForSingleObject(ch[channel].iob.pd->Sem_BuffReady,INFINITE);

@@ -53,7 +53,7 @@ void new_window(int disp, int type, int size, double PiAlpha)
 {
 	DP a = pdisp[disp];
 	int i;
-	double arg0, arg1, cgsum, igsum;
+	double arg0, arg1, cgsum, igsum = 0.0;
 	switch (type)
 	{
 	case 0:					// rectangular window
@@ -207,7 +207,7 @@ void eliminate(int disp, int ss, int LO)
 			if ((a->spec_flag[ss] == 0) || (mag < (a->result[ss])[k]))
 				(a->result[ss])[k] = mag;
 		}
-		a->ss_bins[ss] = k;
+	a->ss_bins[ss] = k;
 }
 
 // spur elimination, COMPLEX input data
@@ -562,9 +562,9 @@ void stitch(int disp)
 DWORD WINAPI spectra (void *pargs)
 {
 	int i, j;
-	int disp = ((int)pargs) >> 12;
-	int ss = (((int)pargs) >> 4) & 255;
-	int LO = ((int)pargs) & 15;
+	int disp = ((uintptr_t)pargs) >> 12;
+	int ss = (((uintptr_t)pargs) >> 4) & 255;
+	int LO = ((uintptr_t)pargs) & 15;
 	DP a = pdisp[disp];
 
 	if (a->stop)
@@ -606,18 +606,9 @@ DWORD WINAPI spectra (void *pargs)
 		LeaveCriticalSection (&(a->EliminateSection[ss]));
 
 		EnterCriticalSection (&a->StitchSection);
-#if defined(linux) || defined(__APPLE__)
-                a->stitch_flag |= 1L << ss;
-#else
-                a->stitch_flag |= 1i64 << ss;
-#endif
+                a->stitch_flag |= ((uint64_t) 1) << ss;
 
-#if defined(linux) || defined(__APPLE__)
-                if (a->stitch_flag == ((1L << a->num_stitch) - 1))
-#else
-                if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
-#endif
-
+                if (a->stitch_flag == ((((uint64_t) 1) << a->num_stitch) - 1))
 		{
 			a->stitch_flag = 0;
 			LeaveCriticalSection(&a->StitchSection);
@@ -639,9 +630,9 @@ DWORD WINAPI spectra (void *pargs)
 DWORD WINAPI Cspectra (void *pargs)
 {
 	int i, j;
-	int disp = ((int)pargs) >> 12;
-	int ss = (((int)pargs) >> 4) & 255;
-	int LO = ((int)pargs) & 15;
+	int disp = ((uintptr_t)pargs) >> 12;
+	int ss = (((uintptr_t)pargs) >> 4) & 255;
+	int LO = ((uintptr_t)pargs) & 15;
 	DP a = pdisp[disp];
 	int trans_size = a->size * sizeof(double);
 
@@ -692,17 +683,9 @@ DWORD WINAPI Cspectra (void *pargs)
 		LeaveCriticalSection (&(a->EliminateSection[ss]));
 
 		EnterCriticalSection (&a->StitchSection);
-#if defined(linux) || defined(__APPLE__)
-                a->stitch_flag |= 1L << ss;
-#else
-                a->stitch_flag |= 1i64 << ss;
-#endif
+                a->stitch_flag |= ((uint64_t) 1) << ss;
 
-#if defined(linux) || defined(__APPLE__)
-                if (a->stitch_flag == ((1L << a->num_stitch) - 1))
-#else
-                if (a->stitch_flag == ((1i64 << a->num_stitch) - 1))
-#endif
+                if (a->stitch_flag == ((((uint64_t) 1) << a->num_stitch) - 1))
 		{
 			a->stitch_flag = 0;
 			LeaveCriticalSection(&a->StitchSection);
@@ -727,7 +710,7 @@ void interpolate(int disp, int set, double fmin, double fmax, int num_pixels)
 	int i; 
 	double f;
 	int n = a->n_freqs[set];
-	int k;
+	int k = 0;
 	int kmin = 0;
 	int kmax = n - 1;
 	int kdelta;
@@ -860,7 +843,7 @@ int build_interpolants(int disp, int set, int n, int m, double *x, double (*y)[d
 
 void __cdecl sendbuf(void *arg)
 {
-	DP a = pdisp[(int)arg];
+	DP a = pdisp[(uintptr_t)arg];
 	while(!a->end_dispatcher)
 	{
 		for (a->ss = 0; a->ss < a->num_stitch; a->ss++)
@@ -874,9 +857,9 @@ void __cdecl sendbuf(void *arg)
 					
 					InterlockedIncrement(a->pnum_threads);
 					if (a->type == 0)
-						QueueUserWorkItem(spectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
+						QueueUserWorkItem(spectra, (void *)(((uintptr_t)arg << 12) + (a->ss << 4) + a->LO), 0);
 					else
-						QueueUserWorkItem(Cspectra, (void *)(((int)arg << 12) + (a->ss << 4) + a->LO), 0);
+						QueueUserWorkItem(Cspectra, (void *)(((uintptr_t)arg << 12) + (a->ss << 4) + a->LO), 0);
 
 					if((a->IQout_index[a->ss][a->LO] += a->incr) >= a->bsize)
 						a->IQout_index[a->ss][a->LO] -= a->bsize;
@@ -1326,7 +1309,7 @@ void CloseBuffer(int disp, int ss, int LO)
 	{
 		a->dispatcher = 1;
 		LeaveCriticalSection(&a->SetAnalyzerSection);
-		_beginthread(sendbuf, 0, (void *)disp);
+		_beginthread(sendbuf, 0, (void *)(uintptr_t)disp);
 	}
 	else
 		LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1365,7 +1348,7 @@ void Spectrum(int disp, int ss, int LO, dINREAL* pI, dINREAL* pQ)
 	{
 		a->dispatcher = 1;
 		LeaveCriticalSection(&a->SetAnalyzerSection);
-		_beginthread(sendbuf, 0, (void *)disp);
+		_beginthread(sendbuf, 0, (void *)(uintptr_t)disp);
 	}
 	else
 		LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1410,7 +1393,7 @@ void Spectrum2(int run, int disp, int ss, int LO, dINREAL* pbuff)
 		{
 			a->dispatcher = 1;
 			LeaveCriticalSection(&a->SetAnalyzerSection);
-			_beginthread(sendbuf, 0, (void *)disp);
+			_beginthread(sendbuf, 0, (void *)(uintptr_t)disp);
 		}
 		else
 			LeaveCriticalSection(&a->SetAnalyzerSection);
@@ -1456,7 +1439,7 @@ void Spectrum0(int run, int disp, int ss, int LO, double* pbuff)
 		{
 			a->dispatcher = 1;
 			LeaveCriticalSection(&a->SetAnalyzerSection);
-			_beginthread(sendbuf, 0, (void *)disp);
+			_beginthread(sendbuf, 0, (void *)(uintptr_t)disp);
 		}
 		else
 			LeaveCriticalSection(&a->SetAnalyzerSection);
