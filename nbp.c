@@ -81,7 +81,7 @@ double* fir_mbandpass (int N, int nbp, double* flow, double* fhigh, double rate,
 
 double min_notch_width (NBP a)
 {
-	double min_width;
+	double min_width=0;
 	switch (a->wintype)
 	{
 	case 0:

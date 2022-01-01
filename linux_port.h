@@ -61,7 +61,6 @@ john.d.melton@googlemail.com
 #define __stdcall
 #define __forceinline
 #define _beginthread wdsp_beginthread
-#define _int64 long long
 #define _aligned_malloc(x,y) malloc(x);
 #define _aligned_free(x) free(x);
 #define freopen_s freopen
