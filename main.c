@@ -26,11 +26,8 @@ warren@wpratt.com
 
 #include "comm.h"
 
-#if defined(linux) || defined(__APPLE__) || defined(_WIN32LINK)
+// naming the master channel thread "main" causes problems, use "wdspmain" instead)
 void wdspmain(void *pargs)
-#else
-void main (void *pargs)
-#endif
 {
 #if defined(_WINDOWS_) || defined(_WIN32)
 	DWORD taskIndex = 0;

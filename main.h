@@ -27,11 +27,8 @@ warren@wpratt.com
 #ifndef _mainloop_h
 #define _mainloop_h
 
-#if defined(linux) || defined(__APPLE__) || defined(_WIN32LINK)
+// naming the master channel thread "main" causes problems, use "wdspmain" instead
 void wdspmain(void *pargs);
-#else
-extern void main (void *pargs);
-#endif
 
 extern void create_main (int channel);
 

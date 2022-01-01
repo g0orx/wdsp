@@ -139,21 +139,21 @@ HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stac
 	pthread_attr_t  attr;
 	int rc = 0;
 
-	if ((rc = pthread_attr_init(&attr))) {
+	if (pthread_attr_init(&attr)) {
  	    return (HANDLE)-1;
 	}
       
 	if(stack_size!=0) {
-	    if ((rc = pthread_attr_setstacksize(&attr, stack_size))) {
+	    if (pthread_attr_setstacksize(&attr, stack_size)) {
 	        return (HANDLE)-1;
 	    }
 	}
 
-        if((rc = pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED))) {
+        if(pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED)) {
             return (HANDLE)-1;
         }
      
-	if ((rc = pthread_create(&threadid, &attr, (void*(*)(void*))start_address, arglist))) {
+	if (pthread_create(&threadid, &attr, (void*(*)(void*))start_address, arglist)) {
 	     return (HANDLE)-1;
 	}
 

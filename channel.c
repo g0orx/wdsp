@@ -30,12 +30,8 @@ struct _ch ch[MAX_CHANNELS];
 
 void start_thread (int channel)
 {
-#if defined(linux) || defined(__APPLE__) || defined(_WIN32LINK)
+        // naming the master channel thread "main" causes problems, use "wdspmain" instead
 	HANDLE handle = (HANDLE) _beginthread(wdspmain, 0, (void *)(uintptr_t)channel);
-#else
-	HANDLE handle = (HANDLE) _beginthread(main, 0, (void *)(uintptr_t)channel);
-#endif
-
 	//SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 }
 
