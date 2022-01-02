@@ -807,11 +807,11 @@ void __cdecl RestoreCorrection(void *pargs)
 	for (i = 0; i < a->util.ints; i++)
 	{
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(pm[4 * i + k]));
+			(void) fscanf (file, "%le", &(pm[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(pc[4 * i + k]));
+			(void) fscanf (file, "%le", &(pc[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(ps[4 * i + k]));
+			(void) fscanf (file, "%le", &(ps[4 * i + k]));
 	}
 	fclose (file);
 	if (!InterlockedBitTestAndSet (&a->ctrl.running, 0))

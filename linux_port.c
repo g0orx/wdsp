@@ -123,7 +123,6 @@ void LinuxReleaseSemaphore(sem_t* sem,int release_count, int* previous_count) {
 }
 
 sem_t *CreateEvent(void* security_attributes,int bManualReset,int bInitialState,char* name) {
-	int result;
         sem_t *sem;
 	sem=LinuxCreateSemaphore(0,0,0,0);
 	// need to handle bManualReset and bInitialState
@@ -137,7 +136,6 @@ void LinuxSetEvent(sem_t* sem) {
 HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stack_size, void *arglist) {
 	pthread_t threadid;
 	pthread_attr_t  attr;
-	int rc = 0;
 
 	if (pthread_attr_init(&attr)) {
  	    return (HANDLE)-1;
@@ -161,7 +159,8 @@ HANDLE wdsp_beginthread( void( __cdecl *start_address )( void * ), unsigned stac
 #ifndef __APPLE__
 	// DL1YCF: this function does not exist on MacOS. You can only name the
         //         current thread.
-        rc=pthread_setname_np(threadid, "WDSP");
+       //          If this call should fail, continue anyway.
+        (void) pthread_setname_np(threadid, "WDSP");
 #endif
 
 	return (HANDLE)threadid;

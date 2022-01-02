@@ -565,6 +565,7 @@ DWORD WINAPI spectra (void *pargs)
 	int disp = ((uintptr_t)pargs) >> 12;
 	int ss = (((uintptr_t)pargs) >> 4) & 255;
 	int LO = ((uintptr_t)pargs) & 15;
+        if (disp >= dMAX_DISPLAYS) disp=0;   // DL1YCF: if this occurs, it is an error anyway
 	DP a = pdisp[disp];
 
 	if (a->stop)

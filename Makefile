@@ -20,7 +20,7 @@ GTKOPTIONS=-D GTK
 endif
 
 ifeq ($(UNAME_S), Darwin)
-OPTIONS=-g -O3 -D _GNU_SOURCE   	# MacOS: do not need PIC
+OPTIONS=-g -O3 -D _GNU_SOURCE 		# MacOS: do not need PIC
 LIBS=`pkg-config --libs fftw3`  	# MacOS: get FFTW library path from pkg-config
 PROGRAM=libwdsp.dylib			# MacOS: shared libs end in .dylib
 JAVA_PROGRAM=libwdspj.dylib		# MacOS: shared libs end in .dylib
@@ -35,7 +35,13 @@ endif
 
 JAVA_LIBS=-L. -lwdsp
 
+ifeq ($(JAVA_HOME),)
+#
+# If $JAVA_HOME is empty, do not search /include
+#
+else
 INCLUDES=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux
+endif
 
 COMPILE=$(CC) $(INCLUDES) $(GTKINCLUDES)
 

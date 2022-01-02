@@ -34,7 +34,9 @@ void WDSPwisdom (char* directory)
 {
 	fftw_plan tplan;
 	int psize;
+#ifdef _WINDOWS_
 	FILE *stream;
+#endif
 	double* fftin;
 	double* fftout;
 	char wisdom_file[1024];

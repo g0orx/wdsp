@@ -275,12 +275,12 @@ double *fir_read (int N, const char *filename, int rtype, double scale)
 		switch (rtype)
 		{
 		case 0:
-			fscanf (file, "%le", &I);
+			(void) fscanf (file, "%le", &I);
 			c_impulse[i] = + scale * I;
 			break;
 		case 1:
-			fscanf (file, "%le", &I);
-			fscanf (file, "%le", &Q);
+			(void) fscanf (file, "%le", &I);
+			(void) fscanf (file, "%le", &Q);
 			c_impulse[2 * i + 0] = + scale * I;
 			c_impulse[2 * i + 1] = - scale * Q;
 			break;
