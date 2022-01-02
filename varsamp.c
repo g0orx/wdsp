@@ -146,9 +146,14 @@ int xvarsamp (VARSAMP a, double var)
 			a->ring[2 * a->idx_in + 0] = a->in[2 * i + 0];
 			a->ring[2 * a->idx_in + 1] = a->in[2 * i + 1];
 			a->inv_cvar += a->dicvar;
+			//
+			// bit-wise manipulation of IEEE-745 "binary64" floating point data
+                        // 16 bits of the 53-bit mantissa are cleared, inducing some sort
+                        // of discretization.
+			//
 			picvar = (uint64_t *)(&a->inv_cvar);
 			N = *picvar & 0xffffffffffff0000;
-			a->inv_cvar = *((double *)&N);
+			a->inv_cvar = *((double *)&N);  // This line may produce a compiler warning
 			a->delta = 1.0 - a->inv_cvar;
 			while (a->isamps < 1.0)
 			{

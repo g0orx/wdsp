@@ -388,8 +388,8 @@ int scanFrame(int xsize, int pval, double pmultmin, int* det, int* bimp, int* li
     int nimp = 0;
 	double td;
     int ti;
-	double merit[MAXIMP] = { 0 };
-	int nextlist[MAXIMP];
+	double merit[MAXIMP] = { 0.0 };
+	int nextlist[MAXIMP] = { 0 };
 	memset (befimp, 0, MAXIMP * sizeof (int));
 	memset (aftimp, 0, MAXIMP * sizeof (int));
     while (i < xsize && nimp < MAXIMP)
