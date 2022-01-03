@@ -117,6 +117,7 @@ void WDSPwisdom (char* directory)
 	}
 }
 
+PORT
 char *wisdom_get_status() {
 	return status;
 }
