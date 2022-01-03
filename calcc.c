@@ -834,7 +834,7 @@ void __cdecl RestoreCorrection(void *pargs)
 PORT
 void pscc (int channel, int size, double* tx, double* rx)
 {
-	int i, n=0, m;
+	int i, n, m;
 	double env;
 	CALCC a;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
@@ -931,6 +931,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 						{
 							int nmin = 0;
 							int nmax = a->ints;
+							n = nmin;
 							while (nmax - nmin > 1)
 							{
 								n = (nmin + nmax) / 2;

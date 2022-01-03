@@ -196,7 +196,7 @@ double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int
 	double delta = PI / m;
 	double cosphi;
 	double posi, posj;
-	double sinc, window=0.0, coef;
+	double sinc, window, coef;
 
 	if (N & 1)
 	{
@@ -234,6 +234,9 @@ double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int
 					+ cosphi *  ( + 8.5438256055858031e-02
 					+ cosphi *	( - 1.2320203369293225e-02
 					+ cosphi *	( + 4.3778825791773474e-04 ))))));
+			break;
+		default:  // make compiler happy
+			window = 0.0;
 			break;
 		}
 		coef = scale * sinc * window;

@@ -138,7 +138,7 @@ double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double ci
 	// rtype:	0 for real output, 1 for complex output
 	// scale:	scale factor to be applied to the output
 	int i, j;
-	double tmp, local_scale, ri, mag=1.0, fn;
+	double tmp, local_scale, ri, mag, fn;
 	double* impulse;
 	double* A = (double *) malloc0 (N * sizeof (double));
 	double ft = cutoff / cicrate;										// normalized cutoff frequency
@@ -158,6 +158,7 @@ double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double ci
 	if ((tmp = DD * R * sin (PI * ft / R) / sin (PI * DD * ft)) < 0.0)	//normalize by peak gain
 		tmp = -tmp;
 	local_scale = scale / pow (tmp, Pairs);
+	mag = local_scale;  // added initialization to make comiler happy
 	if (xtype == 0)
 	{
 		for (i = 0, ri = offset; i < u_samps; i++, ri += 1.0)

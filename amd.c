@@ -115,7 +115,7 @@ void flush_amd (AMD a)
 void xamd (AMD a)
 {
 	int i;
-	double audio = 0.0;
+	double audio;
 	double vco[2];
 	double corr[2];
 	double det;
@@ -208,6 +208,9 @@ void xamd (AMD a)
 								audio = (ai_ps + bi_ps) - (aq_ps - bq_ps);
 								break;
 							}
+						default:  // make compiler happy
+							audio = 0.0;
+							break;
 						}
 
 						if (a->levelfade)

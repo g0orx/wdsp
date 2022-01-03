@@ -31,6 +31,7 @@ struct _ch ch[MAX_CHANNELS];
 void start_thread (int channel)
 {
         // naming the master channel thread "main" causes problems, use "wdspmain" instead
+	// variable "handle" used in temporarily deactivted code
 	HANDLE handle = (HANDLE) _beginthread(wdspmain, 0, (void *)(uintptr_t)channel);
 	//SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 }

@@ -386,12 +386,14 @@ int scanFrame(int xsize, int pval, double pmultmin, int* det, int* bimp, int* li
     int inflag = 0;
     int i = 0, j = 0, k = 0;
     int nimp = 0;
-	double td;
+    double td;
     int ti;
-	double merit[MAXIMP] = { 0.0 };
-	int nextlist[MAXIMP] = { 0 };
-	memset (befimp, 0, MAXIMP * sizeof (int));
-	memset (aftimp, 0, MAXIMP * sizeof (int));
+    double merit[MAXIMP] = { 0.0 };
+    int nextlist[MAXIMP];
+    memset (befimp, 0, MAXIMP * sizeof (int));
+    memset (aftimp, 0, MAXIMP * sizeof (int));
+
+    nextlist[0]=0;  // Added initialization to make compiler happy
     while (i < xsize && nimp < MAXIMP)
     {
         if (det[i] == 1 && inflag == 0)
@@ -638,7 +640,7 @@ PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 {
 	SNBA a;
 	RESAMPLE d;
-	double f_low=0.0, f_high=0.0;
+	double f_low, f_high;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = rxa[channel].snba.p;
 	d = a->outresamp;
@@ -663,6 +665,12 @@ PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 		if (absmax <  a->out_low_cut) absmax =  a->out_low_cut;
 		f_low = a->out_low_cut;
 		f_high = min (a->out_high_cut, absmax);
+	}
+	else
+	{
+		// Added initialization to make compiler happy
+		f_low  = 0.0;
+		f_high = 0.0;
 	}
 
 	setBandwidth_resample (d, f_low, f_high);
