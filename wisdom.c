@@ -111,7 +111,7 @@ void WDSPwisdom (char* directory)
 		fftw_export_wisdom_to_filename(wisdom_file);
 		_aligned_free (fftout);
 		_aligned_free (fftin);
-#ifdef _WIN32WS_
+#ifdef _WIN32
 		FreeConsole();							// dismiss console
 #endif
 	}
