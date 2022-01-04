@@ -29,7 +29,7 @@ warren@wpratt.com
 // naming the master channel thread "main" causes problems, use "wdspmain" instead)
 void wdspmain(void *pargs)
 {
-#if defined(_WINDOWS_) || defined(_WIN32)
+#if defined(_WIN32)
 	DWORD taskIndex = 0;
 	HANDLE hTask = AvSetMmThreadCharacteristics(TEXT("Pro Audio"), &taskIndex);
 	if (hTask != 0) AvSetMmThreadPriority(hTask, 2);

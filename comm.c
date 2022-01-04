@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "comm.h"
 
-#if defined(_WINDOWS_) || defined(_WIN32)
+#if defined(_WIN32)
 uintptr_t __cdecl wdsp_beginthread(void(__cdecl *start_address)(void *), unsigned stack_size, void *arglist)
 {
 	return _beginthread(start_address, stack_size, arglist);

@@ -34,7 +34,7 @@ void WDSPwisdom (char* directory)
 {
 	fftw_plan tplan;
 	int psize;
-#ifdef _WINDOWS_
+#ifdef _WIN32
 	FILE *stream;
 #endif
 	double* fftin;
@@ -48,11 +48,11 @@ void WDSPwisdom (char* directory)
 		fftin =  (double *) malloc0 (maxsize * sizeof (complex));
 		fftout = (double *) malloc0 (maxsize * sizeof (complex));
 
-#ifdef _WINDOWS_
+#ifdef _WIN32
                 AllocConsole();                                                         // create console
                 freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
 #endif
-#if defined(linux) || defined(__APPLE__) || defined(_WIN32) || defined(_WINDOWS_)
+#if defined(linux) || defined(__APPLE__) || defined(_WIN32)
                 fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
                 fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
 #endif
@@ -111,7 +111,7 @@ void WDSPwisdom (char* directory)
 		fftw_export_wisdom_to_filename(wisdom_file);
 		_aligned_free (fftout);
 		_aligned_free (fftin);
-#ifdef _WINDOWS_
+#ifdef _WIN32WS_
 		FreeConsole();							// dismiss console
 #endif
 	}
