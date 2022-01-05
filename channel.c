@@ -30,8 +30,7 @@ struct _ch ch[MAX_CHANNELS];
 
 void start_thread (int channel)
 {
-        // naming the master channel thread "main" causes problems, use "wdspmain" instead
-	// variable "handle" used in temporarily deactivted code
+	// naming the master channel thread "main" causes problems, use "wdspmain" instead
 	HANDLE handle = (HANDLE) _beginthread(wdspmain, 0, (void *)(uintptr_t)channel);
 	//SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
 }
@@ -100,7 +99,7 @@ void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, 
 		InterlockedBitTestAndSet (&ch[channel].exchange, 0);
 	}
 #if !defined(linux) && !defined(__APPLE__)
-        _MM_SET_FLUSH_ZERO_MODE (_MM_FLUSH_ZERO_ON);
+	_MM_SET_FLUSH_ZERO_MODE (_MM_FLUSH_ZERO_ON);
 #endif
 }
 

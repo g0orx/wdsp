@@ -27,7 +27,7 @@ warren@wpratt.com
 #include "comm.h"
 
 // naming the master channel thread "main" causes problems, use "wdspmain" instead)
-void wdspmain(void *pargs)
+void wdspmain (void *pargs)
 {
 #if defined(_WIN32)
 	DWORD taskIndex = 0;
@@ -35,6 +35,7 @@ void wdspmain(void *pargs)
 	if (hTask != 0) AvSetMmThreadPriority(hTask, 2);
 	else SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 #endif
+
 	int channel = (int)(uintptr_t)pargs;
 	while (_InterlockedAnd (&ch[channel].run, 1))
 	{

@@ -169,7 +169,7 @@ void new_window(int disp, int type, int size, double PiAlpha)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
-	default:  // make comiler happy
+	default:  // make compiler happy
 		{
 			igsum = 0.0;
 			break;
@@ -570,7 +570,8 @@ DWORD WINAPI spectra (void *pargs)
 	int disp = ((uintptr_t)pargs) >> 12;
 	int ss = (((uintptr_t)pargs) >> 4) & 255;
 	int LO = ((uintptr_t)pargs) & 15;
-        if (disp >= dMAX_DISPLAYS) disp=0;   // DL1YCF: if this occurs, it is an error anyway
+
+	if (disp >= dMAX_DISPLAYS) disp=0;   // DL1YCF: if this occurs, it is an error anyway
 	DP a = pdisp[disp];
 
 	if (a->stop)
@@ -612,9 +613,9 @@ DWORD WINAPI spectra (void *pargs)
 		LeaveCriticalSection (&(a->EliminateSection[ss]));
 
 		EnterCriticalSection (&a->StitchSection);
-                a->stitch_flag |= ((uint64_t) 1) << ss;
+		a->stitch_flag |= ((uint64_t) 1) << ss;
 
-                if (a->stitch_flag == ((((uint64_t) 1) << a->num_stitch) - 1))
+		if (a->stitch_flag == ((((uint64_t) 1) << a->num_stitch) - 1))
 		{
 			a->stitch_flag = 0;
 			LeaveCriticalSection(&a->StitchSection);
@@ -624,7 +625,9 @@ DWORD WINAPI spectra (void *pargs)
 			stitch(disp);
 		}
 		else
+		{
 			LeaveCriticalSection(&a->StitchSection);
+		}
 	}
 	else
 	{
@@ -641,6 +644,8 @@ DWORD WINAPI Cspectra (void *pargs)
 	int disp = ((uintptr_t)pargs) >> 12;
 	int ss = (((uintptr_t)pargs) >> 4) & 255;
 	int LO = ((uintptr_t)pargs) & 15;
+
+	if (disp >= dMAX_DISPLAYS) disp=0;   // DL1YCF: if this occurs, it is an error anyway
 	DP a = pdisp[disp];
 	int trans_size = a->size * sizeof(double);
 
@@ -691,9 +696,9 @@ DWORD WINAPI Cspectra (void *pargs)
 		LeaveCriticalSection (&(a->EliminateSection[ss]));
 
 		EnterCriticalSection (&a->StitchSection);
-                a->stitch_flag |= ((uint64_t) 1) << ss;
+		a->stitch_flag |= ((uint64_t) 1) << ss;
 
-                if (a->stitch_flag == ((((uint64_t) 1) << a->num_stitch) - 1))
+		if (a->stitch_flag == ((((uint64_t) 1) << a->num_stitch) - 1))
 		{
 			a->stitch_flag = 0;
 			LeaveCriticalSection(&a->StitchSection);
@@ -703,7 +708,9 @@ DWORD WINAPI Cspectra (void *pargs)
 			stitch(disp);
 		}
 		else
+		{
 			LeaveCriticalSection(&a->StitchSection);
+		}
 	}
 	else
 	{
@@ -728,43 +735,47 @@ void interpolate(int disp, int set, double fmin, double fmax, int num_pixels)
 	double mag;
 
 	for (i = 0; i < num_pixels; i++)
-        {
-	    f = fmin + (double)i * (fmax - fmin) / (double)(num_pixels - 1);
+	{
+		f = fmin + (double)i * (fmax - fmin) / (double)(num_pixels - 1);
 		
-	    if (f < (a->freqs[set])[0])
-                k = 0;
-            else if (f > (a->freqs[set])[n - 1])
-                k = n - 2;
-            else
-	    {
-		kdelta = 1;
-
-		while (f < (a->freqs[set])[kmin])
+		if (f < (a->freqs[set])[0])
 		{
-		    kmin = max(0, kmin - kdelta);
-		    kdelta += kdelta;
+			k = 0;
 		}
-		while (f > (a->freqs[set])[kmax])
+		else if (f > (a->freqs[set])[n - 1])
 		{
-		    kmax = min(n - 1, kmax + kdelta);
-		    kdelta += kdelta;
+			k = n - 2;
 		}
-
-                k=kmin;
-		while ((kmax - kmin) > 1)
+		else
 		{
-		    k = (kmin + kmax) / 2;
-		    if (f > (a->freqs[set])[k])
-			kmin = k;
-		    else
-			kmax = k--;
+			kdelta = 1;
+
+			while (f < (a->freqs[set])[kmin])
+			{
+				kmin = max(0, kmin - kdelta);
+				kdelta += kdelta;
+			}
+			while (f > (a->freqs[set])[kmax])
+			{
+				kmax = min(n - 1, kmax + kdelta);
+				kdelta += kdelta;
+			}
+
+			k=kmin;
+			while ((kmax - kmin) > 1)
+			{
+				k = (kmin + kmax) / 2;
+				if (f > (a->freqs[set])[k])
+					kmin = k;
+				else
+					kmax = k--;
+			}
 		}
-	    }
 
-            dx = f - (a->freqs[set])[k];
+		dx = f - (a->freqs[set])[k];
 
-            mag = (((a->ac3[set][0])[k] * dx + (a->ac2[set][0])[k]) * dx + (a->ac1[set][0])[k]) * dx + (a->ac0[set][0])[k];
-	    a->cd[i] = mag * mag;
+		mag = (((a->ac3[set][0])[k] * dx + (a->ac2[set][0])[k]) * dx + (a->ac1[set][0])[k]) * dx + (a->ac0[set][0])[k];
+		a->cd[i] = mag * mag;
 	}
 }
 
@@ -783,7 +794,6 @@ int build_interpolants(int disp, int set, int n, int m, double *x, double (*y)[d
 	double tmp;
 	int i, j;
 
-    
     // provide initialization for the case n<2
     dmain[1]=0.0;
     for (j = 0; j < m; j++) {

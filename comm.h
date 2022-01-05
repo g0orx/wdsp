@@ -39,17 +39,22 @@ warren@wpratt.com
 #define LOGW(LOG_TAG, ...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 #define LOGE(LOG_TAG, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 #endif
-#else
+#endif
+
+#ifdef _WIN32
 #include <Windows.h>
 #include <process.h>
 #include <intrin.h>
 #endif
+
 #include <math.h>
 #include <time.h>
-#include <stdint.h>  // for uint64_t, uintptr_t 
+#include <stdint.h>  // for uint64_t, uintptr_t
+
 #ifdef _WIN32
 #include <avrt.h>
 #endif
+
 #include "fftw3.h"
 
 #include "amd.h"

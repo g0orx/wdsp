@@ -148,12 +148,12 @@ int xvarsamp (VARSAMP a, double var)
 			a->inv_cvar += a->dicvar;
 			//
 			// bit-wise manipulation of IEEE-745 "binary64" floating point data
-                        // 16 bits of the 53-bit mantissa are cleared, inducing some sort
-                        // of discretization.
+			// 16 bits of the 53-bit mantissa are cleared, inducing some sort
+			// of discretization.
 			//
 			picvar = (uint64_t *)(&a->inv_cvar);
 			N = *picvar & 0xffffffffffff0000;
-			a->inv_cvar = *((double *)&N);  // This line may produce a compiler warning
+			a->inv_cvar = *((double *)&N);
 			a->delta = 1.0 - a->inv_cvar;
 			while (a->isamps < 1.0)
 			{

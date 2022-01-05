@@ -209,8 +209,10 @@ void xamd (AMD a)
 								break;
 							}
 						default:  // make compiler happy
-							audio = 0.0;
-							break;
+							{
+								audio = 0.0;
+								break;
+							}
 						}
 
 						if (a->levelfade)

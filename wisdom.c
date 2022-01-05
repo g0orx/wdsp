@@ -47,20 +47,16 @@ void WDSPwisdom (char* directory)
 	{
 		fftin =  (double *) malloc0 (maxsize * sizeof (complex));
 		fftout = (double *) malloc0 (maxsize * sizeof (complex));
-
 #ifdef _WIN32
-                AllocConsole();                                                         // create console
-                freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
+		AllocConsole();								// create console
+		freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
 #endif
-#if defined(linux) || defined(__APPLE__) || defined(_WIN32)
-                fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
-                fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
-#endif
-
-                sprintf(status, "Optimizing FFT sizes through %d", maxsize);
+		fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
+		fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
+		sprintf(status, "Optimizing FFT sizes through %d", maxsize);
 #ifdef __ANDROID__
-                utf8 = (*env)->NewStringUTF(env,status);
-                (*env)->CallVoidMethod(env, obj, update, utf8);
+		utf8 = (*env)->NewStringUTF(env,status);
+		(*env)->CallVoidMethod(env, obj, update, utf8);
 #endif
 
 		psize = 64;
@@ -117,6 +113,11 @@ void WDSPwisdom (char* directory)
 	}
 }
 
+//
+// New interface to obtain a "WSDP wisdom status report".
+// The function returns a pointer to a string containing
+// the most recent status message
+//
 PORT
 char *wisdom_get_status() {
 	return status;
