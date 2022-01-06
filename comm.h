@@ -49,12 +49,12 @@ warren@wpratt.com
 
 #include <math.h>
 #include <time.h>
-#include <stdint.h>  // for uint64_t, uintptr_t
 
 #ifdef _WIN32
 #include <avrt.h>
 #endif
 
+#include <stdint.h>
 #include "fftw3.h"
 
 #include "amd.h"

@@ -110,23 +110,26 @@ void xaamav (AAMAV a, int input, double* output)
     if (a->load <= a->ringmax) a->load++;
     a->ring[a->i] = input;
     if (a->ring[a->i] >= 0)
+	{
         a->pos += a->ring[a->i];
+	}
     else
+	{
         a->neg -= a->ring[a->i];
-
-    if (a->load >= a->ringmin)
-    {
-	*output = (double)a->neg / (double)a->pos;
-    }
-    else if (a->neg > 0 && a->pos > 0)
-    {
-	double frac = (double)a->load / (double)a->ringmin;
-	*output = (1.0 - frac) * a->nom_ratio + frac * ((double)a->neg / (double)a->pos);
-    }
-    else
-    {
-	*output = a->nom_ratio;
-    }
+	}
+	if (a->load >= a->ringmin)
+	{
+		*output = (double)a->neg / (double)a->pos;
+	}
+	else if (a->neg > 0 && a->pos > 0)
+	{
+		double frac = (double)a->load / (double)a->ringmin;
+		*output = (1.0 - frac) * a->nom_ratio + frac * ((double)a->neg / (double)a->pos);
+	}
+	else
+	{
+		*output = a->nom_ratio;
+	}
     a->i = (a->i + 1) & a->mask;
 }
 

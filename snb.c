@@ -386,14 +386,12 @@ int scanFrame(int xsize, int pval, double pmultmin, int* det, int* bimp, int* li
     int inflag = 0;
     int i = 0, j = 0, k = 0;
     int nimp = 0;
-    double td;
+	double td;
     int ti;
-    double merit[MAXIMP] = { 0.0 };
-    int nextlist[MAXIMP];
-    memset (befimp, 0, MAXIMP * sizeof (int));
-    memset (aftimp, 0, MAXIMP * sizeof (int));
-
-    nextlist[0]=0;  // Added initialization to make compiler happy
+	double merit[MAXIMP] = { 0 };
+	int nextlist[MAXIMP];
+	memset (befimp, 0, MAXIMP * sizeof (int));
+	memset (aftimp, 0, MAXIMP * sizeof (int));
     while (i < xsize && nimp < MAXIMP)
     {
         if (det[i] == 1 && inflag == 0)
@@ -428,6 +426,7 @@ int scanFrame(int xsize, int pval, double pmultmin, int* det, int* bimp, int* li
             p_opt[i] = -1;
     }
             
+	nextlist[0]=0;
     for (i = 0; i < nimp; i++)
     {
         merit[i] = (double)p_opt[i] / (double)limp[i];
@@ -668,7 +667,6 @@ PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 	}
 	else
 	{
-		// Added initialization to make compiler happy
 		f_low  = 0.0;
 		f_high = 0.0;
 	}

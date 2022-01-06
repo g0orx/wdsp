@@ -27,7 +27,6 @@ warren@wpratt.com
 #ifndef _mainloop_h
 #define _mainloop_h
 
-// naming the master channel thread "main" causes problems, use "wdspmain" instead
 extern void wdspmain (void *pargs);
 
 extern void create_main (int channel);

@@ -235,7 +235,7 @@ double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int
 					+ cosphi *	( - 1.2320203369293225e-02
 					+ cosphi *	( + 4.3778825791773474e-04 ))))));
 			break;
-		default:  // make compiler happy
+		default:
 			window = 0.0;
 			break;
 		}

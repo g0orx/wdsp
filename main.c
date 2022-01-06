@@ -26,7 +26,6 @@ warren@wpratt.com
 
 #include "comm.h"
 
-// naming the master channel thread "main" causes problems, use "wdspmain" instead)
 void wdspmain (void *pargs)
 {
 #if defined(_WIN32)

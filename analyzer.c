@@ -169,7 +169,7 @@ void new_window(int disp, int type, int size, double PiAlpha)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
-	default:  // make compiler happy
+	default:
 		{
 			igsum = 0.0;
 			break;
@@ -571,7 +571,7 @@ DWORD WINAPI spectra (void *pargs)
 	int ss = (((uintptr_t)pargs) >> 4) & 255;
 	int LO = ((uintptr_t)pargs) & 15;
 
-	if (disp >= dMAX_DISPLAYS) disp=0;   // DL1YCF: if this occurs, it is an error anyway
+	if (disp >= dMAX_DISPLAYS) disp=0;   // should not occur but who knows
 	DP a = pdisp[disp];
 
 	if (a->stop)
@@ -645,7 +645,7 @@ DWORD WINAPI Cspectra (void *pargs)
 	int ss = (((uintptr_t)pargs) >> 4) & 255;
 	int LO = ((uintptr_t)pargs) & 15;
 
-	if (disp >= dMAX_DISPLAYS) disp=0;   // DL1YCF: if this occurs, it is an error anyway
+	if (disp >= dMAX_DISPLAYS) disp=0;   // should not occur but who knows
 	DP a = pdisp[disp];
 	int trans_size = a->size * sizeof(double);
 
@@ -735,18 +735,18 @@ void interpolate(int disp, int set, double fmin, double fmax, int num_pixels)
 	double mag;
 
 	for (i = 0; i < num_pixels; i++)
-	{
+    {
 		f = fmin + (double)i * (fmax - fmin) / (double)(num_pixels - 1);
 		
 		if (f < (a->freqs[set])[0])
 		{
-			k = 0;
+            k = 0;
 		}
-		else if (f > (a->freqs[set])[n - 1])
+        else if (f > (a->freqs[set])[n - 1])
 		{
-			k = n - 2;
+            k = n - 2;
 		}
-		else
+        else
 		{
 			kdelta = 1;
 
@@ -761,7 +761,7 @@ void interpolate(int disp, int set, double fmin, double fmax, int num_pixels)
 				kdelta += kdelta;
 			}
 
-			k=kmin;
+			k = kmin;
 			while ((kmax - kmin) > 1)
 			{
 				k = (kmin + kmax) / 2;
@@ -772,9 +772,9 @@ void interpolate(int disp, int set, double fmin, double fmax, int num_pixels)
 			}
 		}
 
-		dx = f - (a->freqs[set])[k];
+        dx = f - (a->freqs[set])[k];
 
-		mag = (((a->ac3[set][0])[k] * dx + (a->ac2[set][0])[k]) * dx + (a->ac1[set][0])[k]) * dx + (a->ac0[set][0])[k];
+        mag = (((a->ac3[set][0])[k] * dx + (a->ac2[set][0])[k]) * dx + (a->ac1[set][0])[k]) * dx + (a->ac0[set][0])[k];
 		a->cd[i] = mag * mag;
 	}
 }
@@ -794,11 +794,11 @@ int build_interpolants(int disp, int set, int n, int m, double *x, double (*y)[d
 	double tmp;
 	int i, j;
 
-    // provide initialization for the case n<2
-    dmain[1]=0.0;
-    for (j = 0; j < m; j++) {
-        d[1][j] = 0.0;
-    }
+	// provide initialization for the case n<2
+	dmain[1]=0.0;
+	for (j = 0; j < m; j++) {
+		d[1][j] = 0.0;
+	}
 
     for (i = 0; i < n - 1; i++)
     {

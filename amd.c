@@ -208,7 +208,7 @@ void xamd (AMD a)
 								audio = (ai_ps + bi_ps) - (aq_ps - bq_ps);
 								break;
 							}
-						default:  // make compiler happy
+						default:
 							{
 								audio = 0.0;
 								break;

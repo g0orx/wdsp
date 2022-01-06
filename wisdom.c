@@ -27,7 +27,18 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-static char status[128]; // wisdom_get_status() returns pointer to this string
+//
+// A string holding the last "progress report" message.
+// The new function wdsp_get_status() returns a pointer
+// to this string. All output lines to stdout are also
+// printed to this string.
+//
+static char status[128];
+
+PORT
+char *wisdom_get_status() {
+	return status;
+}
 
 PORT
 void WDSPwisdom (char* directory)
@@ -49,7 +60,7 @@ void WDSPwisdom (char* directory)
 		fftout = (double *) malloc0 (maxsize * sizeof (complex));
 #ifdef _WIN32
 		AllocConsole();								// create console
-		freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
+	    freopen_s(&stream, "conout$", "w", stdout); // redirect output to console
 #endif
 		fprintf(stdout, "Optimizing FFT sizes through %d\n\n", maxsize);
 		fprintf(stdout, "Please do not close this window until wisdom plans are completed.\n\n");
@@ -70,13 +81,13 @@ void WDSPwisdom (char* directory)
 			fftw_destroy_plan (tplan);
 			fprintf(stdout, "Planning COMPLEX BACKWARD FFT size %d\n", psize);
 			fflush(stdout);
-			sprintf(status, "Planning COMPLEX BACKWARD  FFT size %d\n", psize);
+			sprintf(status, "Planning COMPLEX BACKWARD FFT size %d\n", psize);
 			tplan = fftw_plan_dft_1d(psize, (fftw_complex *)fftin, (fftw_complex *)fftout, FFTW_BACKWARD, FFTW_PATIENT);
 			fftw_execute (tplan);
 			fftw_destroy_plan (tplan);
 			fprintf(stdout, "Planning COMPLEX BACKWARD FFT size %d\n", psize + 1);
 			fflush(stdout);
-			sprintf(status, "Planning COMPLEX BACKWARD  FFT size %d\n", psize + 1);
+			sprintf(status, "Planning COMPLEX BACKWARD FFT size %d\n", psize + 1);
 			tplan = fftw_plan_dft_1d(psize + 1, (fftw_complex *)fftin, (fftw_complex *)fftout, FFTW_BACKWARD, FFTW_PATIENT);
 			fftw_execute (tplan);
 			fftw_destroy_plan (tplan);
@@ -104,6 +115,7 @@ void WDSPwisdom (char* directory)
 		}
 		fprintf(stdout, "\nFFTW planning complete.\n");
 		fflush(stdout);
+		sprintf(status, "\nFFTW planning complete.\n");
 		fftw_export_wisdom_to_filename(wisdom_file);
 		_aligned_free (fftout);
 		_aligned_free (fftin);
@@ -111,14 +123,4 @@ void WDSPwisdom (char* directory)
 		FreeConsole();							// dismiss console
 #endif
 	}
-}
-
-//
-// New interface to obtain a "WSDP wisdom status report".
-// The function returns a pointer to a string containing
-// the most recent status message
-//
-PORT
-char *wisdom_get_status() {
-	return status;
 }
