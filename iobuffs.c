@@ -477,8 +477,10 @@ void fexchange0 (int channel, double* in, double* out, int* error)
 			a->r1_inidx = 0;
 
 		EnterCriticalSection (&a->r2_ControlSection);
-		if (a->r2_havesamps >= a->out_size)
+		if (a->r2_havesamps >= a->out_size) {
+			fprintf(stderr, "do it samples %d size %d \n", a->r2_havesamps, a->out_size);
 			doit = 1;
+		}
 		if ((a->r2_havesamps -= a->out_size) < 0) a->r2_havesamps = 0;
 		LeaveCriticalSection (&a->r2_ControlSection);
 		if (a->bfo) WaitForSingleObject (a->Sem_OutReady, INFINITE);

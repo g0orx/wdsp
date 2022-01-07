@@ -43,10 +43,10 @@ warren@wpratt.com
 #include <Windows.h>
 #include <process.h>
 #include <intrin.h>
+#include <avrt.h>
 #endif
 #include <math.h>
 #include <time.h>
-//#include <avrt.h>
 #include "fftw3.h"
 
 #include "amd.h"
