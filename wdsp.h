@@ -254,6 +254,10 @@ extern double SetPSTXDelay (int channel, double delay);
 extern void SetPSHWPeak (int channel, double peak);
 extern void SetPSPtol (int channel, double ptol);
 extern void SetPSFeedbackRate (int channel, int rate);
+extern void SetPSIntsAndSpi (int channel, int ints, int spi);
+extern void SetPSStabilize (int channel, int stbl);
+extern void SetPSMapMode (int channel, int map);
+extern void SetPSPinMode (int channel, int pin);
 
 extern void GetPSInfo (int channel, int *info);
 extern void GetPSHWPeak (int channel, double* peak);
