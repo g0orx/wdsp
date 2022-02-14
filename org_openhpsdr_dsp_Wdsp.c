@@ -536,12 +536,18 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAEQCtfmode
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
  * Method:    SetRXAEQProfile
- * Signature: (IIDD)V
+ * Signature:  (II[D[D)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAEQProfile
-  (JNIEnv* env, jobject obj, jint channel, jint nfreqs, jdouble freq, jdouble gain){
+  (JNIEnv* env, jobject obj, jint channel, jint nfreqs, jdoubleArray freq, jdoubleArray gain){
 	
-	SetRXAEQProfile(channel, nfreqs, freq, gain);
+	jdouble* freqpoints = (*env)->GetDoubleArrayElements(env, freq, 0);
+	jdouble* gainpoints = (*env)->GetDoubleArrayElements(env, gain, 0);
+
+	SetRXAEQProfile(channel, nfreqs, freqpoints, gainpoints);
+
+	(*env)->ReleaseDoubleArrayElements(env, freq, freqpoints, 0);
+	(*env)->ReleaseDoubleArrayElements(env, gain, gainpoints, 0);
 }
 
 /*
@@ -1579,12 +1585,18 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAEQCtfmode
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
  * Method:    SetTXAEQProfile
- * Signature: (IIDD)V
+ * Signature: (II[D[D)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAEQProfile
-  (JNIEnv* env, jobject obj, jint channel, jint nfreqs, jdouble freq, jdouble gain){
+  (JNIEnv* env, jobject obj, jint channel, jint nfreqs, jdoubleArray freq, jdoubleArray gain){
 
-	SetTXAEQProfile(channel, nfreqs, freq, gain);
+	jdouble* freqpoints = (*env)->GetDoubleArrayElements(env, freq, 0);
+	jdouble* gainpoints = (*env)->GetDoubleArrayElements(env, gain, 0);
+
+	SetTXAEQProfile(channel, nfreqs, freqpoints, gainpoints);
+
+	(*env)->ReleaseDoubleArrayElements(env, freq, freqpoints, 0);
+	(*env)->ReleaseDoubleArrayElements(env, gain, gainpoints, 0);
 }
 
 /*
@@ -1689,12 +1701,20 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPRun
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
  * Method:    SetTXACFCOMPprofile
- * Signature: (IIDDD)V
+ * Signature: (II[D[D[D)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPprofile
-  (JNIEnv* env, jobject obj, jint channel, jint nfreqs, jdouble freq, jdouble compression, jdouble equalizergain){
+  (JNIEnv* env, jobject obj, jint channel, jint nfreqs, jdoubleArray freq, jdoubleArray compression, jdoubleArray equalizergain){
+
+	jdouble* freqp = (*env)->GetDoubleArrayElements(env, freq, 0);
+	jdouble* compressionp = (*env)->GetDoubleArrayElements(env, compression, 0);
+	jdouble* equalizergainp = (*env)->GetDoubleArrayElements(env, equalizergain, 0);
 
 	SetTXACFCOMPprofile(channel, nfreqs, freq, compression, equalizergain);
+
+	(*env)->ReleaseDoubleArrayElements(env, freq, freqp, 0);
+	(*env)->ReleaseDoubleArrayElements(env, compression, compressionp, 0);
+	(*env)->ReleaseDoubleArrayElements(env, equalizergain, equalizergainp, 0);
 }
 
 /*
