@@ -4,3 +4,6 @@ libwdsp.dylib
 .vs/
 bin/
 build/
+*.dll
+*.lib
+
