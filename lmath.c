@@ -26,11 +26,11 @@ warren@wpratt.com
 
 #include "comm.h"
 
-void dR (int n, double* r, double* y)
+void dR (int n, real* r, real* y)
 {
 	int i, j, k;
-    double alpha, beta, gamma;
-	double* z = (double *) malloc0 ((n - 1) * sizeof (double));
+    real alpha, beta, gamma;
+	real* z = (real *) malloc0 ((n - 1) * sizeof (real));
     y[0] = -r[1];
     alpha = -r[1];
     beta = 1.0;
@@ -43,7 +43,7 @@ void dR (int n, double* r, double* y)
         alpha = - (r[k + 2] + gamma) / beta;
         for (i = 0, j = k; i <= k; i++, j--)
             z[i] = y[i] + alpha * y[j];
-		memcpy (y, z, (k + 1) * sizeof (double));
+		memcpy (y, z, (k + 1) * sizeof (real));
         y[k + 1] = alpha;
     }
 	_aligned_free (z);
@@ -51,14 +51,14 @@ void dR (int n, double* r, double* y)
 
 void trI (
     int n,
-    double* r,
-    double* B
+    real* r,
+    real* B
     )
 {
     int i, j, ni, nj;
-    double gamma, t, scale, b;
-	double* y = (double *) malloc0 ((n - 1) * sizeof (double));
-	double* v = (double *) malloc0 ((n - 1) * sizeof (double));
+    real gamma, t, scale, b;
+	real* y = (real *) malloc0 ((n - 1) * sizeof (real));
+	real* v = (real *) malloc0 ((n - 1) * sizeof (real));
     scale = 1.0 / r[0];
     for (i = 0; i < n; i++)
         r[i] *= scale;
@@ -90,12 +90,12 @@ void trI (
 	_aligned_free (y);
 }
 
-void asolve(int xsize, int asize, double* x, double* a)
+void asolve(int xsize, int asize, real* x, real* a)
 {
     int i, j, k;
-    double beta, alpha, t;
-	double* r = (double *) malloc0 ((asize + 1) * sizeof (double));
-	double* z = (double *) malloc0 ((asize + 1) * sizeof (double));
+    real beta, alpha, t;
+	real* r = (real *) malloc0 ((asize + 1) * sizeof (real));
+	real* z = (real *) malloc0 ((asize + 1) * sizeof (real));
     for (i = 0; i <= asize; i++)
     {
 		for (j = 0; j < xsize; j++)
@@ -127,10 +127,10 @@ void asolve(int xsize, int asize, double* x, double* a)
 	_aligned_free (r);
 }
 
-void median (int n, double* a, double* med)
+void median (int n, real* a, real* med)
 {
     int S0, S1, i, j, m, k;
-    double x, t;
+    real x, t;
     S0 = 0;
     S1 = n - 1;
     k = n / 2;

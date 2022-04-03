@@ -32,23 +32,23 @@ typedef struct _eer
 	int run;
 	int amiq;
 	int size;
-	double* in;
-	double* out;
-	double* outM;
+	real* in;
+	real* out;
+	real* outM;
 	int rate;
-	double mgain;
-	double pgain;
+	real mgain;
+	real pgain;
 	int rundelays;
-	double mdelay;
-	double pdelay;
+	real mdelay;
+	real pdelay;
 	DELAY mdel;
 	DELAY pdel;
 	CRITICAL_SECTION cs_update;
-	double *legacy;																										////////////  legacy interface - remove
-	double *legacyM;																									////////////  legacy interface - remove
+	real *legacy;																										////////////  legacy interface - remove
+	real *legacyM;																									////////////  legacy interface - remove
 } eer, *EER;
 
-__declspec (dllexport) EER create_eer (int run, int size, double* in, double* out, double* outM, int rate, double mgain, double pgain, int rundelays, double mdelay, double pdelay, int amiq);
+__declspec (dllexport) EER create_eer (int run, int size, real* in, real* out, real* outM, int rate, real mgain, real pgain, int rundelays, real mdelay, real pdelay, int amiq);
 
 __declspec (dllexport) void destroy_eer (EER a);
 
@@ -60,15 +60,15 @@ __declspec (dllexport) void pSetEERRun (EER a, int run);
 
 __declspec (dllexport) void pSetEERAMIQ (EER a, int amiq);
 
-__declspec (dllexport) void pSetEERMgain (EER a, double gain);
+__declspec (dllexport) void pSetEERMgain (EER a, real gain);
 
-__declspec (dllexport) void pSetEERPgain (EER a, double gain);
+__declspec (dllexport) void pSetEERPgain (EER a, real gain);
 
 __declspec (dllexport) void pSetEERRunDelays (EER a, int run);
 
-__declspec (dllexport) void pSetEERMdelay (EER a, double delay);
+__declspec (dllexport) void pSetEERMdelay (EER a, real delay);
 
-__declspec (dllexport) void pSetEERPdelay (EER a, double delay);
+__declspec (dllexport) void pSetEERPdelay (EER a, real delay);
 
 __declspec (dllexport) void pSetEERSize (EER a, int size);
 

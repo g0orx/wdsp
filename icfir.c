@@ -28,8 +28,8 @@ warren@pratt.one
 
 void calc_icfir (ICFIR a)
 {
-	double* impulse;
-	a->scale = 1.0 / (double)(2 * a->size);
+	real* impulse;
+	a->scale = 1.0 / (real)(2 * a->size);
 	impulse = icfir_impulse (a->nc, a->DD, a->R, a->Pairs, a->runrate, a->cicrate, a->cutoff, a->xtype, a->xbw, 1, a->scale, a->wintype);
 	a->p = create_fircore (a->size, a->in, a->out, a->nc, a->mp, impulse);
 	_aligned_free (impulse);
@@ -40,8 +40,8 @@ void decalc_icfir (ICFIR a)
 	destroy_fircore (a->p);
 }
 
-ICFIR create_icfir (int run, int size, int nc, int mp, double* in, double* out, int runrate, int cicrate, 
-	int DD, int R, int Pairs, double cutoff, int xtype, double xbw, int wintype)
+ICFIR create_icfir (int run, int size, int nc, int mp, real* in, real* out, int runrate, int cicrate, 
+	int DD, int R, int Pairs, real cutoff, int xtype, real xbw, int wintype)
 //	run:  0 - no action; 1 - operate
 //	size:  number of complex samples in an input buffer to the CFIR filter
 //	nc:  number of filter coefficients
@@ -95,7 +95,7 @@ void xicfir (ICFIR a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_icfir (ICFIR a, double* in, double* out)
+void setBuffers_icfir (ICFIR a, real* in, real* out)
 {
 	decalc_icfir (a);
 	a->in = in;
@@ -124,7 +124,7 @@ void setOutRate_icfir (ICFIR a, int rate)
 	calc_icfir (a);
 }
 
-double* icfir_impulse (int N, int DD, int R, int Pairs, double runrate, double cicrate, double cutoff, int xtype, double xbw, int rtype, double scale, int wintype)
+real* icfir_impulse (int N, int DD, int R, int Pairs, real runrate, real cicrate, real cutoff, int xtype, real xbw, int rtype, real scale, int wintype)
 {
 	// N:		number of impulse response samples
 	// DD:		differential delay used in the CIC filter
@@ -138,18 +138,18 @@ double* icfir_impulse (int N, int DD, int R, int Pairs, double runrate, double c
 	// rtype:	0 for real output, 1 for complex output
 	// scale:	scale factor to be applied to the output
 	int i, j;
-	double tmp, local_scale, ri, mag, fn;
-	double* impulse;
-	double* A = (double *) malloc0 (N * sizeof (double));
-	double ft = cutoff / cicrate;										// normalized cutoff frequency
+	real tmp, local_scale, ri, mag, fn;
+	real* impulse;
+	real* A = (real *) malloc0 (N * sizeof (real));
+	real ft = cutoff / cicrate;										// normalized cutoff frequency
 	int u_samps = (N + 1) / 2;											// number of unique samples,  OK for odd or even N
 	int c_samps = (int)(cutoff / runrate * N) + (N + 1) / 2 - N / 2;	// number of unique samples within bandpass, OK for odd or even N
 	int x_samps = (int)(xbw / runrate * N);								// number of unique samples in transition region, OK for odd or even N
-	double offset = 0.5 - 0.5 * (double)((N + 1) / 2 - N / 2);			// sample offset from center, OK for odd or even N
-	double* xistion = (double *) malloc0 ((x_samps + 1) * sizeof (double));
-	double delta = PI / (double)x_samps;
-	double L = cicrate / runrate;
-	double phs = 0.0;
+	real offset = 0.5 - 0.5 * (real)((N + 1) / 2 - N / 2);			// sample offset from center, OK for odd or even N
+	real* xistion = (real *) malloc0 ((x_samps + 1) * sizeof (real));
+	real delta = PI / (real)x_samps;
+	real L = cicrate / runrate;
+	real phs = 0.0;
 	for (i = 0; i <= x_samps; i++)
 	{
 		xistion[i] = 0.5 * (cos (phs) + 1.0);
@@ -162,7 +162,7 @@ double* icfir_impulse (int N, int DD, int R, int Pairs, double runrate, double c
 	{
 		for (i = 0, ri = offset; i < u_samps; i++, ri += 1.0)
 		{
-			fn = ri / (L * (double)N);
+			fn = ri / (L * (real)N);
 			if (fn <= ft)
 			{
 				if (fn == 0.0) tmp = 1.0;
@@ -179,7 +179,7 @@ double* icfir_impulse (int N, int DD, int R, int Pairs, double runrate, double c
 	{
 		for (i = 0, ri = offset; i < u_samps; i++, ri += 1.0)
 		{
-			fn = ri / (L *(double)N);
+			fn = ri / (L *(real)N);
 			if (i < c_samps)
 			{
 				if (fn == 0.0) tmp = 1.0;

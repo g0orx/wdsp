@@ -30,18 +30,18 @@ AMD create_amd
 	(
 	int run,
 	int buff_size,
-	double *in_buff,
-	double *out_buff,
+	real *in_buff,
+	real *out_buff,
 	int mode,
 	int levelfade,
 	int sbmode,
 	int sample_rate,
-	double fmin,
-	double fmax,
-	double zeta,
-	double omegaN,
-	double tauR,
-	double tauI
+	real fmin,
+	real fmax,
+	real zeta,
+	real omegaN,
+	real tauR,
+	real tauI
 	)
 {
 	AMD a = (AMD) malloc0 (sizeof(amd));
@@ -52,7 +52,7 @@ AMD create_amd
 	a->mode = mode;
 	a->levelfade = levelfade;
 	a->sbmode = sbmode;
-	a->sample_rate = (double)sample_rate;
+	a->sample_rate = (real)sample_rate;
 	a->fmin = fmin;
 	a->fmax = fmax;
 	a->zeta = zeta;
@@ -115,13 +115,13 @@ void flush_amd (AMD a)
 void xamd (AMD a)
 {
 	int i;
-	double audio;
-	double vco[2];
-	double corr[2];
-	double det;
-	double del_out;
-	double ai, bi, aq, bq;
-	double ai_ps, bi_ps, aq_ps, bq_ps;
+	real audio;
+	real vco[2];
+	real corr[2];
+	real det;
+	real del_out;
+	real ai, bi, aq, bq;
+	real ai_ps, bi_ps, aq_ps, bq_ps;
 	int j, k;
 	if (a->run)
 	{
@@ -238,7 +238,7 @@ void xamd (AMD a)
 		memcpy (a->out_buff, a->in_buff, a->buff_size * sizeof(complex));
 }
 
-void setBuffers_amd (AMD a, double* in, double* out)
+void setBuffers_amd (AMD a, real* in, real* out)
 {
 	a->in_buff = in;
 	a->out_buff = out;

@@ -30,14 +30,14 @@ warren@wpratt.com
 typedef struct _notchdb
 {
 	int master_run;
-	double tunefreq;
-	double shift;
+	real tunefreq;
+	real shift;
 	int nn;
 	int* active;
-	double* fcenter;
-	double* fwidth;
-	double* nlow;
-	double* nhigh;
+	real* fcenter;
+	real* fwidth;
+	real* nlow;
+	real* nhigh;
 	int maxnotches;
 } notchdb, *NOTCHDB;
 
@@ -53,27 +53,27 @@ typedef struct _nbp
 	int size;				// buffer size
 	int nc;					// number of filter coefficients
 	int mp;					// minimum phase flag
-	double* in;				// input buffer
-	double* out;			// output buffer
-	double flow;			// low bandpass cutoff freq
-	double fhigh;			// high bandpass cutoff freq
-	double* impulse;		// filter impulse response
-	double rate;			// sample rate
+	real* in;				// input buffer
+	real* out;			// output buffer
+	real flow;			// low bandpass cutoff freq
+	real fhigh;			// high bandpass cutoff freq
+	real* impulse;		// filter impulse response
+	real rate;			// sample rate
 	int wintype;			// filter window type
-	double gain;			// filter gain
+	real gain;			// filter gain
 	int autoincr;			// auto-increment notch width
 	int maxpb;				// maximum number of passbands
 	NOTCHDB* ptraddr;		// ptr to addr of notch-database data structure
-	double* bplow;			// array of passband lows
-	double* bphigh;			// array of passband highs
+	real* bplow;			// array of passband lows
+	real* bphigh;			// array of passband highs
 	int numpb;				// number of passbands
 	FIRCORE p;
 	int havnotch;
 	int hadnotch;
 } nbp, *NBP;
 
-extern NBP create_nbp(int run, int fnfrun, int position, int size, int nc, int mp, double* in, double* out, 
-	double flow, double fhigh, int rate, int wintype, double gain, int autoincr, int maxpb, NOTCHDB* ptraddr);
+extern NBP create_nbp(int run, int fnfrun, int position, int size, int nc, int mp, real* in, real* out, 
+	real flow, real fhigh, int rate, int wintype, real gain, int autoincr, int maxpb, NOTCHDB* ptraddr);
 
 extern void destroy_nbp (NBP a);
 
@@ -81,7 +81,7 @@ extern void flush_nbp (NBP a);
 
 extern void xnbp (NBP a, int pos);
 
-extern void setBuffers_nbp (NBP a, double* in, double* out);
+extern void setBuffers_nbp (NBP a, real* in, real* out);
 
 extern void setSamplerate_nbp (NBP a, int rate);
 
@@ -93,7 +93,7 @@ extern void setNc_nbp (NBP a);
 
 extern void setMp_nbp (NBP a);
 
-__declspec (dllexport) void RXANBPSetFreqs (int channel, double flow, double fhigh);
+__declspec (dllexport) void RXANBPSetFreqs (int channel, real flow, real fhigh);
 
 __declspec (dllexport) void RXANBPSetNC (int channel, int nc);
 

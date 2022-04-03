@@ -38,22 +38,22 @@ typedef struct _bps
 	int run;
 	int position;
 	int size;
-	double* in;
-	double* out;
-	double f_low;
-	double f_high;
-	double* infilt;
-	double* product;
-	double* mults;
-	double samplerate;
+	real* in;
+	real* out;
+	real f_low;
+	real f_high;
+	real* infilt;
+	real* product;
+	real* mults;
+	real samplerate;
 	int wintype;
-	double gain;
+	real gain;
 	fftw_plan CFor;
 	fftw_plan CRev;
 }bps, *BPS;
 
-extern BPS create_bps (int run, int position, int size, double* in, double* out, 
-	double f_low, double f_high, int samplerate, int wintype, double gain);
+extern BPS create_bps (int run, int position, int size, real* in, real* out, 
+	real f_low, real f_high, int samplerate, int wintype, real gain);
 
 extern void destroy_bps (BPS a);
 
@@ -61,25 +61,25 @@ extern void flush_bps (BPS a);
 
 extern void xbps (BPS a, int pos);
 
-extern void setBuffers_bps (BPS a, double* in, double* out);
+extern void setBuffers_bps (BPS a, real* in, real* out);
 
 extern void setSamplerate_bps (BPS a, int rate);
 
 extern void setSize_bps (BPS a, int size);
 
-extern void setFreqs_bps (BPS a, double f_low, double f_high);
+extern void setFreqs_bps (BPS a, real f_low, real f_high);
 
 // RXA Prototypes
 
 extern __declspec (dllexport) void SetRXABPSRun (int channel, int run);
 
-extern __declspec (dllexport) void SetRXABPSFreqs (int channel, double low, double high);
+extern __declspec (dllexport) void SetRXABPSFreqs (int channel, real low, real high);
 
 // TXA Prototypes
 
 extern __declspec (dllexport) void SetTXABPSRun (int channel, int run);
 
-extern __declspec (dllexport) void SetTXABPSFreqs (int channel, double low, double high);
+extern __declspec (dllexport) void SetTXABPSFreqs (int channel, real low, real high);
 
 #endif
 
@@ -101,18 +101,18 @@ typedef struct _bandpass
 	int size;
 	int nc;
 	int mp;
-	double* in;
-	double* out;
-	double f_low;
-	double f_high;
-	double samplerate;
+	real* in;
+	real* out;
+	real f_low;
+	real f_high;
+	real samplerate;
 	int wintype;
-	double gain;
+	real gain;
 	FIRCORE p;
 }bandpass, *BANDPASS;
 
-extern BANDPASS create_bandpass (int run, int position, int size, int nc, int mp, double* in, double* out, 
-	double f_low, double f_high, int samplerate, int wintype, double gain);
+extern BANDPASS create_bandpass (int run, int position, int size, int nc, int mp, real* in, real* out, 
+	real f_low, real f_high, int samplerate, int wintype, real gain);
 
 extern void destroy_bandpass (BANDPASS a);
 
@@ -120,17 +120,17 @@ extern void flush_bandpass (BANDPASS a);
 
 extern void xbandpass (BANDPASS a, int pos);
 
-extern void setBuffers_bandpass (BANDPASS a, double* in, double* out);
+extern void setBuffers_bandpass (BANDPASS a, real* in, real* out);
 
 extern void setSamplerate_bandpass (BANDPASS a, int rate);
 
 extern void setSize_bandpass (BANDPASS a, int size);
 
-extern void setGain_bandpass (BANDPASS a, double gain, int update);
+extern void setGain_bandpass (BANDPASS a, real gain, int update);
 
-extern void CalcBandpassFilter (BANDPASS a, double f_low, double f_high, double gain);
+extern void CalcBandpassFilter (BANDPASS a, real f_low, real f_high, real gain);
 
-extern __declspec (dllexport) void SetRXABandpassFreqs (int channel, double f_low, double f_high);
+extern __declspec (dllexport) void SetRXABandpassFreqs (int channel, real f_low, real f_high);
 
 extern __declspec (dllexport) void SetRXABandpassNC (int channel, int nc);
 

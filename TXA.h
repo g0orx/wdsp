@@ -70,13 +70,13 @@ enum txaMeterType
 
 struct _txa
 {
-	double* inbuff;
-	double* outbuff;
-	double* midbuff;
+	real* inbuff;
+	real* outbuff;
+	real* midbuff;
 	int mode;
-	double f_low;
-	double f_high;
-	double meter[TXA_METERTYPE_LAST];
+	real f_low;
+	real f_high;
+	real meter[TXA_METERTYPE_LAST];
 	CRITICAL_SECTION* pmtupdate[TXA_METERTYPE_LAST];
 	struct
 	{

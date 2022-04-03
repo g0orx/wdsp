@@ -40,36 +40,36 @@ typedef struct _amd
 {
 	int run;
 	int buff_size;						// buffer size
-	double *in_buff;					// pointer to input buffer
-	double *out_buff;					// pointer to output buffer
+	real *in_buff;					// pointer to input buffer
+	real *out_buff;					// pointer to output buffer
 	int mode;							// demodulation mode
-	double sample_rate;					// sample rate
-	double dc;							// dc component in demodulated output
-	double fmin;						// pll - minimum carrier freq to lock
-	double fmax;						// pll - maximum carrier freq to lock
-	double omega_min;					// pll - minimum lock check parameter
-	double omega_max;					// pll - maximum lock check parameter
-	double zeta;						// pll - damping factor; as coded, must be <=1.0
-	double omegaN;						// pll - natural frequency
-	double phs;							// pll - phase accumulator
-	double omega;						// pll - locked pll frequency
-	double fil_out;						// pll - filter output
-	double g1, g2;						// pll - filter gain parameters
-	double tauR;						// carrier removal time constant
-	double tauI;						// carrier insertion time constant
-	double mtauR;						// carrier removal multiplier
-	double onem_mtauR;					// 1.0 - carrier_removal_multiplier
-	double mtauI;						// carrier insertion multiplier
-	double onem_mtauI;					// 1.0 - carrier_insertion_multiplier
-	double a[3 * STAGES + 3];			// Filter a variables
-	double b[3 * STAGES + 3];			// Filter b variables
-	double c[3 * STAGES + 3];			// Filter c variables
-	double d[3 * STAGES + 3];			// Filter d variables
-	double c0[STAGES];					// Filter coefficients - path 0
-	double c1[STAGES];					// Filter coefficients - path 1
-	double dsI;							// delayed sample, I path
-	double dsQ;							// delayed sample, Q path
-	double dc_insert;					// dc component to insert in output
+	real sample_rate;					// sample rate
+	real dc;							// dc component in demodulated output
+	real fmin;						// pll - minimum carrier freq to lock
+	real fmax;						// pll - maximum carrier freq to lock
+	real omega_min;					// pll - minimum lock check parameter
+	real omega_max;					// pll - maximum lock check parameter
+	real zeta;						// pll - damping factor; as coded, must be <=1.0
+	real omegaN;						// pll - natural frequency
+	real phs;							// pll - phase accumulator
+	real omega;						// pll - locked pll frequency
+	real fil_out;						// pll - filter output
+	real g1, g2;						// pll - filter gain parameters
+	real tauR;						// carrier removal time constant
+	real tauI;						// carrier insertion time constant
+	real mtauR;						// carrier removal multiplier
+	real onem_mtauR;					// 1.0 - carrier_removal_multiplier
+	real mtauI;						// carrier insertion multiplier
+	real onem_mtauI;					// 1.0 - carrier_insertion_multiplier
+	real a[3 * STAGES + 3];			// Filter a variables
+	real b[3 * STAGES + 3];			// Filter b variables
+	real c[3 * STAGES + 3];			// Filter c variables
+	real d[3 * STAGES + 3];			// Filter d variables
+	real c0[STAGES];					// Filter coefficients - path 0
+	real c1[STAGES];					// Filter coefficients - path 1
+	real dsI;							// delayed sample, I path
+	real dsQ;							// delayed sample, Q path
+	real dc_insert;					// dc component to insert in output
 	int sbmode;							// sideband mode
 	int levelfade;						// Fade Leveler switch
 
@@ -79,18 +79,18 @@ extern AMD create_amd
 	(
 	int run,
 	int buff_size,
-	double *in_buff,
-	double *out_buff,
+	real *in_buff,
+	real *out_buff,
 	int mode,
 	int levelfade,
 	int sbmode,
 	int sample_rate,
-	double fmin,
-	double fmax,
-	double zeta,
-	double omegaN,
-	double tauR,
-	double tauI
+	real fmin,
+	real fmax,
+	real zeta,
+	real omegaN,
+	real tauR,
+	real tauI
 	);
 
 extern void init_amd (AMD a);
@@ -101,7 +101,7 @@ extern void flush_amd (AMD a);
 
 extern void xamd (AMD a);
 
-extern void setBuffers_amd (AMD a, double* in, double* out);
+extern void setBuffers_amd (AMD a, real* in, real* out);
 
 extern void setSamplerate_amd (AMD a, int rate);
 

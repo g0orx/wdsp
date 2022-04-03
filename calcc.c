@@ -31,17 +31,17 @@ void size_calcc (CALCC a)
 {	// for change in ints or spi
 	int i;
 	a->nsamps = a->ints * a->spi;
-	a->t    = (double *) malloc0 ((a->ints + 1) * sizeof(double));
-	a->tmap = (double *) malloc0 ((a->ints + 1) * sizeof(double));
+	a->t    = (real *) malloc0 ((a->ints + 1) * sizeof(real));
+	a->tmap = (real *) malloc0 ((a->ints + 1) * sizeof(real));
 	for (i = 0; i < a->ints + 1; i++)
-		a->t[i] = (double)i / (double)a->ints;
+		a->t[i] = (real)i / (real)a->ints;
 
-	a->cm = (double *) malloc0 (a->ints * 4 * sizeof(double));
-	a->cc = (double *) malloc0 (a->ints * 4 * sizeof(double));
-	a->cs = (double *) malloc0 (a->ints * 4 * sizeof(double));
+	a->cm = (real *) malloc0 (a->ints * 4 * sizeof(real));
+	a->cc = (real *) malloc0 (a->ints * 4 * sizeof(real));
+	a->cs = (real *) malloc0 (a->ints * 4 * sizeof(real));
 
-	a->rxs = (double *) malloc0 (a->nsamps * sizeof (complex));
-	a->txs = (double *) malloc0 (a->nsamps * sizeof (complex));
+	a->rxs = (real *) malloc0 (a->nsamps * sizeof (complex));
+	a->txs = (real *) malloc0 (a->nsamps * sizeof (complex));
 
 	a->ctrl.cpi = (int *) malloc0 (a->ints * sizeof (int));
 	a->ctrl.sindex = (int *) malloc0 (a->ints * sizeof (int));
@@ -54,13 +54,13 @@ void size_calcc (CALCC a)
 		a->ctrl.sbase[i] = i * a->spi;
 	}
 
-	a->disp.x  = (double *) malloc0 (a->nsamps * sizeof (double));
-	a->disp.ym = (double *) malloc0 (a->nsamps * sizeof (double));
-	a->disp.yc = (double *) malloc0 (a->nsamps * sizeof (double));
-	a->disp.ys = (double *) malloc0 (a->nsamps * sizeof (double));
-	a->disp.cm = (double *) malloc0 (a->ints * 4 * sizeof(double));
-	a->disp.cc = (double *) malloc0 (a->ints * 4 * sizeof(double));
-	a->disp.cs = (double *) malloc0 (a->ints * 4 * sizeof(double));
+	a->disp.x  = (real *) malloc0 (a->nsamps * sizeof (real));
+	a->disp.ym = (real *) malloc0 (a->nsamps * sizeof (real));
+	a->disp.yc = (real *) malloc0 (a->nsamps * sizeof (real));
+	a->disp.ys = (real *) malloc0 (a->nsamps * sizeof (real));
+	a->disp.cm = (real *) malloc0 (a->ints * 4 * sizeof(real));
+	a->disp.cc = (real *) malloc0 (a->ints * 4 * sizeof(real));
+	a->disp.cs = (real *) malloc0 (a->ints * 4 * sizeof(real));
 }
 
 void desize_calcc (CALCC a)
@@ -84,9 +84,9 @@ void desize_calcc (CALCC a)
 	_aligned_free (a->t);
 }
 
-CALCC create_calcc (int channel, int runcal, int size, int rate, int ints, int spi, double hw_scale, 
-	double moxdelay, double loopdelay, double ptol, int mox, int solidmox, int pin, int map, int stbl,
-	int npsamps, double alpha)
+CALCC create_calcc (int channel, int runcal, int size, int rate, int ints, int spi, real hw_scale, 
+	real moxdelay, real loopdelay, real ptol, int mox, int solidmox, int pin, int map, int stbl,
+	int npsamps, real alpha)
 {
 	CALCC a = (CALCC) malloc0 (sizeof (calcc));
 	a->channel = channel;
@@ -149,8 +149,8 @@ CALCC create_calcc (int channel, int runcal, int size, int rate, int ints, int s
 
 	size_calcc (a);
 
-	a->temprx = (double *)malloc0 (2048 * sizeof (complex));														// remove later
-	a->temptx = (double *)malloc0 (2048 * sizeof (complex));														// remove later
+	a->temprx = (real *)malloc0 (2048 * sizeof (complex));														// remove later
+	a->temptx = (real *)malloc0 (2048 * sizeof (complex));														// remove later
 	return a;
 }
 
@@ -176,20 +176,20 @@ void flush_calcc (CALCC a)
 
 int fcompare (const void * a, const void * b)
 {
-	if (*(double*)a < *(double*)b)
+	if (*(real*)a < *(real*)b)
 		return -1;
-	else if (*(double*)a == *(double*)b)
+	else if (*(real*)a == *(real*)b)
 		return 0;
 	else
 		return 1;
 }
 
-void decomp(int n, double *a, int *piv, int *info)
+void decomp(int n, real *a, int *piv, int *info)
 {
 	int i, j, k;
 	int t_piv;
-	double m_row, mt_row, m_col, mt_col;
-	double *wrk = (double *)malloc0(n * sizeof(double));
+	real m_row, mt_row, m_col, mt_col;
+	real *wrk = (real *)malloc0(n * sizeof(real));
 	*info = 0;
 	for (i = 0; i < n; i++)
 	{
@@ -244,10 +244,10 @@ cleanup:
 	_aligned_free (wrk);
 }
 
-void dsolve(int n, double *a, int *piv, double *b, double *x)
+void dsolve(int n, real *a, int *piv, real *b, real *x)
 {
 	int j, k;
-	double sum;
+	real sum;
 
 	for (k = 0; k < n; k++)
 	{
@@ -266,7 +266,7 @@ void dsolve(int n, double *a, int *piv, double *b, double *x)
 	}
 }
 
-void cull (int* n, int ints, double* x, double* t, double ptol)
+void cull (int* n, int ints, real* x, real* t, real ptol)
 {
 	int k = 0;
 	int i = *n;	
@@ -283,40 +283,40 @@ void cull (int* n, int ints, double* x, double* t, double ptol)
 	*n -= k;
 }
 
-void builder (int points, double *x, double *y, int ints, double *t, int *info, double *c, double ptol)
+void builder (int points, real *x, real *y, int ints, real *t, int *info, real *c, real ptol)
 {
-	double *catxy = (double *)malloc0(2 * points * sizeof(double));
-	double *sx =	(double *)malloc0(points * sizeof(double));
-	double *sy =	(double *)malloc0(points * sizeof(double));
-	double *h =		(double *)malloc0(ints * sizeof(double));
+	real *catxy = (real *)malloc0(2 * points * sizeof(real));
+	real *sx =	(real *)malloc0(points * sizeof(real));
+	real *sy =	(real *)malloc0(points * sizeof(real));
+	real *h =		(real *)malloc0(ints * sizeof(real));
 	int *p =		(int *)   malloc0(ints * sizeof(int));
 	int *np =	    (int *)   malloc0(ints * sizeof(int));
-	double u, v, alpha, beta, gamma, delta;
-	double *taa =   (double *)malloc0(ints * sizeof(double));
-	double *tab =   (double *)malloc0(ints * sizeof(double));
-	double *tag =   (double *)malloc0(ints * sizeof(double));
-	double *tad =   (double *)malloc0(ints * sizeof(double));
-	double *tbb =   (double *)malloc0(ints * sizeof(double));
-	double *tbg =   (double *)malloc0(ints * sizeof(double));
-	double *tbd =   (double *)malloc0(ints * sizeof(double));
-	double *tgg =   (double *)malloc0(ints * sizeof(double));
-	double *tgd =   (double *)malloc0(ints * sizeof(double));
-	double *tdd =   (double *)malloc0(ints * sizeof(double));
+	real u, v, alpha, beta, gamma, delta;
+	real *taa =   (real *)malloc0(ints * sizeof(real));
+	real *tab =   (real *)malloc0(ints * sizeof(real));
+	real *tag =   (real *)malloc0(ints * sizeof(real));
+	real *tad =   (real *)malloc0(ints * sizeof(real));
+	real *tbb =   (real *)malloc0(ints * sizeof(real));
+	real *tbg =   (real *)malloc0(ints * sizeof(real));
+	real *tbd =   (real *)malloc0(ints * sizeof(real));
+	real *tgg =   (real *)malloc0(ints * sizeof(real));
+	real *tgd =   (real *)malloc0(ints * sizeof(real));
+	real *tdd =   (real *)malloc0(ints * sizeof(real));
 	int nsize = 3*ints + 1;
 	int intp1 = ints + 1;
 	int intm1 = ints - 1;
-	double *A =     (double *)malloc0(intp1 * intp1 * sizeof(double));
-	double *B =     (double *)malloc0(intp1 * intp1 * sizeof(double));
-	double *C =     (double *)malloc0(intm1 * intp1 * sizeof(double));
-	double *D =     (double *)malloc0(intp1 * sizeof(double));
-	double *E =     (double *)malloc0(intp1 * intp1 * sizeof(double));
-	double *F =     (double *)malloc0(intm1 * intp1 * sizeof(double));
-	double *G =     (double *)malloc0(intp1 * sizeof(double));
-	double *MAT =   (double *)malloc0(nsize * nsize * sizeof(double));
-	double *RHS =   (double *)malloc0(nsize * sizeof(double));
-	double *SLN =   (double *)malloc0(nsize * sizeof(double));
-	double *z =	    (double *)malloc0(intp1 * sizeof(double));
-	double *zp =    (double *)malloc0(intp1 * sizeof(double));
+	real *A =     (real *)malloc0(intp1 * intp1 * sizeof(real));
+	real *B =     (real *)malloc0(intp1 * intp1 * sizeof(real));
+	real *C =     (real *)malloc0(intm1 * intp1 * sizeof(real));
+	real *D =     (real *)malloc0(intp1 * sizeof(real));
+	real *E =     (real *)malloc0(intp1 * intp1 * sizeof(real));
+	real *F =     (real *)malloc0(intm1 * intp1 * sizeof(real));
+	real *G =     (real *)malloc0(intp1 * sizeof(real));
+	real *MAT =   (real *)malloc0(nsize * nsize * sizeof(real));
+	real *RHS =   (real *)malloc0(nsize * sizeof(real));
+	real *SLN =   (real *)malloc0(nsize * sizeof(real));
+	real *z =	    (real *)malloc0(intp1 * sizeof(real));
+	real *zp =    (real *)malloc0(intp1 * sizeof(real));
 	int i, j, k, m;
 	int dinfo;
 	int *ipiv =        (int *)malloc0(nsize * sizeof(int));
@@ -326,7 +326,7 @@ void builder (int points, double *x, double *y, int ints, double *t, int *info, 
 		catxy[2 * i + 0] = x[i];
 		catxy[2 * i + 1] = y[i];
 	}
-	qsort(catxy, points, 2 * sizeof(double), fcompare);
+	qsort(catxy, points, 2 * sizeof(real), fcompare);
 	for (i = 0; i < points; i++)
 	{
 		sx[i] = catxy[2 * i + 0];
@@ -493,7 +493,7 @@ cleanup:
 void scheck(CALCC a)
 {
 	int i, j, k;
-	double v, dx, out;
+	real v, dx, out;
 	int intm1 = a->ints - 1;
 	a->binfo[6] = 0x0000;
 	for (i = 0; i < 4 * a->ints; i++)
@@ -510,8 +510,8 @@ void scheck(CALCC a)
 		for (j = 0; j < 4; j++)
 		{
 			k = 4 * i + j;
-			v = (double)k / (4.0 * (double)a->ints);
-			dx = (a->t[i + 1] - a->t[i]) * (double)j / 4.0;
+			v = (real)k / (4.0 * (real)a->ints);
+			dx = (a->t[i + 1] - a->t[i]) * (real)j / 4.0;
 			out = v * (a->cm[4 * i + 0] + dx * (a->cm[4 * i + 1] + dx * (a->cm[4 * i + 2] + dx * a->cm[4 * i + 3])));
 			if (out > 1.0)
 				a->binfo[6] |= 0x0004;
@@ -525,11 +525,11 @@ void scheck(CALCC a)
 	if (out < 0.0) a->binfo[6] |= 0x0020;
 }
 
-void rxscheck (int rints, double* tvec, double* coef, int* info)
+void rxscheck (int rints, real* tvec, real* coef, int* info)
 {
 	int i, j, k;
 	int rintsm1 = rints - 1;
-	double v, dx, out;
+	real v, dx, out;
 	*info = 0x0000;
 	for (i = 0; i < 4 * rints; i++)
 		if (isnan (coef[i])) *info |= 0x0001;
@@ -541,8 +541,8 @@ void rxscheck (int rints, double* tvec, double* coef, int* info)
 		for (j = 0; j < 4; j++)
 		{
 			k = 4 * i + j;
-			v = (double)k / (4.0 * (double)rints);
-			dx = (tvec[i + 1] - tvec[i]) * (double)j / 4.0;
+			v = (real)k / (4.0 * (real)rints);
+			dx = (tvec[i + 1] - tvec[i]) * (real)j / 4.0;
 			out = v * (coef[4 * i + 0] + dx * (coef[4 * i + 1] + dx * (coef[4 * i + 2] + dx * coef[4 * i + 3])));
 			if (out > 1.0)	// potentially use hw_scale here
 				*info |= 0x0004;
@@ -559,13 +559,13 @@ void calc (CALCC a)
 {
 	int i;
 	int tsamps = a->nsamps + a->npsamps;
-	double *env_TX =	(double *)malloc0(a->nsamps * sizeof(double));
-	double *env_RX =	(double *)malloc0(a->nsamps * sizeof(double));
-	double *x =			(double *)malloc0(   tsamps * sizeof(double));
-	double *ym =		(double *)malloc0(   tsamps * sizeof(double));
-	double *yc =		(double *)malloc0(   tsamps * sizeof(double));
-	double *ys =		(double *)malloc0(   tsamps * sizeof(double));
-	double norm;
+	real *env_TX =	(real *)malloc0(a->nsamps * sizeof(real));
+	real *env_RX =	(real *)malloc0(a->nsamps * sizeof(real));
+	real *x =			(real *)malloc0(   tsamps * sizeof(real));
+	real *ym =		(real *)malloc0(   tsamps * sizeof(real));
+	real *yc =		(real *)malloc0(   tsamps * sizeof(real));
+	real *ys =		(real *)malloc0(   tsamps * sizeof(real));
+	real norm;
 	for (i = 0; i < a->nsamps; i++)
 	{
 		env_TX[i] = sqrt (a->txs[2 * i + 0] * a->txs[2 * i + 0] + a->txs[2 * i + 1] * a->txs[2 * i + 1]);
@@ -573,15 +573,15 @@ void calc (CALCC a)
 	}
 	{
 		int rints, ix;
-		double dx;
-		double tvec[3];
-		double txrxcoefs[4 * 2];
-		double rx_scale;
+		real dx;
+		real tvec[3];
+		real txrxcoefs[4 * 2];
+		real rx_scale;
 		if (a->ints < 16) rints = 1;
 		else              rints = 2;
 		ix = rints - 1;
 		for (i = 0; i <= rints; i++)
-			tvec[i] = (double)i / (double)rints / a->hw_scale;
+			tvec[i] = (real)i / (real)rints / a->hw_scale;
 		dx = tvec[rints] - tvec[rints - 1];
 		builder(a->nsamps, env_TX, env_RX, rints, tvec, &(a->binfo[0]), txrxcoefs, a->ptol);
 		rxscheck (rints, tvec, txrxcoefs, &a->binfo[7]);
@@ -603,8 +603,8 @@ void calc (CALCC a)
 
 	if (a->pin)	// regress
 	{
-		const double slope = 0.001;
-		double max_rx;
+		const real slope = 0.001;
+		real max_rx;
 		for (i = 0; i < a->nsamps; i++)
 		{
 			max_rx = (1.0 - slope + slope * a->hw_scale * env_TX[i]) / a->rx_scale;
@@ -623,7 +623,7 @@ void calc (CALCC a)
 		if (a->stbl && _InterlockedAnd (&a->ctrl.running, 1) && a->scOK)
 		{
 			int k;
-			double dx, ymo, yco, yso;
+			real dx, ymo, yco, yso;
 			if ((k = (int)(x[i] * a->ints)) > a->ints - 1) k = a->ints - 1;
 			dx = x[i] - a->t[k];
 			ymo = a->cm[4 * k + 0] + dx * (a->cm[4 * k + 1] + dx * (a->cm[4 * k + 2] + dx * a->cm[4 * k + 3]));
@@ -637,9 +637,9 @@ void calc (CALCC a)
 
 	if (a->pin)	// pin
 	{
-		const double mval = 1.0e+00 - 1.0e-10;
-		double cval, sval;
-		double *cat = (double *)malloc0 (4 * a->nsamps * sizeof(double));
+		const real mval = 1.0e+00 - 1.0e-10;
+		real cval, sval;
+		real *cat = (real *)malloc0 (4 * a->nsamps * sizeof(real));
 		for (i = 0; i < a->nsamps; i++)
 		{
 			cat[4 * i + 0] = x[i];
@@ -647,7 +647,7 @@ void calc (CALCC a)
 			cat[4 * i + 2] = yc[i];
 			cat[4 * i + 3] = ys[i];
 		}
-		qsort(cat, a->nsamps, 4 * sizeof(double), fcompare);
+		qsort(cat, a->nsamps, 4 * sizeof(real), fcompare);
 		for (i = 0; i < a->nsamps; i++)
 		{
 			x[i]  = cat[4 * i + 0];
@@ -686,8 +686,8 @@ void calc (CALCC a)
 	if (a->pin)	// tune
 	{
 		int k = a->ints - 1;
-		double dx = a->t[a->ints] - a->t[a->ints - 1];
-		double sf = 1.0 / (a->cm[4 * k + 0] + dx * (a->cm[4 * k + 1] + dx * (a->cm[4 * k + 2] + dx * a->cm[4 * k + 3])));
+		real dx = a->t[a->ints] - a->t[a->ints - 1];
+		real sf = 1.0 / (a->cm[4 * k + 0] + dx * (a->cm[4 * k + 1] + dx * (a->cm[4 * k + 2] + dx * a->cm[4 * k + 3])));
 		for (i = 0; i < 4 * a->ints; i++)
 			a->cm[i] *= sf;
 	}
@@ -704,21 +704,21 @@ void calc (CALCC a)
 	}
 
 	EnterCriticalSection (&a->disp.cs_disp);
-	memcpy(a->disp.x,  x,  a->nsamps * sizeof (double));
-	memcpy(a->disp.ym, ym, a->nsamps * sizeof (double));
-	memcpy(a->disp.yc, yc, a->nsamps * sizeof (double));
-	memcpy(a->disp.ys, ys, a->nsamps * sizeof (double));
+	memcpy(a->disp.x,  x,  a->nsamps * sizeof (real));
+	memcpy(a->disp.ym, ym, a->nsamps * sizeof (real));
+	memcpy(a->disp.yc, yc, a->nsamps * sizeof (real));
+	memcpy(a->disp.ys, ys, a->nsamps * sizeof (real));
 	if (a->scOK)
 	{
-		memcpy(a->disp.cm, a->cm, a->ints * 4 * sizeof (double));
-		memcpy(a->disp.cc, a->cc, a->ints * 4 * sizeof (double));
-		memcpy(a->disp.cs, a->cs, a->ints * 4 * sizeof (double));
+		memcpy(a->disp.cm, a->cm, a->ints * 4 * sizeof (real));
+		memcpy(a->disp.cc, a->cc, a->ints * 4 * sizeof (real));
+		memcpy(a->disp.cs, a->cs, a->ints * 4 * sizeof (real));
 	}
 	else
 	{
-		memset(a->disp.cm, 0, a->ints * 4 * sizeof (double));
-		memset(a->disp.cc, 0, a->ints * 4 * sizeof (double));
-		memset(a->disp.cs, 0, a->ints * 4 * sizeof (double));
+		memset(a->disp.cm, 0, a->ints * 4 * sizeof (real));
+		memset(a->disp.cc, 0, a->ints * 4 * sizeof (real));
+		memset(a->disp.cs, 0, a->ints * 4 * sizeof (real));
 	}
 	LeaveCriticalSection (&a->disp.cs_disp);
 cleanup:
@@ -771,9 +771,9 @@ void __cdecl SaveCorrection (void *pargs)
 {
 	int i, k;
 	CALCC a = (CALCC)pargs;
-	double* pm = (double *)malloc0 (4 * a->util.ints * sizeof (double));
-	double* pc = (double *)malloc0 (4 * a->util.ints * sizeof (double));
-	double* ps = (double *)malloc0 (4 * a->util.ints * sizeof (double));
+	real* pm = (real *)malloc0 (4 * a->util.ints * sizeof (real));
+	real* pc = (real *)malloc0 (4 * a->util.ints * sizeof (real));
+	real* ps = (real *)malloc0 (4 * a->util.ints * sizeof (real));
 	FILE* file = fopen(a->util.savefile, "w");
 	GetTXAiqcValues (a->util.channel, pm, pc, ps);
 	for (i = 0; i < a->util.ints; i++)
@@ -800,18 +800,18 @@ void __cdecl RestoreCorrection(void *pargs)
 {
 	int i, k;
 	CALCC a = (CALCC)pargs;
-	double* pm = (double *)malloc0 (4 * a->util.ints * sizeof (double));
-	double* pc = (double *)malloc0 (4 * a->util.ints * sizeof (double));
-	double* ps = (double *)malloc0 (4 * a->util.ints * sizeof (double));
+	real* pm = (real *)malloc0 (4 * a->util.ints * sizeof (real));
+	real* pc = (real *)malloc0 (4 * a->util.ints * sizeof (real));
+	real* ps = (real *)malloc0 (4 * a->util.ints * sizeof (real));
 	FILE* file = fopen (a->util.restfile, "r");
 	for (i = 0; i < a->util.ints; i++)
 	{
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(pm[4 * i + k]));
+			fscanf (file, REAL, &(pm[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(pc[4 * i + k]));
+			fscanf (file, REAL, &(pc[4 * i + k]));
 		for (k = 0; k < 4; k++)
-			fscanf (file, "%le", &(ps[4 * i + k]));
+			fscanf (file, REAL, &(ps[4 * i + k]));
 	}
 	fclose (file);
 	if (!InterlockedBitTestAndSet (&a->ctrl.running, 0))
@@ -832,10 +832,10 @@ void __cdecl RestoreCorrection(void *pargs)
 ********************************************************************************************************/
 
 PORT
-void pscc (int channel, int size, double* tx, double* rx)
+void pscc (int channel, int size, real* tx, real* rx)
 {
 	int i, n, m;
-	double env;
+	real env;
 	CALCC a;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
@@ -942,7 +942,7 @@ void pscc (int channel, int size, double* tx, double* rx)
 							if (env < a->tmap[n]) n--;
 						}
 						else
-							n = (int)(env * (double)a->ints);
+							n = (int)(env * (real)a->ints);
 						m = a->ctrl.sbase[n] + a->ctrl.sindex[n];
 						a->txs[2 * m + 0] = tx[2 * i + 0];
 						a->txs[2 * m + 1] = tx[2 * i + 1];
@@ -1065,10 +1065,10 @@ void psccF (int channel, int size, float *Itxbuff, float *Qtxbuff, float *Irxbuf
 	LeaveCriticalSection (&txa[channel].calcc.cs_update);
 	for (i = 0; i < size; i++)
 	{
-		a->temptx[2 * i + 0] = (double)Itxbuff[i];
-		a->temptx[2 * i + 1] = (double)Qtxbuff[i];
-		a->temprx[2 * i + 0] = (double)Irxbuff[i];
-		a->temprx[2 * i + 1] = (double)Qrxbuff[i];
+		a->temptx[2 * i + 0] = (real)Itxbuff[i];
+		a->temptx[2 * i + 1] = (real)Qtxbuff[i];
+		a->temprx[2 * i + 0] = (real)Irxbuff[i];
+		a->temprx[2 * i + 1] = (real)Qrxbuff[i];
 	}
 	pscc (channel, size, a->temptx, a->temprx);
 }
@@ -1185,7 +1185,7 @@ void SetPSControl (int channel, int reset, int mancal, int automode, int turnon)
 }
 
 PORT
-void SetPSLoopDelay (int channel, double delay)
+void SetPSLoopDelay (int channel, real delay)
 {
 	CALCC a;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
@@ -1196,7 +1196,7 @@ void SetPSLoopDelay (int channel, double delay)
 }
 
 PORT
-void SetPSMoxDelay (int channel, double delay)
+void SetPSMoxDelay (int channel, real delay)
 {
 	CALCC a;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
@@ -1207,10 +1207,10 @@ void SetPSMoxDelay (int channel, double delay)
 }
 
 PORT
-double SetPSTXDelay (int channel, double delay)
+real SetPSTXDelay (int channel, real delay)
 {
 	CALCC a;
-	double adelay;
+	real adelay;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	a = txa[channel].calcc.p;
 	a->txdel = delay;
@@ -1230,7 +1230,7 @@ double SetPSTXDelay (int channel, double delay)
 }
 
 PORT
-void SetPSHWPeak (int channel, double peak)
+void SetPSHWPeak (int channel, real peak)
 {
 	CALCC a;
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
@@ -1240,7 +1240,7 @@ void SetPSHWPeak (int channel, double peak)
 }
 
 PORT
-void GetPSHWPeak (int channel, double* peak)
+void GetPSHWPeak (int channel, real* peak)
 {
 EnterCriticalSection (&txa[channel].calcc.cs_update);
 *peak = 1.0 / txa[channel].calcc.p->hw_scale;
@@ -1248,7 +1248,7 @@ LeaveCriticalSection (&txa[channel].calcc.cs_update);
 }
 
 PORT
-void GetPSMaxTX (int channel, double* maxtx)
+void GetPSMaxTX (int channel, real* maxtx)
 {
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	*maxtx = txa[channel].calcc.p->ctrl.env_maxtx;
@@ -1256,7 +1256,7 @@ void GetPSMaxTX (int channel, double* maxtx)
 }
 
 PORT
-void SetPSPtol (int channel, double ptol)
+void SetPSPtol (int channel, real ptol)
 {
 	EnterCriticalSection (&txa[channel].calcc.cs_update);
 	txa[channel].calcc.p->ptol = ptol;
@@ -1264,17 +1264,17 @@ void SetPSPtol (int channel, double ptol)
 }
 
 PORT
-void GetPSDisp (int channel, double* x, double* ym, double* yc, double* ys, double* cm, double* cc, double* cs)
+void GetPSDisp (int channel, real* x, real* ym, real* yc, real* ys, real* cm, real* cc, real* cs)
 {
 	CALCC a = txa[channel].calcc.p;
 	EnterCriticalSection (&a->disp.cs_disp);
-	memcpy (x,  a->disp.x,  a->nsamps * sizeof (double));
-	memcpy (ym, a->disp.ym, a->nsamps * sizeof (double));
-	memcpy (yc, a->disp.yc, a->nsamps * sizeof (double));
-	memcpy (ys, a->disp.ys, a->nsamps * sizeof (double));
-	memcpy (cm, a->disp.cm, a->ints * 4 * sizeof (double));
-	memcpy (cc, a->disp.cc, a->ints * 4 * sizeof (double));
-	memcpy (cs, a->disp.cs, a->ints * 4 * sizeof (double));
+	memcpy (x,  a->disp.x,  a->nsamps * sizeof (real));
+	memcpy (ym, a->disp.ym, a->nsamps * sizeof (real));
+	memcpy (yc, a->disp.yc, a->nsamps * sizeof (real));
+	memcpy (ys, a->disp.ys, a->nsamps * sizeof (real));
+	memcpy (cm, a->disp.cm, a->ints * 4 * sizeof (real));
+	memcpy (cc, a->disp.cc, a->ints * 4 * sizeof (real));
+	memcpy (cs, a->disp.cs, a->ints * 4 * sizeof (real));
 	LeaveCriticalSection (&a->disp.cs_disp);
 }
 

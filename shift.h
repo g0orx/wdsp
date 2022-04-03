@@ -31,17 +31,17 @@ typedef struct _shift
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
-	double rate;
-	double shift;
-	double phase;
-	double delta;
-	double cos_delta;
-	double sin_delta;
+	real* in;
+	real* out;
+	real rate;
+	real shift;
+	real phase;
+	real delta;
+	real cos_delta;
+	real sin_delta;
 } shift, *SHIFT;
 
-extern SHIFT create_shift (int run, int size, double* in, double* out, int rate, double fshift);
+extern SHIFT create_shift (int run, int size, real* in, real* out, int rate, real fshift);
 
 extern void destroy_shift (SHIFT a);
 
@@ -49,7 +49,7 @@ extern void flush_shift (SHIFT a);
 
 extern void xshift (SHIFT a);
 
-extern void setBuffers_shift (SHIFT a, double* in, double* out);
+extern void setBuffers_shift (SHIFT a, real* in, real* out);
 
 extern void setSamplerate_shift (SHIFT a, int rate);
 
@@ -59,6 +59,6 @@ extern void setSize_shift (SHIFT a, int size);
 
 extern __declspec (dllexport) void SetRXAShiftRun (int channel, int run);
 
-extern __declspec (dllexport) void SetRXAShiftFreq (int channel, double fshift);
+extern __declspec (dllexport) void SetRXAShiftFreq (int channel, real fshift);
 
 #endif

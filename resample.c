@@ -37,9 +37,9 @@ void calc_resample (RESAMPLE a)
 	int x, y, z;
 	int i, j, k;
 	int min_rate;
-	double full_rate;
-	double fc_norm_high, fc_norm_low;
-	double* impulse;
+	real full_rate;
+	real fc_norm_high, fc_norm_low;
+	real* impulse;
 	a->fc = a->fcin;
 	a->ncoef = a->ncoefin;
 	x = a->in_rate;
@@ -54,8 +54,8 @@ void calc_resample (RESAMPLE a)
 	a->M = a->in_rate / x;
 	if (a->in_rate < a->out_rate) min_rate = a->in_rate;
 	else min_rate = a->out_rate;
-	if (a->fc == 0.0) a->fc = 0.45 * (double)min_rate;
-	full_rate = (double)(a->in_rate * a->L);
+	if (a->fc == 0.0) a->fc = 0.45 * (real)min_rate;
+	full_rate = (real)(a->in_rate * a->L);
 	fc_norm_high = a->fc / full_rate;
 	if (a->fc_low < 0.0)
 		fc_norm_low = - fc_norm_high;
@@ -64,14 +64,14 @@ void calc_resample (RESAMPLE a)
 	if (a->ncoef == 0) a->ncoef = (int)(140.0 * full_rate / min_rate);
 	a->ncoef = (a->ncoef / a->L + 1) * a->L;
 	a->cpp = a->ncoef / a->L;
-	a->h = (double *)malloc0(a->ncoef * sizeof(double));
-	impulse = fir_bandpass(a->ncoef, fc_norm_low, fc_norm_high, 1.0, 1, 0, a->gain * (double)a->L);
+	a->h = (real *)malloc0(a->ncoef * sizeof(real));
+	impulse = fir_bandpass(a->ncoef, fc_norm_low, fc_norm_high, 1.0, 1, 0, a->gain * (real)a->L);
 	i = 0;
 	for (j = 0; j < a->L; j++)
 		for (k = 0; k < a->ncoef; k += a->L)
 			a->h[i++] = impulse[j + k];
 	a->ringsize = a->cpp;
-	a->ring = (double *)malloc0(a->ringsize * sizeof(complex));
+	a->ring = (real *)malloc0(a->ringsize * sizeof(complex));
 	a->idx_in = a->ringsize - 1;
 	a->phnum = 0;
 	_aligned_free(impulse);
@@ -84,7 +84,7 @@ void decalc_resample (RESAMPLE a)
 }
 
 PORT
-RESAMPLE create_resample ( int run, int size, double* in, double* out, int in_rate, int out_rate, double fc, int ncoef, double gain)
+RESAMPLE create_resample ( int run, int size, real* in, real* out, int in_rate, int out_rate, real fc, int ncoef, real gain)
 {
 	RESAMPLE a = (RESAMPLE) malloc0 (sizeof (resample));
 	
@@ -125,7 +125,7 @@ int xresample (RESAMPLE a)
 	{
 		int i, j, n;
 		int idx_out;
-		double I, Q;
+		real I, Q;
 
 		for (i = 0; i < a->size; i++)
 		{
@@ -156,7 +156,7 @@ int xresample (RESAMPLE a)
 	return outsamps;
 }
 
-void setBuffers_resample(RESAMPLE a, double* in, double* out)
+void setBuffers_resample(RESAMPLE a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -182,7 +182,7 @@ void setOutRate_resample(RESAMPLE a, int rate)
 	calc_resample (a);
 }
 
-void setFCLow_resample (RESAMPLE a, double fc_low)
+void setFCLow_resample (RESAMPLE a, real fc_low)
 {
 	if (fc_low != a->fc_low)
 	{
@@ -192,7 +192,7 @@ void setFCLow_resample (RESAMPLE a, double fc_low)
 	}
 }
 
-void setBandwidth_resample (RESAMPLE a, double fc_low, double fc_high)
+void setBandwidth_resample (RESAMPLE a, real fc_low, real fc_high)
 {
 	if (fc_low != a->fc_low || fc_high != a->fcin)
 	{
@@ -212,7 +212,7 @@ void* create_resampleV (int in_rate, int out_rate)
 }
 
 PORT
-void xresampleV (double* input, double* output, int numsamps, int* outsamps, void* ptr)
+void xresampleV (real* input, real* output, int numsamps, int* outsamps, void* ptr)
 {
 	RESAMPLE a = (RESAMPLE)ptr;
 	a->in = input;
@@ -239,10 +239,10 @@ RESAMPLEF create_resampleF ( int run, int size, float* in, float* out, int in_ra
 	int x, y, z;
 	int i, j, k;
 	int min_rate;
-	double full_rate;
-	double fc;
-	double fc_norm;
-	double* impulse;
+	real full_rate;
+	real fc;
+	real fc_norm;
+	real* impulse;
 	a->run = run;
 	a->size = size;
 	a->in = in;
@@ -259,20 +259,20 @@ RESAMPLEF create_resampleF ( int run, int size, float* in, float* out, int in_ra
 	a->M = in_rate / x;
 	if (in_rate < out_rate) min_rate = in_rate;
 	else min_rate = out_rate;
-	fc = 0.45 * (double)min_rate;
-	full_rate = (double)(in_rate * a->L);
+	fc = 0.45 * (real)min_rate;
+	full_rate = (real)(in_rate * a->L);
 	fc_norm = fc / full_rate;
 	a->ncoef = (int)(60.0 / fc_norm);
 	a->ncoef = (a->ncoef / a->L + 1) * a->L;
 	a->cpp = a->ncoef / a->L;
-	a->h = (double *) malloc0 (a->ncoef * sizeof (double));
-	impulse = fir_bandpass (a->ncoef, -fc_norm, +fc_norm, 1.0, 1, 0, (double)a->L);
+	a->h = (real *) malloc0 (a->ncoef * sizeof (real));
+	impulse = fir_bandpass (a->ncoef, -fc_norm, +fc_norm, 1.0, 1, 0, (real)a->L);
 	i = 0;
 	for (j = 0; j < a->L; j ++)
 		for (k = 0; k < a->ncoef; k += a->L)
 			a->h[i++] = impulse[j + k];
 	a->ringsize = a->cpp;
-	a->ring = (double *) malloc0 (a->ringsize * sizeof (double));
+	a->ring = (real *) malloc0 (a->ringsize * sizeof (real));
 	a->idx_in = a->ringsize - 1;
 	a->phnum = 0;
 	_aligned_free (impulse);
@@ -288,7 +288,7 @@ void destroy_resampleF (RESAMPLEF a)
 
 void flush_resampleF (RESAMPLEF a)
 {
-	memset (a->ring, 0, a->ringsize * sizeof (double));
+	memset (a->ring, 0, a->ringsize * sizeof (real));
 	a->idx_in = a->ringsize - 1;
 	a->phnum = 0;
 }
@@ -300,11 +300,11 @@ int xresampleF (RESAMPLEF a)
 	{
 		int i, j, n;
 		int idx_out;
-		double I;
+		real I;
 
 		for (i = 0; i < a->size; i++)
 		{
-			a->ring[a->idx_in] = (double)a->in[i];
+			a->ring[a->idx_in] = (real)a->in[i];
 
 			while (a->phnum < a->L)
 			{

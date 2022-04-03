@@ -79,7 +79,7 @@ void build_channel (int channel)
 
 PORT
 void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, int dsp_rate, int output_samplerate, 
-	int type, int state, double tdelayup, double tslewup, double tdelaydown, double tslewdown, int bfo)
+	int type, int state, real tdelayup, real tslewup, real tdelaydown, real tslewdown, int bfo)
 {
 	ch[channel].in_size = in_size;
 	ch[channel].dsp_size = dsp_size;
@@ -296,7 +296,7 @@ int SetChannelState (int channel, int state, int dmode)
 }
 
 PORT
-void SetChannelTDelayUp (int channel, double time)
+void SetChannelTDelayUp (int channel, real time)
 {
 	IOB a;
 	EnterCriticalSection (&ch[channel].csEXCH);
@@ -308,7 +308,7 @@ void SetChannelTDelayUp (int channel, double time)
 }
 
 PORT
-void SetChannelTSlewUp (int channel, double time)
+void SetChannelTSlewUp (int channel, real time)
 {
 	IOB a;
 	EnterCriticalSection (&ch[channel].csEXCH);
@@ -320,7 +320,7 @@ void SetChannelTSlewUp (int channel, double time)
 }
 
 PORT
-void SetChannelTDelayDown (int channel, double time)
+void SetChannelTDelayDown (int channel, real time)
 {
 	IOB a;
 	EnterCriticalSection (&ch[channel].csEXCH);
@@ -332,7 +332,7 @@ void SetChannelTDelayDown (int channel, double time)
 }
 
 PORT
-void SetChannelTSlewDown (int channel, double time)
+void SetChannelTSlewDown (int channel, real time)
 {
 	IOB a;
 	EnterCriticalSection (&ch[channel].csEXCH);

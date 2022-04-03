@@ -39,21 +39,21 @@ typedef struct _eqp
 	int size;
 	int nc;
 	int mp;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int nfreqs;
-	double* F;
-	double* G;
+	real* F;
+	real* G;
 	int ctfmode;
 	int wintype;
-	double samplerate;
+	real samplerate;
 	FIRCORE p;
 } eqp, *EQP;
 
-extern double* eq_impulse (int N, int nfreqs, double* F, double* G, double samplerate, double scale, int ctfmode, int wintype);
+extern real* eq_impulse (int N, int nfreqs, real* F, real* G, real samplerate, real scale, int ctfmode, int wintype);
 
-extern EQP create_eqp (int run, int size, int nc, int mp, double *in, double *out, 
-	int nfreqs, double* F, double* G, int ctfmode, int wintype, int samplerate);
+extern EQP create_eqp (int run, int size, int nc, int mp, real *in, real *out, 
+	int nfreqs, real* F, real* G, int ctfmode, int wintype, int samplerate);
 
 extern void destroy_eqp (EQP a);
 
@@ -61,7 +61,7 @@ extern void flush_eqp (EQP a);
 
 extern void xeqp (EQP a);
 
-extern void setBuffers_eqp (EQP a, double* in, double* out);
+extern void setBuffers_eqp (EQP a, real* in, real* out);
 
 extern void setSamplerate_eqp (EQP a, int rate);
 
@@ -92,25 +92,25 @@ typedef struct _eq
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int nfreqs;
-	double* F;
-	double* G;
-	double* infilt;
-	double* product;
-	double* mults;
-	double scale;
+	real* F;
+	real* G;
+	real* infilt;
+	real* product;
+	real* mults;
+	real scale;
 	int ctfmode;
 	int wintype;
-	double samplerate;
+	real samplerate;
 	fftw_plan CFor;
 	fftw_plan CRev;
 }eq, *EQ;
 
-extern double* eq_mults (int size, int nfreqs, double* F, double* G, double samplerate, double scale, int ctfmode, int wintype);
+extern real* eq_mults (int size, int nfreqs, real* F, real* G, real samplerate, real scale, int ctfmode, int wintype);
 
-extern EQ create_eq (int run, int size, double *in, double *out, int nfreqs, double* F, double* G, int ctfmode, int wintype, int samplerate);
+extern EQ create_eq (int run, int size, real *in, real *out, int nfreqs, real* F, real* G, int ctfmode, int wintype, int samplerate);
 
 extern void destroy_eq (EQ a);
 
@@ -118,7 +118,7 @@ extern void flush_eq (EQ a);
 
 extern void xeq (EQ a);
 
-extern void setBuffers_eq (EQ a, double* in, double* out);
+extern void setBuffers_eq (EQ a, real* in, real* out);
 
 extern void setSamplerate_eq (EQ a, int rate);
 

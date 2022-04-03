@@ -44,10 +44,10 @@ struct _ch
 	CRITICAL_SECTION csDSP;		// used to block dsp while parameters are updated or buffers flushed
 	CRITICAL_SECTION csEXCH;	// used to block fexchange() while parameters are updated or buffers flushed
 	int state;					// 0 for channel OFF; 1 for channel ON
-	double tdelayup;
-	double tslewup;
-	double tdelaydown;
-	double tslewdown;
+	real tdelayup;
+	real tslewup;
+	real tdelaydown;
+	real tslewdown;
 	int bfo;					// 'block_for_output', block fexchange until output is available
 	volatile long flushflag;
 	struct	//io buffers
@@ -59,7 +59,7 @@ struct _ch
 
 extern struct _ch ch[];
 
-PORT void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, int dsp_rate, int output_samplerate, int type, int state, double tdelayup, double tslewup, double tdelaydown, double tslewdown, int bfo);
+PORT void OpenChannel (int channel, int in_size, int dsp_size, int input_samplerate, int dsp_rate, int output_samplerate, int type, int state, real tdelayup, real tslewup, real tdelaydown, real tslewdown, int bfo);
 
 PORT void CloseChannel (int channel);
 

@@ -1,16 +1,17 @@
+#include "comm.h"
 #include "calculus.h"
 
 //
 // The original WDSP comes with a file named "calculus" that contains
 // data for the noise reduction filters and is read in file emnr.c.
 //
-// Here we just provide the data contained in this file in the double
+// Here we just provide the data contained in this file in the real
 // arrays GG and GGS, each with size 241 * 241 (about 1 mega-byte of
 // static data).
 //
 // The numbers are all non-negative, and the smallest non-zero value is larger
 // than 0.001. So printing with 25 digits is more than enough, since the
-// 64-bit "double" data type has about 15 significant digits.
+// 64-bit "real" data type has about 15 significant digits.
 //
 // To this end the contents of the file "calculus" have just been read
 // and printed. Within emnr.c, one then uses a "memcpy" instead of a "fread".
@@ -18,7 +19,7 @@
 // What follows can be generated from the file "calculus" using the program
 // coded in "make_calculus.c".
 //
-double GG[241*241]={
+real GG[241*241]={
 0.7256541811540769826294195
 ,0.7050388220982234388500842
 ,0.6850082175848438703624765
@@ -58101,7 +58102,7 @@ double GG[241*241]={
 ,1.0000000000000000000000000
 ,1.0000000000000000000000000
 };
-double GGS[241*241]={
+real GGS[241*241]={
 0.8000149083353534917861793
 ,0.8000207075407033130431955
 ,0.8000267007066488300637275

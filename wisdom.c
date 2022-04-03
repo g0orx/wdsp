@@ -37,16 +37,16 @@ void WDSPwisdom (char* directory)
 	fftw_plan tplan;
 	int psize;
 	FILE *stream;
-	double* fftin;
-	double* fftout;
+	real* fftin;
+	real* fftout;
 	char wisdom_file[1024];
 	const int maxsize = max (MAX_WISDOM_SIZE_DISPLAY, MAX_WISDOM_SIZE_FILTER + 1);
 	strcpy (wisdom_file, directory);
 	strncat (wisdom_file, "wdspWisdom00", 16);
 	if(!fftw_import_wisdom_from_filename(wisdom_file))
 	{
-		fftin =  (double *) malloc0 (maxsize * sizeof (complex));
-		fftout = (double *) malloc0 (maxsize * sizeof (complex));
+		fftin =  (real *) malloc0 (maxsize * sizeof (complex));
+		fftout = (real *) malloc0 (maxsize * sizeof (complex));
 #ifdef _WINDOWS_
                 AllocConsole();                                                         // create console
             freopen_s(&stream, "conout$", "w", stdout); // redirect output to console

@@ -36,8 +36,8 @@ void calc_osctrl (OSCTRL a)
 	if ((a->pn & 1) == 0) a->pn += 1;
 	if (a->pn < 3) a->pn = 3;
 	a->dl_len = a->pn >> 1;
-	a->dl    = (double *) malloc0 (a->pn * sizeof (complex));
-	a->dlenv = (double *) malloc0 (a->pn * sizeof (double));
+	a->dl    = (real *) malloc0 (a->pn * sizeof (complex));
+	a->dlenv = (real *) malloc0 (a->pn * sizeof (real));
 	a->in_idx = 0;
 	a->out_idx = a->in_idx + a->dl_len;
 	a->max_env = 0.0;
@@ -52,10 +52,10 @@ void decalc_osctrl (OSCTRL a)
 OSCTRL create_osctrl (
 				int run,
 				int size,
-				double* inbuff,
-				double* outbuff,
+				real* inbuff,
+				real* outbuff,
 				int rate,
-				double osgain )
+				real osgain )
 {
 	OSCTRL a = (OSCTRL) malloc0 (sizeof (osctrl));
 	a->run = run;
@@ -78,7 +78,7 @@ void destroy_osctrl (OSCTRL a)
 void flush_osctrl (OSCTRL a)
 {
 	memset (a->dl,    0, a->dl_len * sizeof (complex));
-	memset (a->dlenv, 0, a->pn     * sizeof (double));
+	memset (a->dlenv, 0, a->pn     * sizeof (real));
 }
 
 void xosctrl (OSCTRL a)
@@ -86,7 +86,7 @@ void xosctrl (OSCTRL a)
 	if (a->run)
 	{
 		int i, j;
-		double divisor;
+		real divisor;
 		for (i = 0; i < a->size; i++)
 		{
 			a->dl[2 * a->in_idx + 0] = a->inbuff[2 * i + 0];							// put sample in delay line
@@ -113,7 +113,7 @@ void xosctrl (OSCTRL a)
 		memcpy (a->outbuff, a->inbuff, a->size * sizeof (complex));
 }
 
-void setBuffers_osctrl (OSCTRL a, double* in, double* out)
+void setBuffers_osctrl (OSCTRL a, real* in, real* out)
 {
 	a->inbuff = in;
 	a->outbuff = out;

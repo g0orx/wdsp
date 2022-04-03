@@ -1,2 +1,2 @@
-extern double GG[];
-extern double GGS[];
+extern real GG[];
+extern real GGS[];

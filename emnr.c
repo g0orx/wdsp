@@ -42,9 +42,9 @@ warren@wpratt.com
 // Shanjie Zhang and Jianming Jin, "Computation of Special Functions."  New York, NY, John Wiley and Sons,
 //      Inc., 1996.  [Sample code given in FORTRAN]
 
-double bessI0 (double x)
+real bessI0 (real x)
 {
-	double res, p;
+	real res, p;
 	if (x == 0.0)
 		res = 1.0;
 	else
@@ -80,10 +80,10 @@ double bessI0 (double x)
 	return res;
 }
 
-double bessI1 (double x)
+real bessI1 (real x)
 {
 	
-	double res, p;
+	real res, p;
 	if (x == 0.0)
 		res = 0.0;
 	else
@@ -126,12 +126,12 @@ double bessI1 (double x)
 // Shanjie Zhang and Jianming Jin, "Computation of Special Functions."  New York, NY, John Wiley and Sons,
 //      Inc., 1996.  [Sample code given in FORTRAN]
 
-double e1xb (double x)
+real e1xb (real x)
 {
-	double e1, ga, r, t, t0;
+	real e1, ga, r, t, t0;
 	int k, m;
 	if (x == 0.0) 
-		e1 = 1.0e300;
+		e1 = REAL_MAX;
 	else if (x <= 1.0)
 	{
         e1 = 1.0;
@@ -153,7 +153,7 @@ double e1xb (double x)
         m = 20 + (int)(80.0 / x);
         t0 = 0.0;
         for (k = m; k >= 1; k--)
-			t0 = (double)k / (1.0 + k / (x + t0));
+			t0 = (real)k / (1.0 + k / (x + t0));
         t = 1.0 / (x + t0);
         e1 = exp (- x) * t;
 	}
@@ -169,25 +169,25 @@ double e1xb (double x)
 void calc_window (EMNR a)
 {
 	int i;
-	double arg, sum, inv_coherent_gain;
+	real arg, sum, inv_coherent_gain;
 	switch (a->wintype)
 	{
 	case 0:
-		arg = 2.0 * PI / (double)a->fsize;
+		arg = 2.0 * PI / (real)a->fsize;
 		sum = 0.0;
 		for (i = 0; i < a->fsize; i++)
 		{
-			a->window[i] = sqrt (0.54 - 0.46 * cos((double)i * arg));
+			a->window[i] = sqrt (0.54 - 0.46 * cos((real)i * arg));
 			sum += a->window[i];
 		}
-		inv_coherent_gain = (double)a->fsize / sum;
+		inv_coherent_gain = (real)a->fsize / sum;
 		for (i = 0; i < a->fsize; i++)
 			a->window[i] *= inv_coherent_gain;
 		break;
 	}
 }
 
-void interpM (double* res, double x, int nvals, double* xvals, double* yvals)
+void interpM (real* res, real x, int nvals, real* xvals, real* yvals)
 {
 	if (x <= xvals[0])
 		*res = yvals[0];
@@ -196,7 +196,7 @@ void interpM (double* res, double x, int nvals, double* xvals, double* yvals)
 	else
 	{
 		int idx = 0;
-		double xllow, xlhigh, frac;
+		real xllow, xlhigh, frac;
 		while (x >= xvals[idx])  idx++;
 		xllow = log10 (xvals[idx - 1]);
 		xlhigh = log10(xvals[idx]);
@@ -208,14 +208,14 @@ void interpM (double* res, double x, int nvals, double* xvals, double* yvals)
 void calc_emnr(EMNR a)
 {
 	int i;
-	double Dvals[18] = { 1.0, 2.0, 5.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0,
+	real Dvals[18] = { 1.0, 2.0, 5.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0,
 		60.0, 80.0, 120.0, 140.0, 160.0, 180.0, 220.0, 260.0, 300.0 };
-	double Mvals[18] = { 0.000, 0.260, 0.480, 0.580, 0.610, 0.668, 0.705, 0.762, 0.800,
+	real Mvals[18] = { 0.000, 0.260, 0.480, 0.580, 0.610, 0.668, 0.705, 0.762, 0.800,
 		0.841, 0.865, 0.890, 0.900, 0.910, 0.920, 0.930, 0.935, 0.940 };
-	double Hvals[18] = { 0.000, 0.150, 0.480, 0.780, 0.980, 1.550, 2.000, 2.300, 2.520,
+	real Hvals[18] = { 0.000, 0.150, 0.480, 0.780, 0.980, 1.550, 2.000, 2.300, 2.520,
 		3.100, 3.380, 4.150, 4.350, 4.250, 3.900, 4.100, 4.700, 5.000 };
 	a->incr = a->fsize / a->ovrlp;
-	a->gain = a->ogain / a->fsize / (double)a->ovrlp;
+	a->gain = a->ogain / a->fsize / (real)a->ovrlp;
 	if (a->fsize > a->bsize)
 		a->iasize = a->fsize;
 	else
@@ -236,17 +236,17 @@ void calc_emnr(EMNR a)
 	a->init_oainidx = a->oainidx;
 	a->oaoutidx = 0;
 	a->msize = a->fsize / 2 + 1;
-	a->window = (double *)malloc0(a->fsize * sizeof(double));
-	a->inaccum = (double *)malloc0(a->iasize * sizeof(double));
-	a->forfftin = (double *)malloc0(a->fsize * sizeof(double));
-	a->forfftout = (double *)malloc0(a->msize * sizeof(complex));
-	a->mask = (double *)malloc0(a->msize * sizeof(double));
-	a->revfftin = (double *)malloc0(a->msize * sizeof(complex));
-	a->revfftout = (double *)malloc0(a->fsize * sizeof(double));
-	a->save = (double **)malloc0(a->ovrlp * sizeof(double *));
+	a->window = (real *)malloc0(a->fsize * sizeof(real));
+	a->inaccum = (real *)malloc0(a->iasize * sizeof(real));
+	a->forfftin = (real *)malloc0(a->fsize * sizeof(real));
+	a->forfftout = (real *)malloc0(a->msize * sizeof(complex));
+	a->mask = (real *)malloc0(a->msize * sizeof(real));
+	a->revfftin = (real *)malloc0(a->msize * sizeof(complex));
+	a->revfftout = (real *)malloc0(a->fsize * sizeof(real));
+	a->save = (real **)malloc0(a->ovrlp * sizeof(real *));
 	for (i = 0; i < a->ovrlp; i++)
-		a->save[i] = (double *)malloc0(a->fsize * sizeof(double));
-	a->outaccum = (double *)malloc0(a->oasize * sizeof(double));
+		a->save[i] = (real *)malloc0(a->fsize * sizeof(real));
+	a->outaccum = (real *)malloc0(a->oasize * sizeof(real));
 	a->nsamps = 0;
 	a->saveidx = 0;
 	a->Rfor = fftw_plan_dft_r2c_1d(a->fsize, a->forfftin, (fftw_complex *)a->forfftout, FFTW_ESTIMATE);
@@ -256,17 +256,17 @@ void calc_emnr(EMNR a)
 	a->g.msize = a->msize;
 	a->g.mask = a->mask;
 	a->g.y = a->forfftout;
-	a->g.lambda_y = (double *)malloc0(a->msize * sizeof(double));
-	a->g.lambda_d = (double *)malloc0(a->msize * sizeof(double));
-	a->g.prev_gamma = (double *)malloc0(a->msize * sizeof(double));
-	a->g.prev_mask = (double *)malloc0(a->msize * sizeof(double));
+	a->g.lambda_y = (real *)malloc0(a->msize * sizeof(real));
+	a->g.lambda_d = (real *)malloc0(a->msize * sizeof(real));
+	a->g.prev_gamma = (real *)malloc0(a->msize * sizeof(real));
+	a->g.prev_mask = (real *)malloc0(a->msize * sizeof(real));
 
 	a->g.gf1p5 = sqrt(PI) / 2.0;
 	{
-		double tau = -128.0 / 8000.0 / log(0.98);
+		real tau = -128.0 / 8000.0 / log(0.98);
 		a->g.alpha = exp(-a->incr / a->rate / tau);
 	}
-	a->g.eps_floor = 1.0e-300;
+	a->g.eps_floor = REAL_EPSILON;
 	a->g.gamma_max = 1000.0;
 	a->g.q = 0.2;
 	for (i = 0; i < a->g.msize; i++)
@@ -276,16 +276,16 @@ void calc_emnr(EMNR a)
 	}
 	a->g.gmax = 10000.0;
 	//
-	a->g.GG = (double *)malloc0(241 * 241 * sizeof(double));
-	a->g.GGS = (double *)malloc0(241 * 241 * sizeof(double));
+	a->g.GG = (real *)malloc0(241 * 241 * sizeof(real));
+	a->g.GGS = (real *)malloc0(241 * 241 * sizeof(real));
 #if defined(linux) || defined(__APPLE__)
-        memcpy(a->g.GG, GG, 241 * 241 * sizeof(double));
-        memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(double));
+        memcpy(a->g.GG, GG, 241 * 241 * sizeof(real));
+        memcpy(a->g.GGS, GGS, 241 * 241 * sizeof(real));
 #else
 
 	a->g.fileb = fopen("calculus", "rb");
-	fread(a->g.GG, sizeof(double), 241 * 241, a->g.fileb);
-	fread(a->g.GGS, sizeof(double), 241 * 241, a->g.fileb);
+	fread(a->g.GG, sizeof(real), 241 * 241, a->g.fileb);
+	fread(a->g.GGS, sizeof(real), 241 * 241, a->g.fileb);
 	fclose(a->g.fileb);
 #endif
 	//
@@ -297,24 +297,24 @@ void calc_emnr(EMNR a)
 	a->np.lambda_d = a->g.lambda_d;
 
 	{
-		double tau = -128.0 / 8000.0 / log(0.7);
+		real tau = -128.0 / 8000.0 / log(0.7);
 		a->np.alphaCsmooth = exp(-a->np.incr / a->np.rate / tau);
 	}
 	{
-		double tau = -128.0 / 8000.0 / log(0.96);
+		real tau = -128.0 / 8000.0 / log(0.96);
 		a->np.alphaMax = exp(-a->np.incr / a->np.rate / tau);
 	}
 	{
-		double tau = -128.0 / 8000.0 / log(0.7);
+		real tau = -128.0 / 8000.0 / log(0.7);
 		a->np.alphaCmin = exp(-a->np.incr / a->np.rate / tau);
 	}
 	{
-		double tau = -128.0 / 8000.0 / log(0.3);
+		real tau = -128.0 / 8000.0 / log(0.3);
 		a->np.alphaMin_max_value = exp(-a->np.incr / a->np.rate / tau);
 	}
 	a->np.snrq = -a->np.incr / (0.064 * a->np.rate);
 	{
-		double tau = -128.0 / 8000.0 / log(0.8);
+		real tau = -128.0 / 8000.0 / log(0.8);
 		a->np.betamax = exp(-a->np.incr / a->np.rate / tau);
 	}
 	a->np.invQeqMax = 0.5;
@@ -330,9 +330,9 @@ void calc_emnr(EMNR a)
 	a->np.invQbar_points[0] = 0.03;
 	a->np.invQbar_points[1] = 0.05;
 	a->np.invQbar_points[2] = 0.06;
-	a->np.invQbar_points[3] = 1.0e300;
+	a->np.invQbar_points[3] = REAL_MAX;
 	{
-		double db;
+		real db;
 		db = 10.0 * log10(8.0) / (12.0 * 128 / 8000);
 		a->np.nsmax[0] = pow(10.0, db / 10.0 * a->np.V * a->np.incr / a->np.rate);
 		db = 10.0 * log10(4.0) / (12.0 * 128 / 8000);
@@ -343,23 +343,23 @@ void calc_emnr(EMNR a)
 		a->np.nsmax[3] = pow(10.0, db / 10.0 * a->np.V * a->np.incr / a->np.rate);
 	}
 
-	a->np.p = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.alphaOptHat = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.alphaHat = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.sigma2N = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.pbar = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.p2bar = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.Qeq = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.bmin = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.bmin_sub = (double *)malloc0(a->np.msize * sizeof(double));
+	a->np.p = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.alphaOptHat = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.alphaHat = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.sigma2N = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.pbar = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.p2bar = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.Qeq = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.bmin = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.bmin_sub = (real *)malloc0(a->np.msize * sizeof(real));
 	a->np.k_mod = (int *)malloc0(a->np.msize * sizeof(int));
-	a->np.actmin = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.actmin_sub = (double *)malloc0(a->np.msize * sizeof(double));
+	a->np.actmin = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.actmin_sub = (real *)malloc0(a->np.msize * sizeof(real));
 	a->np.lmin_flag = (int *)malloc0(a->np.msize * sizeof(int));
-	a->np.pmin_u = (double *)malloc0(a->np.msize * sizeof(double));
-	a->np.actminbuff = (double**)malloc0(a->np.U     * sizeof(double*));
+	a->np.pmin_u = (real *)malloc0(a->np.msize * sizeof(real));
+	a->np.actminbuff = (real**)malloc0(a->np.U     * sizeof(real*));
 	for (i = 0; i < a->np.U; i++)
-		a->np.actminbuff[i] = (double *)malloc0(a->np.msize * sizeof(double));
+		a->np.actminbuff[i] = (real *)malloc0(a->np.msize * sizeof(real));
 
 	{
 		int k, ku;
@@ -367,17 +367,17 @@ void calc_emnr(EMNR a)
 		a->np.subwc = a->np.V;
 		a->np.amb_idx = 0;
 		for (k = 0; k < a->np.msize; k++) a->np.lambda_y[k] = 0.5;
-		memcpy(a->np.p, a->np.lambda_y, a->np.msize * sizeof(double));
-		memcpy(a->np.sigma2N, a->np.lambda_y, a->np.msize * sizeof(double));
-		memcpy(a->np.pbar, a->np.lambda_y, a->np.msize * sizeof(double));
-		memcpy(a->np.pmin_u, a->np.lambda_y, a->np.msize * sizeof(double));
+		memcpy(a->np.p, a->np.lambda_y, a->np.msize * sizeof(real));
+		memcpy(a->np.sigma2N, a->np.lambda_y, a->np.msize * sizeof(real));
+		memcpy(a->np.pbar, a->np.lambda_y, a->np.msize * sizeof(real));
+		memcpy(a->np.pmin_u, a->np.lambda_y, a->np.msize * sizeof(real));
 		for (k = 0; k < a->np.msize; k++)
 		{
 			a->np.p2bar[k] = a->np.lambda_y[k] * a->np.lambda_y[k];
-			a->np.actmin[k] = 1.0e300;
-			a->np.actmin_sub[k] = 1.0e300;
+			a->np.actmin[k] = REAL_MAX;
+			a->np.actmin_sub[k] = REAL_MAX;
 			for (ku = 0; ku < a->np.U; ku++)
-				a->np.actminbuff[ku][k] = 1.0e300;
+				a->np.actminbuff[ku][k] = REAL_MAX;
 		}
 		memset(a->np.lmin_flag, 0, a->np.msize * sizeof(int));
 	}
@@ -389,20 +389,20 @@ void calc_emnr(EMNR a)
 	a->nps.lambda_d = a->g.lambda_d;
 
 	{
-		double tau = -128.0 / 8000.0 / log(0.8);
+		real tau = -128.0 / 8000.0 / log(0.8);
 		a->nps.alpha_pow = exp(-a->nps.incr / a->nps.rate / tau);
 	}
 	{
-		double tau = -128.0 / 8000.0 / log(0.9);
+		real tau = -128.0 / 8000.0 / log(0.9);
 		a->nps.alpha_Pbar = exp(-a->nps.incr / a->nps.rate / tau);
 	}
 	a->nps.epsH1 = pow(10.0, 15.0 / 10.0);
 	a->nps.epsH1r = a->nps.epsH1 / (1.0 + a->nps.epsH1);
 
-	a->nps.sigma2N = (double *)malloc0(a->nps.msize * sizeof(double));
-	a->nps.PH1y = (double *)malloc0(a->nps.msize * sizeof(double));
-	a->nps.Pbar = (double *)malloc0(a->nps.msize * sizeof(double));
-	a->nps.EN2y = (double *)malloc0(a->nps.msize * sizeof(double));
+	a->nps.sigma2N = (real *)malloc0(a->nps.msize * sizeof(real));
+	a->nps.PH1y = (real *)malloc0(a->nps.msize * sizeof(real));
+	a->nps.Pbar = (real *)malloc0(a->nps.msize * sizeof(real));
+	a->nps.EN2y = (real *)malloc0(a->nps.msize * sizeof(real));
 
 	for (i = 0; i < a->nps.msize; i++)
 	{
@@ -416,7 +416,7 @@ void calc_emnr(EMNR a)
 	a->ae.zetaThresh = 0.75;
 	a->ae.psi = 10.0;
 
-	a->ae.nmask = (double *)malloc0(a->ae.msize * sizeof(double));
+	a->ae.nmask = (real *)malloc0(a->ae.msize * sizeof(real));
 }
 
 void decalc_emnr(EMNR a)
@@ -469,8 +469,8 @@ void decalc_emnr(EMNR a)
 	_aligned_free(a->window);
 }
 
-EMNR create_emnr (int run, int position, int size, double* in, double* out, int fsize, int ovrlp, 
-	int rate, int wintype, double gain, int gain_method, int npe_method, int ae_run)
+EMNR create_emnr (int run, int position, int size, real* in, real* out, int fsize, int ovrlp, 
+	int rate, int wintype, real gain, int gain_method, int npe_method, int ae_run)
 {
 	EMNR a = (EMNR) malloc0 (sizeof (emnr));
 	
@@ -494,10 +494,10 @@ EMNR create_emnr (int run, int position, int size, double* in, double* out, int 
 void flush_emnr (EMNR a)
 {
 	int i;
-	memset (a->inaccum, 0, a->iasize * sizeof (double));
+	memset (a->inaccum, 0, a->iasize * sizeof (real));
 	for (i = 0; i < a->ovrlp; i++)
-		memset (a->save[i], 0, a->fsize * sizeof (double));
-	memset (a->outaccum, 0, a->oasize * sizeof (double));
+		memset (a->save[i], 0, a->fsize * sizeof (real));
+	memset (a->outaccum, 0, a->oasize * sizeof (real));
 	a->nsamps   = 0;
 	a->iainidx  = 0;
 	a->iaoutidx = 0;
@@ -515,17 +515,17 @@ void destroy_emnr (EMNR a)
 void LambdaD(EMNR a)
 {
 	int k;
-	double f0, f1, f2, f3;
-	double sum_prev_p;
-	double sum_lambda_y;
-	double alphaCtilda;
-	double sum_prev_sigma2N;
-	double alphaMin, SNR;
-	double beta, varHat, invQeq;
-	double invQbar;
-	double bc;
-	double QeqTilda, QeqTildaSub;
-	double noise_slope_max;
+	real f0, f1, f2, f3;
+	real sum_prev_p;
+	real sum_lambda_y;
+	real alphaCtilda;
+	real sum_prev_sigma2N;
+	real alphaMin, SNR;
+	real beta, varHat, invQeq;
+	real invQbar;
+	real bc;
+	real QeqTilda, QeqTildaSub;
+	real noise_slope_max;
 	
 	sum_prev_p = 0.0;
 	sum_lambda_y = 0.0;
@@ -565,7 +565,7 @@ void LambdaD(EMNR a)
 		a->np.Qeq[k] = 1.0 / invQeq;
 		invQbar += invQeq;
 	}
-	invQbar /= (double)a->np.msize;
+	invQbar /= (real)a->np.msize;
 	bc = 1.0 + a->np.av * sqrt (invQbar);
 	for (k = 0; k < a->np.msize; k++)
 	{
@@ -595,11 +595,11 @@ void LambdaD(EMNR a)
 		for (k = 0; k < a->np.msize; k++)
 		{
 			int ku;
-			double min;
+			real min;
 			if (a->np.k_mod[k])
 				a->np.lmin_flag[k] = 0;
 			a->np.actminbuff[a->np.amb_idx][k] = a->np.actmin[k];
-			min = 1.0e300;
+			min = REAL_MAX;
 			for (ku = 0; ku < a->np.U; ku++)
 				if (a->np.actminbuff[ku][k] < min) min = a->np.actminbuff[ku][k];
 			a->np.pmin_u[k] = min;
@@ -612,8 +612,8 @@ void LambdaD(EMNR a)
 					a->np.actminbuff[ku][k] = a->np.actmin_sub[k];
 			}
 			a->np.lmin_flag[k] = 0;
-			a->np.actmin[k] = 1.0e300;
-			a->np.actmin_sub[k] = 1.0e300;
+			a->np.actmin[k] = REAL_MAX;
+			a->np.actmin_sub[k] = REAL_MAX;
 		}
 		if (++a->np.amb_idx == a->np.U) a->np.amb_idx = 0;
 		a->np.subwc = 1;
@@ -634,7 +634,7 @@ void LambdaD(EMNR a)
 		}
 		++a->np.subwc;
 	}
-	memcpy (a->np.lambda_d, a->np.sigma2N, a->np.msize * sizeof (double));
+	memcpy (a->np.lambda_d, a->np.sigma2N, a->np.msize * sizeof (real));
 }
 
 void LambdaDs (EMNR a)
@@ -649,14 +649,14 @@ void LambdaDs (EMNR a)
 		a->nps.EN2y[k] = (1.0 - a->nps.PH1y[k]) * a->nps.lambda_y[k] + a->nps.PH1y[k] * a->nps.sigma2N[k];
 		a->nps.sigma2N[k] = a->nps.alpha_pow * a->nps.sigma2N[k] + (1.0 - a->nps.alpha_pow) * a->nps.EN2y[k];
 	}
-	memcpy (a->nps.lambda_d, a->nps.sigma2N, a->nps.msize * sizeof (double));
+	memcpy (a->nps.lambda_d, a->nps.sigma2N, a->nps.msize * sizeof (real));
 }
 
 void aepf(EMNR a)
 {
 	int k, m;
 	int N, n;
-	double sumPre, sumPost, zeta, zetaT;
+	real sumPre, sumPost, zeta, zetaT;
 	sumPre = 0.0;
 	sumPost = 0.0;
 	for (k = 0; k < a->ae.msize; k++)
@@ -679,17 +679,17 @@ void aepf(EMNR a)
 		a->ae.nmask[k] = 0.0;
 		for (m = k - n; m <= (k + n); m++)
 			a->ae.nmask[k] += a->mask[m];
-		a->ae.nmask[k] /= (double)N;
+		a->ae.nmask[k] /= (real)N;
 	}
-	memcpy (a->mask + n, a->ae.nmask, (a->ae.msize - 2 * n) * sizeof (double));
+	memcpy (a->mask + n, a->ae.nmask, (a->ae.msize - 2 * n) * sizeof (real));
 }
 
-double getKey(double* type, double gamma, double xi)
+real getKey(real* type, real gamma, real xi)
 {
 	int ngamma1, ngamma2, nxi1, nxi2;
-	double tg, tx, dg, dx;
-	const double dmin = 0.001;
-	const double dmax = 1000.0;
+	real tg, tx, dg, dx;
+	const real dmin = 0.001;
+	const real dmax = 1000.0;
 	if (gamma <= dmin)
 	{
 		ngamma1 = ngamma2 = 0;
@@ -750,7 +750,7 @@ void calc_gain (EMNR a)
 	{
 	case 0:
 		{
-			double gamma, eps_hat, v;
+			real gamma, eps_hat, v;
 			for (k = 0; k < a->msize; k++)
 			{
 				gamma = min (a->g.lambda_y[k] / a->g.lambda_d[k], a->g.gamma_max);
@@ -760,10 +760,10 @@ void calc_gain (EMNR a)
 				a->g.mask[k] = a->g.gf1p5 * sqrt (v) / gamma * exp (- 0.5 * v)
 					* ((1.0 + v) * bessI0 (0.5 * v) + v * bessI1 (0.5 * v));
 				{
-					double v2 = min (v, 700.0);
-					double eta = a->g.mask[k] * a->g.mask[k] * a->g.lambda_y[k] / a->g.lambda_d[k];
-					double eps = eta / (1.0 - a->g.q);
-					double witchHat = (1.0 - a->g.q) / a->g.q * exp (v2) / (1.0 + eps);
+					real v2 = min (v, 700.0);
+					real eta = a->g.mask[k] * a->g.mask[k] * a->g.lambda_y[k] / a->g.lambda_d[k];
+					real eps = eta / (1.0 - a->g.q);
+					real witchHat = (1.0 - a->g.q) / a->g.q * exp (v2) / (1.0 + eps);
 					a->g.mask[k] *= witchHat / (1.0 + witchHat);
 				}
 				if (a->g.mask[k] > a->g.gmax) a->g.mask[k] = a->g.gmax;
@@ -775,7 +775,7 @@ void calc_gain (EMNR a)
 		}
 	case 1:
 		{
-			double gamma, eps_hat, v, ehr;
+			real gamma, eps_hat, v, ehr;
 			for (k = 0; k < a->g.msize; k++)
 			{
 				gamma = min (a->g.lambda_y[k] / a->g.lambda_d[k], a->g.gamma_max);
@@ -792,7 +792,7 @@ void calc_gain (EMNR a)
 		}
 	case 2:
 		{
-			double gamma, eps_hat, eps_p;
+			real gamma, eps_hat, eps_p;
 			for (k = 0; k < a->msize; k++)
 			{
 				gamma = min(a->g.lambda_y[k] / a->g.lambda_d[k], a->g.gamma_max);
@@ -814,7 +814,7 @@ void xemnr (EMNR a, int pos)
 	if (a->run && pos == a->position)
 	{
 		int i, j, k, sbuff, sbegin;
-		double g1;
+		real g1;
 		for (i = 0; i < 2 * a->bsize; i += 2)
 		{
 			a->inaccum[a->iainidx] = a->in[i];
@@ -864,7 +864,7 @@ void xemnr (EMNR a, int pos)
 		memcpy (a->out, a->in, a->bsize * sizeof (complex));
 }
 
-void setBuffers_emnr (EMNR a, double* in, double* out)
+void setBuffers_emnr (EMNR a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -939,7 +939,7 @@ void SetRXAEMNRPosition (int channel, int position)
 }
 
 PORT
-void SetRXAEMNRaeZetaThresh (int channel, double zetathresh)
+void SetRXAEMNRaeZetaThresh (int channel, real zetathresh)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].emnr.p->ae.zetaThresh = zetathresh;
@@ -947,7 +947,7 @@ void SetRXAEMNRaeZetaThresh (int channel, double zetathresh)
 }
 
 PORT
-void SetRXAEMNRaePsi (int channel, double psi)
+void SetRXAEMNRaePsi (int channel, real psi)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].emnr.p->ae.psi = psi;

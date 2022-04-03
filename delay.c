@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #include "comm.h"
 
-DELAY create_delay (int run, int size, double* in, double* out, int rate, double tdelta, double tdelay)
+DELAY create_delay (int run, int size, real* in, real* out, int rate, real tdelta, real tdelay)
 {
 	DELAY a = (DELAY) malloc0 (sizeof (delay));
 	a->run = run;
@@ -36,9 +36,9 @@ DELAY create_delay (int run, int size, double* in, double* out, int rate, double
 	a->rate = rate;
 	a->tdelta = tdelta;
 	a->tdelay = tdelay;
-	a->L = (int)(0.5 + 1.0 / (a->tdelta * (double)a->rate));
+	a->L = (int)(0.5 + 1.0 / (a->tdelta * (real)a->rate));
 	a->adelta = 1.0 / (a->rate * a->L);
-	a->ft = 0.45 / (double)a->L;
+	a->ft = 0.45 / (real)a->L;
 	a->ncoef = (int)(60.0 / a->ft);
 	a->ncoef = (a->ncoef / a->L + 1) * a->L;
 	a->cpp = a->ncoef / a->L;
@@ -47,9 +47,9 @@ DELAY create_delay (int run, int size, double* in, double* out, int rate, double
 	a->phnum %= a->L;
 	a->idx_in = 0;
 	a->adelay = a->adelta * (a->snum * a->L + a->phnum);
-	a->h = fir_bandpass (a->ncoef,-a->ft, +a->ft, 1.0, 1, 0, (double)a->L);	
+	a->h = fir_bandpass (a->ncoef,-a->ft, +a->ft, 1.0, 1, 0, (real)a->L);	
 	a->rsize = a->cpp + (WSDEL - 1);
-	a->ring = (double *) malloc0 (a->rsize * sizeof (complex));
+	a->ring = (real *) malloc0 (a->rsize * sizeof (complex));
 	InitializeCriticalSectionAndSpinCount ( &a->cs_update, 2500 );
 	return a;
 }
@@ -74,7 +74,7 @@ void xdelay (DELAY a)
 	if (a->run)
 	{
 		int i, j, k, idx, n;
-		double Itmp, Qtmp;
+		real Itmp, Qtmp;
 		for (i = 0; i < a->size; i++)
 		{
 			a->ring[2 * a->idx_in + 0] = a->in[2 * i + 0];
@@ -111,9 +111,9 @@ void SetDelayRun (DELAY a, int run)
 	LeaveCriticalSection (&a->cs_update);
 }
 
-double SetDelayValue (DELAY a, double tdelay)
+real SetDelayValue (DELAY a, real tdelay)
 {
-	double adelay;
+	real adelay;
 	EnterCriticalSection (&a->cs_update);
 	a->tdelay = tdelay;
 	a->phnum = (int)(0.5 + a->tdelay / a->adelta);
@@ -125,7 +125,7 @@ double SetDelayValue (DELAY a, double tdelay)
 	return adelay;
 }
 
-void SetDelayBuffs (DELAY a, int size, double* in, double* out)
+void SetDelayBuffs (DELAY a, int size, real* in, real* out)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->size = size;

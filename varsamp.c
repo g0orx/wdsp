@@ -28,9 +28,9 @@ warren@wpratt.com
 
 void calc_varsamp (VARSAMP a)
 {
-	double min_rate, max_rate, norm_rate;
-	double fc_norm_high, fc_norm_low;
-	a->nom_ratio = (double)a->out_rate / (double)a->in_rate;
+	real min_rate, max_rate, norm_rate;
+	real fc_norm_high, fc_norm_low;
+	a->nom_ratio = (real)a->out_rate / (real)a->in_rate;
 	a->cvar = a->var * a->nom_ratio;
 	a->inv_cvar = 1.0 / a->cvar;
 	a->old_inv_cvar = a->inv_cvar;
@@ -39,14 +39,14 @@ void calc_varsamp (VARSAMP a)
 	a->fc = a->fcin;
 	if (a->out_rate >= a->in_rate)
 	{
-		min_rate = (double)a->in_rate;
-		max_rate = (double)a->out_rate;
+		min_rate = (real)a->in_rate;
+		max_rate = (real)a->out_rate;
 		norm_rate = min_rate;
 	}
 	else
 	{
-		min_rate = (double)a->out_rate;
-		max_rate = (double)a->in_rate;
+		min_rate = (real)a->out_rate;
+		max_rate = (real)a->in_rate;
 		norm_rate = max_rate;
 	}
 	if (a->fc == 0.0) a->fc = 0.95 * 0.45 * min_rate;
@@ -58,12 +58,12 @@ void calc_varsamp (VARSAMP a)
 	a->rsize = (int)(140.0 * norm_rate / min_rate);
 	a->ncoef = a->rsize + 1;
 	a->ncoef += (a->R - 1) * (a->ncoef - 1);
-	a->h = fir_bandpass(a->ncoef, fc_norm_low, fc_norm_high, (double)a->R, 1, 0, (double)a->R * a->gain);
+	a->h = fir_bandpass(a->ncoef, fc_norm_low, fc_norm_high, (real)a->R, 1, 0, (real)a->R * a->gain);
 	// print_impulse ("imp.txt", a->ncoef, a->h, 0, 0);
-	a->ring = (double *)malloc0(a->rsize * sizeof(complex));
+	a->ring = (real *)malloc0(a->rsize * sizeof(complex));
 	a->idx_in = a->rsize - 1;
 	a->h_offset = 0.0;
-	a->hs = (double *)malloc0 (a->rsize * sizeof (double));
+	a->hs = (real *)malloc0 (a->rsize * sizeof (real));
 	a->isamps = 0.0;
 }
 
@@ -74,8 +74,8 @@ void decalc_varsamp (VARSAMP a)
 	_aligned_free (a->h);
 }
 
-VARSAMP create_varsamp ( int run, int size, double* in, double* out, 
-	int in_rate, int out_rate, double fc, double fc_low, int R, double gain, double var, int varmode)
+VARSAMP create_varsamp ( int run, int size, real* in, real* out, 
+	int in_rate, int out_rate, real fc, real fc_low, int R, real gain, real var, int varmode)
 {
 	VARSAMP a = (VARSAMP) malloc0 (sizeof (varsamp));
 	
@@ -113,15 +113,15 @@ void hshift (VARSAMP a)
 {
 	int i, j, k;
 	int hidx;
-	double frac, pos;
-	pos = (double)a->R * a->h_offset;
+	real frac, pos;
+	pos = (real)a->R * a->h_offset;
 	hidx = (int)(pos);
-	frac = pos - (double)hidx;
+	frac = pos - (real)hidx;
 	for (i = a->rsize - 1, j = hidx, k = hidx + 1; i >= 0; i--, j += a->R, k += a->R)
 		a->hs[i] = a->h[j] + frac * (a->h[k] - a->h[j]);
 }
 
-int xvarsamp (VARSAMP a, double var)
+int xvarsamp (VARSAMP a, real var)
 {
 	int outsamps = 0;
 	unsigned _int64* picvar;
@@ -132,7 +132,7 @@ int xvarsamp (VARSAMP a, double var)
 	a->inv_cvar = 1.0 / a->cvar;
 	if (a->varmode) 
 	{
-		a->dicvar = (a->inv_cvar - a->old_inv_cvar) / (double)a->size;
+		a->dicvar = (a->inv_cvar - a->old_inv_cvar) / (real)a->size;
 		a->inv_cvar = a->old_inv_cvar;
 	}
 	else            a->dicvar = 0.0;
@@ -140,7 +140,7 @@ int xvarsamp (VARSAMP a, double var)
 	{
 		int i, j;
 		int idx_out;
-		double I, Q;
+		real I, Q;
 		for (i = 0; i < a->size; i++)
 		{
 			a->ring[2 * a->idx_in + 0] = a->in[2 * i + 0];
@@ -148,7 +148,7 @@ int xvarsamp (VARSAMP a, double var)
 			a->inv_cvar += a->dicvar;
 			picvar = (unsigned _int64*)(&a->inv_cvar);
 			N = *picvar & 0xffffffffffff0000;
-			a->inv_cvar = *((double *)&N);
+			a->inv_cvar = *((real *)&N);
 			a->delta = 1.0 - a->inv_cvar;
 			while (a->isamps < 1.0)
 			{
@@ -178,7 +178,7 @@ int xvarsamp (VARSAMP a, double var)
 	return outsamps;
 }
 
-void setBuffers_varsamp (VARSAMP a, double* in, double* out)
+void setBuffers_varsamp (VARSAMP a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -204,7 +204,7 @@ void setOutRate_varsamp (VARSAMP a, int rate)
 	calc_varsamp (a);
 }
 
-void setFCLow_varsamp (VARSAMP a, double fc_low)
+void setFCLow_varsamp (VARSAMP a, real fc_low)
 {
 	if (fc_low != a->fc_low)
 	{
@@ -214,7 +214,7 @@ void setFCLow_varsamp (VARSAMP a, double fc_low)
 	}
 }
 
-void setBandwidth_varsamp (VARSAMP a, double fc_low, double fc_high)
+void setBandwidth_varsamp (VARSAMP a, real fc_low, real fc_high)
 {
 	if (fc_low != a->fc_low || fc_high != a->fcin)
 	{
@@ -234,7 +234,7 @@ void* create_varsampV (int in_rate, int out_rate, int R)
 }
 
 PORT
-void xvarsampV (double* input, double* output, int numsamps, double var, int* outsamps, void* ptr)
+void xvarsampV (real* input, real* output, int numsamps, real var, int* outsamps, void* ptr)
 {
 	VARSAMP a = (VARSAMP)ptr;
 	a->in = input;

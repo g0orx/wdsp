@@ -37,28 +37,28 @@ typedef struct _resample
 {
 	int run;			// run
 	int size;			// number of input samples per buffer
-	double* in;			// input buffer for resampler
-	double* out;		// output buffer for resampler
+	real* in;			// input buffer for resampler
+	real* out;		// output buffer for resampler
 	int in_rate;
 	int out_rate;
-	double fcin;
-	double fc;
-	double fc_low;
-	double gain;
+	real fcin;
+	real fc;
+	real fc_low;
+	real gain;
 	int idx_in;			// index for input into ring
 	int ncoefin;
 	int ncoef;			// number of coefficients
 	int L;				// interpolation factor
 	int M;				// decimation factor
-	double* h;			// coefficients
+	real* h;			// coefficients
 	int ringsize;		// number of complex pairs the ring buffer holds
-	double* ring;		// ring buffer
+	real* ring;		// ring buffer
 	int cpp;			// coefficients of the phase
 	int phnum;			// phase number
 } resample, *RESAMPLE;
 
 __declspec (dllexport)
-RESAMPLE create_resample (int run, int size, double* in, double* out, int in_rate, int out_rate, double fc, int ncoef, double gain);
+RESAMPLE create_resample (int run, int size, real* in, real* out, int in_rate, int out_rate, real fc, int ncoef, real gain);
 
 __declspec (dllexport)
 void destroy_resample (RESAMPLE a);
@@ -69,7 +69,7 @@ void flush_resample (RESAMPLE a);
 __declspec (dllexport)
 int xresample (RESAMPLE a);
 
-extern void setBuffers_resample (RESAMPLE a, double* in, double* out);
+extern void setBuffers_resample (RESAMPLE a, real* in, real* out);
 
 extern void setSize_resample(RESAMPLE a, int size);
 
@@ -77,9 +77,9 @@ extern void setInRate_resample(RESAMPLE a, int rate);
 
 extern void setOutRate_resample(RESAMPLE a, int rate);
 
-extern void setFCLow_resample (RESAMPLE a, double fc_low);
+extern void setFCLow_resample (RESAMPLE a, real fc_low);
 
-extern void setBandwidth_resample (RESAMPLE a, double fc_low, double fc_high);
+extern void setBandwidth_resample (RESAMPLE a, real fc_low, real fc_high);
 
 #endif
 
@@ -102,9 +102,9 @@ typedef struct _resampleF
 	int ncoef;			// number of coefficients
 	int L;				// interpolation factor
 	int M;				// decimation factor
-	double* h;			// coefficients
+	real* h;			// coefficients
 	int ringsize;		// number of values the ring buffer holds
-	double* ring;		// ring buffer
+	real* ring;		// ring buffer
 	int cpp;			// coefficients of the phase
 	int phnum;			// phase number
 } resampleF, *RESAMPLEF;

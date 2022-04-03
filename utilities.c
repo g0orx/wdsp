@@ -67,7 +67,7 @@ DestroyCriticalSection (LPCRITICAL_SECTION cs_ptr)
 *																										*
 ********************************************************************************************************/
 
-void print_impulse (const char* filename, int N, double* impulse, int rtype, int pr_mode)
+void print_impulse (const char* filename, int N, real* impulse, int rtype, int pr_mode)
 {
 	int i;
 	FILE* file;
@@ -87,10 +87,10 @@ void print_impulse (const char* filename, int N, double* impulse, int rtype, int
 }
 
 PORT
-void analyze_bandpass_filter (int N, double f_low, double f_high, double samplerate, int wintype, int rtype, double scale)
+void analyze_bandpass_filter (int N, real f_low, real f_high, real samplerate, int wintype, int rtype, real scale)
 {
-	double* linphase_imp = (double *) malloc0 (N * sizeof (complex));
-	double* minphase_imp = (double *) malloc0 (N * sizeof (complex));
+	real* linphase_imp = (real *) malloc0 (N * sizeof (complex));
+	real* minphase_imp = (real *) malloc0 (N * sizeof (complex));
 	linphase_imp = fir_bandpass (N, f_low, f_high, samplerate, wintype, rtype, scale);
 	mp_imp (N, linphase_imp, minphase_imp, 16, 0);
 	print_impulse ("linear_phase_impulse.txt",  N, linphase_imp, 1, 0);
@@ -99,11 +99,11 @@ void analyze_bandpass_filter (int N, double f_low, double f_high, double sampler
 	_aligned_free (linphase_imp);
 }
 
-void print_peak_val (const char* filename, int N, double* buff, double thresh)
+void print_peak_val (const char* filename, int N, real* buff, real thresh)
 {
 	int i;
 	static unsigned int seqnum;
-	double peak = 0.0;
+	real peak = 0.0;
 	FILE* file;
 	for (i = 0; i < N; i++)
 		if (buff[i] > peak) peak = buff[i];
@@ -117,12 +117,12 @@ void print_peak_val (const char* filename, int N, double* buff, double thresh)
 	seqnum++;
 }
 
-void print_peak_env (const char* filename, int N, double* buff, double thresh)
+void print_peak_env (const char* filename, int N, real* buff, real thresh)
 {
 	int i;
 	static unsigned int seqnum;
-	double peak = 0.0;
-	double new_peak;
+	real peak = 0.0;
+	real new_peak;
 	FILE* file;
 	for (i = 0; i < N; i++)
 	{
@@ -142,8 +142,8 @@ void print_peak_env (const char* filename, int N, double* buff, double thresh)
 void print_peak_env_f2 (const char* filename, int N, float* Ibuff, float* Qbuff)
 {
 	int i;
-	double peak = 0.0;
-	double new_peak;
+	real peak = 0.0;
+	real new_peak;
 	FILE* file = fopen (filename, "a");
 	for (i = 0; i < N; i++)
 	{
@@ -155,10 +155,10 @@ void print_peak_env_f2 (const char* filename, int N, float* Ibuff, float* Qbuff)
 	fclose (file);
 }
 
-void print_iqc_values (const char* filename, int state, double env_in, double I, double Q, double ym, double yc, double ys, double thresh)
+void print_iqc_values (const char* filename, int state, real env_in, real I, real Q, real ym, real yc, real ys, real thresh)
 {
 	static unsigned int seqnum;
-	double env_out;
+	real env_out;
 	FILE* file;
 	env_out = sqrt (I * I + Q * Q);
 	if (env_out > thresh)
@@ -201,7 +201,7 @@ void print_buffer_parameters (const char* filename, int channel)
 	fclose (file);
 }
 
-void print_meter (const char* filename, double* meter, int enum_av, int enum_pk, int enum_gain)
+void print_meter (const char* filename, real* meter, int enum_av, int enum_pk, int enum_gain)
 {
 	FILE* file = fopen (filename, "a");
 	if (enum_gain >= 0)
@@ -221,10 +221,10 @@ void print_message (const char* filename, const char* message, int p0, int p1, i
 	fclose (file);
 }
 
-void print_window_gain (const char* filename, int wintype, double inv_coherent_gain, double inherent_power_gain)
+void print_window_gain (const char* filename, int wintype, real inv_coherent_gain, real inherent_power_gain)
 {
 	FILE* file = fopen (filename, "a");
-	double enb = inherent_power_gain * inv_coherent_gain * inv_coherent_gain;
+	real enb = inherent_power_gain * inv_coherent_gain * inv_coherent_gain;
 	switch (wintype)
 	{
 	case 0:
@@ -253,10 +253,10 @@ void print_window_gain (const char* filename, int wintype, double inv_coherent_g
 	fclose (file);
 }
 
-void print_deviation (const char* filename, double dpmax, double rate)
+void print_deviation (const char* filename, real dpmax, real rate)
 {
 	FILE* file = fopen (filename, "a");
-	double peak = dpmax * rate / TWOPI;
+	real peak = dpmax * rate / TWOPI;
 	fprintf (file, "Peak Dev = %.4f\n", peak);
 	fflush (file);
 	fclose (file);
@@ -265,7 +265,7 @@ void print_deviation (const char* filename, double dpmax, double rate)
 void __cdecl CalccPrintSamples (void *pargs)
 {
 	int i;
-	double env_tx, env_rx;
+	real env_tx, env_rx;
 	int channel = (int)pargs;
 	CALCC a = txa[channel].calcc.p;
 	FILE* file = fopen("samples.txt", "w");
@@ -334,7 +334,7 @@ void WriteAudioFile(void* arg)
 	_endthread();
 }
 
-void WriteAudioWDSP (double seconds, int rate, int size, double* indata, int mode, double gain)
+void WriteAudioWDSP (real seconds, int rate, int size, real* indata, int mode, real gain)
 {
 	// seconds - number of seconds of audio to record
 	// rate - sample rate
@@ -342,7 +342,7 @@ void WriteAudioWDSP (double seconds, int rate, int size, double* indata, int mod
 	// indata - pointer to data
 	static int n;
 	int i;
-	const double conv = 2147483647.0 * gain;
+	const real conv = 2147483647.0 * gain;
 	if (!ready)
 	{
 		if (mode < 3)
@@ -386,15 +386,15 @@ void WriteScaledAudioFile (void* arg)
 	typedef struct
 	{
 		int n;
-		double* ddata;
+		real* ddata;
 	} *dstr;
 	dstr dstruct = (dstr)arg;
 
 	FILE* file = fopen("AudioFile", "wb");
 	int i;
-	double max = 0.0;
-	double abs_val;
-	const double conv = 2147483647.0;
+	real max = 0.0;
+	real abs_val;
+	const real conv = 2147483647.0;
 	int *idata = (int *) malloc0 (dstruct->n * sizeof (int));
 
 	for (i = 0; i < dstruct->n; i++)
@@ -417,16 +417,16 @@ void WriteScaledAudioFile (void* arg)
 }
 
 void WriteScaledAudio (
-	double seconds,			// number of seconds of audio to record
+	real seconds,			// number of seconds of audio to record
 	int rate,				// sample rate
 	int size,				// incoming buffer size
-	double* indata )		// pointer to incoming data buffer
+	real* indata )		// pointer to incoming data buffer
 {
 	static int ready;
 	typedef struct
 	{
 		int n;
-		double* ddata;
+		real* ddata;
 	} dstr, *DSTR;
 	static DSTR dstruct;
 
@@ -437,7 +437,7 @@ void WriteScaledAudio (
 	{
 		dstruct = (DSTR) malloc0 (sizeof (dstr));
 		dstruct->n = 2 * (int)(seconds * rate);
-		dstruct->ddata = (double *) malloc0 (dstruct->n * sizeof (double));
+		dstruct->ddata = (real *) malloc0 (dstruct->n * sizeof (real));
 		ready = 1;
 	}
 	for (i = 0; i < size; i++)

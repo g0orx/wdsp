@@ -28,7 +28,7 @@ warren@wpratt.com
 
 #define MAX_NR	(8)		// maximum number of receivers to mix
 
-MDIV create_div (int run, int nr, int size, double **in, double *out)
+MDIV create_div (int run, int nr, int size, real **in, real *out)
 {
 	int i;
 	MDIV a = (MDIV) malloc0 (sizeof (mdiv));
@@ -36,14 +36,14 @@ MDIV create_div (int run, int nr, int size, double **in, double *out)
 	a->nr = nr;
 	a->size = size;
 	a->out = out;
-	a->in = (double **) malloc0 ( MAX_NR * sizeof (double *));
+	a->in = (real **) malloc0 ( MAX_NR * sizeof (real *));
 	if (in != 0)
 		for (i = 0; i < nr; i++) a->in[i] = in[i];
-	a->Irotate = (double *) malloc0 (MAX_NR * sizeof (double));
-	a->Qrotate = (double *) malloc0 (MAX_NR * sizeof (double));
+	a->Irotate = (real *) malloc0 (MAX_NR * sizeof (real));
+	a->Qrotate = (real *) malloc0 (MAX_NR * sizeof (real));
 	InitializeCriticalSectionAndSpinCount (&a->cs_update, 2500);
 	for (i = 0; i < 4; i++)																					///////////// legacy interface - remove
-		a->legacy[i] = (double *) malloc0 (2048 * sizeof (complex));										///////////// legacy interface - remove
+		a->legacy[i] = (real *) malloc0 (2048 * sizeof (complex));										///////////// legacy interface - remove
 	return a;
 }
 
@@ -77,7 +77,7 @@ void xdiv (MDIV a)
 		else
 		{
 			int i, j;
-			double I, Q;
+			real I, Q;
 			memset (a->out, 0, a->size * sizeof (complex));
 			for (i = 0; i < a->nr; i++)
 				for (j = 0; j < a->size; j++)
@@ -123,7 +123,7 @@ void flush_divEXT (int id)
 }
 
 PORT
-void xdivEXT (int id, int nsamples, double **in, double *out)
+void xdivEXT (int id, int nsamples, real **in, real *out)
 {
 	int i;
 	MDIV a = pdiv[id];
@@ -177,12 +177,12 @@ void SetEXTDIVOutput (int id, int output)
 // I and Q "rotate" multipliers for each receiver
 //	can be set to 1.0 and 0.0 for "reference receiver"
 PORT
-void SetEXTDIVRotate (int id, int nr, double *Irotate, double *Qrotate)
+void SetEXTDIVRotate (int id, int nr, real *Irotate, real *Qrotate)
 {
 	MDIV a = pdiv[id];
 	EnterCriticalSection (&a->cs_update);
-	memcpy (a->Irotate, Irotate, nr * sizeof (double));
-	memcpy (a->Qrotate, Qrotate, nr * sizeof (double));
+	memcpy (a->Irotate, Irotate, nr * sizeof (real));
+	memcpy (a->Qrotate, Qrotate, nr * sizeof (real));
 	LeaveCriticalSection (&a->cs_update);
 }
 
@@ -203,8 +203,8 @@ void xdivEXTF (int id, int size, float **input, float *Iout, float *Qout)
 		{
 			for (j = 0; j < a->size; j++)
 			{
-				a->legacy[i][2 * j + 0] = (double)input[2 * i + 0][j];
-				a->legacy[i][2 * j + 1] = (double)input[2 * i + 1][j];
+				a->legacy[i][2 * j + 0] = (real)input[2 * i + 0][j];
+				a->legacy[i][2 * j + 1] = (real)input[2 * i + 1][j];
 			}
 			a->in[i] = a->legacy[i];
 		}

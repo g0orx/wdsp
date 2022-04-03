@@ -32,7 +32,7 @@ warren@pratt.one
 typedef struct _syncb
 {
 	void (*exf)(void);							// pointer to function to execute after output buffer is filled
-	double** out;								// pointer to array of output buffers
+	real** out;								// pointer to array of output buffers
 	int nstreams;								// number of streams of data being buffered
 	int   max_in_size;							// max input number of complex samples
 	int   max_outsize;							// max output number of complex samples
@@ -41,9 +41,9 @@ typedef struct _syncb
 	int   r1_size;								// size of a single maximum sized transfer
 	int   r1_active_buffsize;					// size of ring (in complex samples)
 	
-	double** r1_baseptr;						// array of pointers, one to each ring
-	int   r1_inidx;								// in 'double', actual index into the buffer is 2 times this
-	int   r1_outidx;							// in 'double', actual index into the buffer is 2 times this
+	real** r1_baseptr;						// array of pointers, one to each ring
+	int   r1_inidx;								// in 'real', actual index into the buffer is 2 times this
+	int   r1_outidx;							// in 'real', actual index into the buffer is 2 times this
 	int   r1_unqueuedsamps;						// number of input samples not yet queued/released for execution
 	volatile long run;							// when 1, thread loops; when 0, thread terminates
 	volatile long accept;						// flag indicating whether accepting input data
@@ -52,13 +52,13 @@ typedef struct _syncb
 	CRITICAL_SECTION csIN;						// used to block input while parameters are updated or buffers flushed
 } syncb, *SYNCB;
 
-extern SYNCB create_syncbuffs (int accept, int nstreams, int max_insize, int max_outsize, int outsize, double** out, void (*exf)(void));
+extern SYNCB create_syncbuffs (int accept, int nstreams, int max_insize, int max_outsize, int outsize, real** out, void (*exf)(void));
 
 extern void destroy_syncbuffs (SYNCB a);
 
 extern void flush_syncbuffs (SYNCB a);
 
-extern void Syncbound (SYNCB a, int nsamples, double** in);	
+extern void Syncbound (SYNCB a, int nsamples, real** in);	
 
 extern void syncbdata (SYNCB a);
 
@@ -85,12 +85,12 @@ typedef struct _dumfilt
 	int opsize;									// number of complex samples exchanged per call
 	int inidx;									// input index into ring (complex samples)
 	int outidx;									// output index from ring (complex samples)
-	double* in;									// pointer to input buffer  (may be same as output buffer)
-	double* out;								// pointer to output buffer  (may be same as input buffer)
-	double* ring;								// pointer to ring buffer
+	real* in;									// pointer to input buffer  (may be same as output buffer)
+	real* out;								// pointer to output buffer  (may be same as input buffer)
+	real* ring;								// pointer to ring buffer
 } dumfilt, *DUMFILT;
 
-extern DUMFILT create_dumfilt (int run, int delay, int opsize, double* in, double* out);
+extern DUMFILT create_dumfilt (int run, int delay, int opsize, real* in, real* out);
 
 extern void destroy_dumfilt (DUMFILT a);
 

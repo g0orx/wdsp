@@ -39,14 +39,14 @@ typedef struct _iob
 	int   r1_active_buffsize;					// size of input pseudo-ring (in complex samples)
 	int   r2_active_buffsize;					// size of output pseudo-ring (in complex samples)
 	
-	double* r1_baseptr;							// pointer to input pseudo-ring
-	int   r1_inidx;								// in 'double', actual index into the buffer is 2 times this
-	int   r1_outidx;							// in 'double', actual index into the buffer is 2 times this
+	real* r1_baseptr;							// pointer to input pseudo-ring
+	int   r1_inidx;								// in 'real', actual index into the buffer is 2 times this
+	int   r1_outidx;							// in 'real', actual index into the buffer is 2 times this
 	int   r1_unqueuedsamps;						// number of input samples not yet queued/released for execution
 
-	double* r2_baseptr;							// pointer to output pseudo-ring
-	int   r2_inidx;								// in 'double', actual index into the buffer is 2 times this
-	int   r2_outidx;							// in 'double', actual index into the buffer is 2 times this
+	real* r2_baseptr;							// pointer to output pseudo-ring
+	int   r2_inidx;								// in 'real', actual index into the buffer is 2 times this
+	int   r2_outidx;							// in 'real', actual index into the buffer is 2 times this
 	int   r2_havesamps;							// number of processed samples in output pseudo-ring
 	int   r2_unqueuedsamps;						// number of output samples not yet queued / released for output
 	CRITICAL_SECTION r2_ControlSection;
@@ -63,10 +63,10 @@ typedef struct _iob
 		int dcount;
 		int ndelup;
 		int ntup;
-		double* cup;
+		real* cup;
 		int ndeldown;
 		int ntdown;
-		double* cdown;
+		real* cdown;
 		volatile long upflag;
 		volatile long downflag;
 	} slew;
@@ -84,12 +84,12 @@ extern void destroy_iobuffs (int channel);
 
 extern void flush_iobuffs (int channel);
 
-PORT	// double, interleaved I/Q
-void fexchange0 (int channel, double* in, double* out, int* error);	
+PORT	// real, interleaved I/Q
+void fexchange0 (int channel, real* in, real* out, int* error);	
 
 PORT	// separate I/Q buffers
 extern void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTREAL *Qout, int* error);
 
-extern void dexchange (int channel, double* in, double* out);
+extern void dexchange (int channel, real* in, real* out);
 
 #endif

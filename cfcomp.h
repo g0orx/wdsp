@@ -32,27 +32,27 @@ typedef struct _cfcomp
 	int run;
 	int position;
 	int bsize;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int fsize;
 	int ovrlp;
 	int incr;
-	double* window;
+	real* window;
 	int iasize;
-	double* inaccum;
-	double* forfftin;
-	double* forfftout;
+	real* inaccum;
+	real* forfftin;
+	real* forfftout;
 	int msize;
-	double* mask;
-	double* revfftin;
-	double* revfftout;
-	double** save;
+	real* mask;
+	real* revfftin;
+	real* revfftout;
+	real** save;
 	int oasize;
-	double* outaccum;
-	double rate;
+	real* outaccum;
+	real rate;
 	int wintype;
-	double pregain;
-	double postgain;
+	real pregain;
+	real postgain;
 	int nsamps;
 	int iainidx;
 	int iaoutidx;
@@ -65,28 +65,28 @@ typedef struct _cfcomp
 
 	int comp_method;
 	int nfreqs;
-	double* F;
-	double* G;
-	double* E;
-	double* fp;
-	double* gp;
-	double* ep;
-	double* comp;
-	double precomp;
-	double precomplin;
-	double* peq;
+	real* F;
+	real* G;
+	real* E;
+	real* fp;
+	real* gp;
+	real* ep;
+	real* comp;
+	real precomp;
+	real precomplin;
+	real* peq;
 	int peq_run;
-	double prepeq;
-	double prepeqlin;
-	double winfudge;
+	real prepeq;
+	real prepeqlin;
+	real winfudge;
 
-	double gain;
-	double mtau;
-	double mmult;
+	real gain;
+	real mtau;
+	real mmult;
 }cfcomp, *CFCOMP;
 
-extern CFCOMP create_cfcomp (int run, int position, int peq_run, int size, double* in, double* out, int fsize, int ovrlp, 
-	int rate, int wintype, int comp_method, int nfreqs, double precomp, double prepeq, double* F, double* G, double* E, double mtau);
+extern CFCOMP create_cfcomp (int run, int position, int peq_run, int size, real* in, real* out, int fsize, int ovrlp, 
+	int rate, int wintype, int comp_method, int nfreqs, real precomp, real prepeq, real* F, real* G, real* E, real mtau);
 
 extern void destroy_cfcomp (CFCOMP a);
 
@@ -94,7 +94,7 @@ extern void flush_cfcomp (CFCOMP a);
 
 extern void xcfcomp (CFCOMP a, int pos);
 
-extern void setBuffers_cfcomp (CFCOMP a, double* in, double* out);
+extern void setBuffers_cfcomp (CFCOMP a, real* in, real* out);
 
 extern void setSamplerate_cfcomp (CFCOMP a, int rate);
 

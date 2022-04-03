@@ -31,9 +31,9 @@ struct _rxa rxa[MAX_CHANNELS];
 void create_rxa (int channel)
 {
 	rxa[channel].mode = RXA_LSB;
-	rxa[channel].inbuff  = (double *) malloc0 (1 * ch[channel].dsp_insize  * sizeof (complex));
-	rxa[channel].outbuff = (double *) malloc0 (1 * ch[channel].dsp_outsize * sizeof (complex));
-	rxa[channel].midbuff = (double *) malloc0 (2 * ch[channel].dsp_size    * sizeof (complex));
+	rxa[channel].inbuff  = (real *) malloc0 (1 * ch[channel].dsp_insize  * sizeof (complex));
+	rxa[channel].outbuff = (real *) malloc0 (1 * ch[channel].dsp_outsize * sizeof (complex));
+	rxa[channel].midbuff = (real *) malloc0 (2 * ch[channel].dsp_size    * sizeof (complex));
 
 	// shift to select a slice of spectrum
 	rxa[channel].shift.p = create_shift (
@@ -256,9 +256,9 @@ void create_rxa (int channel)
 
 	// EQ
 	{
-	double default_F[11] = {0.0,  32.0,  63.0, 125.0, 250.0, 500.0, 1000.0, 2000.0, 4000.0, 8000.0, 16000.0};
-	//double default_G[11] = {0.0, -12.0, -12.0, -12.0,  -1.0,  +1.0,   +4.0,   +9.0,  +12.0,  -10.0,   -10.0};
-	double default_G[11] =   {0.0,   0.0,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0,    0.0,    0.0,     0.0};
+	real default_F[11] = {0.0,  32.0,  63.0, 125.0, 250.0, 500.0, 1000.0, 2000.0, 4000.0, 8000.0, 16000.0};
+	//real default_G[11] = {0.0, -12.0, -12.0, -12.0,  -1.0,  +1.0,   +4.0,   +9.0,  +12.0,  -10.0,   -10.0};
+	real default_G[11] =   {0.0,   0.0,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0,    0.0,    0.0,     0.0};
 	rxa[channel].eqp.p = create_eqp (
 		0,												// run - OFF by default
 		ch[channel].dsp_size,							// buffer size
@@ -426,9 +426,9 @@ void create_rxa (int channel)
 	// multiple peak filter
 	{
 		int def_enable[2] = {1, 1};
-		double def_freq[2] = {2125.0, 2295.0};
-		double def_bw[2] = {75.0, 75.0};
-		double def_gain[2] = {1.0, 1.0};
+		real def_freq[2] = {2125.0, 2295.0};
+		real def_bw[2] = {75.0, 75.0};
+		real def_gain[2] = {1.0, 1.0};
 		rxa[channel].mpeak.p = create_mpeak (
 			0,											// run
 			ch[channel].dsp_size,						// size
@@ -581,7 +581,7 @@ void setInputSamplerate_rxa (int channel)
 {
 	// buffers
 	_aligned_free (rxa[channel].inbuff);
-	rxa[channel].inbuff = (double *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
+	rxa[channel].inbuff = (real *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
 	// shift
 	setBuffers_shift (rxa[channel].shift.p, rxa[channel].inbuff, rxa[channel].inbuff);
 	setSize_shift (rxa[channel].shift.p, ch[channel].dsp_insize);
@@ -597,7 +597,7 @@ void setOutputSamplerate_rxa (int channel)
 {
 	// buffers
 	_aligned_free (rxa[channel].outbuff);
-	rxa[channel].outbuff = (double *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
+	rxa[channel].outbuff = (real *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
 	// output resampler
 	setBuffers_resample (rxa[channel].rsmpout.p, rxa[channel].midbuff, rxa[channel].outbuff);
 	setOutRate_resample (rxa[channel].rsmpout.p, ch[channel].out_rate);
@@ -608,9 +608,9 @@ void setDSPSamplerate_rxa (int channel)
 {
 	// buffers
 	_aligned_free (rxa[channel].inbuff);
-	rxa[channel].inbuff = (double *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
+	rxa[channel].inbuff = (real *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
 	_aligned_free (rxa[channel].outbuff);
-	rxa[channel].outbuff = (double *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
+	rxa[channel].outbuff = (real *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
 	// shift
 	setBuffers_shift (rxa[channel].shift.p, rxa[channel].inbuff, rxa[channel].inbuff);
 	setSize_shift (rxa[channel].shift.p, ch[channel].dsp_insize);
@@ -653,11 +653,11 @@ void setDSPBuffsize_rxa (int channel)
 {
 	// buffers
 	_aligned_free(rxa[channel].inbuff);
-	rxa[channel].inbuff = (double *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
+	rxa[channel].inbuff = (real *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
 	_aligned_free (rxa[channel].midbuff);
-	rxa[channel].midbuff = (double *)malloc0(2 * ch[channel].dsp_size * sizeof(complex));
+	rxa[channel].midbuff = (real *)malloc0(2 * ch[channel].dsp_size * sizeof(complex));
 	_aligned_free (rxa[channel].outbuff);
-	rxa[channel].outbuff = (double *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
+	rxa[channel].outbuff = (real *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
 	// shift
 	setBuffers_shift (rxa[channel].shift.p, rxa[channel].inbuff, rxa[channel].inbuff);
 	setSize_shift (rxa[channel].shift.p, ch[channel].dsp_insize);
@@ -778,7 +778,7 @@ void RXAbp1Check (int channel, int amd_run, int snba_run,
 	int emnr_run, int anf_run, int anr_run)
 {
 	BANDPASS a = rxa[channel].bp1.p;
-	double gain;
+	real gain;
 	if (amd_run  ||
 		snba_run ||
 		emnr_run ||
@@ -808,7 +808,7 @@ void RXAbpsnbaCheck (int channel, int mode, int notch_run)
 	// for BPSNBA: set run, position, freqs, run_notches
 	// call this upon change in RXA_mode, snba_run, notch_master_run
 	BPSNBA a = rxa[channel].bpsnba.p;
-	double f_low = 0.0, f_high = 0.0;
+	real f_low = 0.0, f_high = 0.0;
 	int run_notches = 0;
 	switch (mode)
 	{
@@ -901,7 +901,7 @@ void RXAbpsnbaSet (int channel)
 ********************************************************************************************************/
 
 PORT
-void RXASetPassband (int channel, double f_low, double f_high)
+void RXASetPassband (int channel, real f_low, real f_high)
 {
 	SetRXABandpassFreqs			(channel, f_low, f_high);
 	SetRXASNBAOutputBandwidth	(channel, f_low, f_high);

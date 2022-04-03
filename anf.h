@@ -34,46 +34,46 @@ typedef struct _anf
 	int run;
 	int position;
 	int buff_size;
-	double *in_buff;
-	double *out_buff;
+	real *in_buff;
+	real *out_buff;
 	int dline_size;
 	int mask;
 	int n_taps;
 	int delay;
-	double two_mu;
-	double gamma;
-	double d [ANF_DLINE_SIZE];
-	double w [ANF_DLINE_SIZE];
+	real two_mu;
+	real gamma;
+	real d [ANF_DLINE_SIZE];
+	real w [ANF_DLINE_SIZE];
 	int in_idx;
 
-	double lidx;
-	double lidx_min;
-	double lidx_max;
-	double ngamma;
-	double den_mult;
-	double lincr;
-	double ldecr;
+	real lidx;
+	real lidx_min;
+	real lidx_max;
+	real ngamma;
+	real den_mult;
+	real lincr;
+	real ldecr;
 } anf, *ANF;
 
 extern ANF create_anf	(
 				int run,
 				int position,
 				int buff_size,
-				double *in_buff,
-				double *out_buff,
+				real *in_buff,
+				real *out_buff,
 				int dline_size,
 				int n_taps,
 				int delay,
-				double two_mu,
-				double gamma,
+				real two_mu,
+				real gamma,
 
-				double lidx,
-				double lidx_min,
-				double lidx_max,
-				double ngamma,
-				double den_mult,
-				double lincr,
-				double ldecr
+				real lidx,
+				real lidx_min,
+				real lidx_max,
+				real ngamma,
+				real den_mult,
+				real lincr,
+				real ldecr
 			);
 
 extern void destroy_anf (ANF a);
@@ -82,7 +82,7 @@ extern void flush_anf (ANF a);
 
 extern void xanf (ANF a, int position);
 
-extern void setBuffers_anf (ANF a, double* in, double* out);
+extern void setBuffers_anf (ANF a, real* in, real* out);
 
 extern void setSamplerate_anf (ANF a, int rate);
 
@@ -92,15 +92,15 @@ extern void setSize_anf (ANF a, int size);
 
 extern __declspec (dllexport) void SetRXAANFRun (int channel, int setit);
 
-extern __declspec (dllexport) void SetRXAANFVals (int channel, int taps, int delay, double gain, double leakage);
+extern __declspec (dllexport) void SetRXAANFVals (int channel, int taps, int delay, real gain, real leakage);
 
 extern __declspec (dllexport) void SetRXAANFTaps (int channel, int taps);
 
 extern __declspec (dllexport) void SetRXAANFDelay (int channel, int delay);
 
-extern __declspec (dllexport) void SetRXAANFGain (int channel, double gain);
+extern __declspec (dllexport) void SetRXAANFGain (int channel, real gain);
 
-extern __declspec (dllexport) void SetRXAANFLeakage (int channel, double leakage);
+extern __declspec (dllexport) void SetRXAANFLeakage (int channel, real leakage);
 
 extern __declspec (dllexport) void SetRXAANFPosition (int channel, int position);
 

@@ -29,13 +29,13 @@ warren@wpratt.com
 void build_window (SIPHON a)
 {
 	int i;
-	double arg0, cosphi;
-	double sum, scale;
-	arg0 = 2.0 * PI / ((double)a->fftsize - 1.0);
+	real arg0, cosphi;
+	real sum, scale;
+	arg0 = 2.0 * PI / ((real)a->fftsize - 1.0);
 	sum = 0.0;
 	for (i = 0; i < a->fftsize; i++)
 	{
-		cosphi = cos (arg0 * (double)i);
+		cosphi = cos (arg0 * (real)i);
 		a->window[i] =	+ 6.3964424114390378e-02
 		  + cosphi *  ( - 2.3993864599352804e-01
 		  + cosphi *  ( + 3.5015956323820469e-01
@@ -51,7 +51,7 @@ void build_window (SIPHON a)
 }
 
 SIPHON create_siphon (int run, int position, int mode, int disp, int insize, 
-	double* in, int sipsize, int fftsize, int specmode)
+	real* in, int sipsize, int fftsize, int specmode)
 {
 	SIPHON a = (SIPHON) malloc0 (sizeof (siphon));
 	a->run = run;
@@ -63,12 +63,12 @@ SIPHON create_siphon (int run, int position, int mode, int disp, int insize,
 	a->sipsize = sipsize;	// NOTE:  sipsize MUST BE A POWER OF TWO!!
 	a->fftsize = fftsize;
 	a->specmode = specmode;
-	a->sipbuff = (double *) malloc0 (a->sipsize * sizeof (complex));
+	a->sipbuff = (real *) malloc0 (a->sipsize * sizeof (complex));
 	a->idx = 0;
-	a->sipout  = (double *) malloc0 (a->sipsize * sizeof (complex));
-	a->specout = (double *) malloc0 (a->fftsize * sizeof (complex));
+	a->sipout  = (real *) malloc0 (a->sipsize * sizeof (complex));
+	a->specout = (real *) malloc0 (a->fftsize * sizeof (complex));
 	a->sipplan = fftw_plan_dft_1d (a->fftsize, (fftw_complex *)a->sipout, (fftw_complex *)a->specout, FFTW_FORWARD, FFTW_PATIENT);
-	a->window  = (double *) malloc0 (a->fftsize * sizeof (complex));
+	a->window  = (real *) malloc0 (a->fftsize * sizeof (complex));
 	InitializeCriticalSectionAndSpinCount(&a->update, 2500);
 	build_window (a);
 	return a;
@@ -129,7 +129,7 @@ void xsiphon (SIPHON a, int pos)
 	LeaveCriticalSection(&a->update);
 }
 
-void setBuffers_siphon (SIPHON a, double* in)
+void setBuffers_siphon (SIPHON a, real* in)
 {
 	a->in = in;
 }
@@ -299,15 +299,15 @@ void TXAGetSpecF1 (int channel, float* out)
 		// swap the halves of the spectrum
 		for (i = 0, j = mid; i < mid; i++, j++)
 		{
-			out[i] = (float)(10.0 * mlog10 (a->specout[2 * j + 0] * a->specout[2 * j + 0] + a->specout[2 * j + 1] * a->specout[2 * j + 1] + 1.0e-60));
-			out[j] = (float)(10.0 * mlog10 (a->specout[2 * i + 0] * a->specout[2 * i + 0] + a->specout[2 * i + 1] * a->specout[2 * i + 1] + 1.0e-60));
+			out[i] = (float)(10.0 * mlog10 (a->specout[2 * j + 0] * a->specout[2 * j + 0] + a->specout[2 * j + 1] * a->specout[2 * j + 1] + REAL_EPSILON));
+			out[j] = (float)(10.0 * mlog10 (a->specout[2 * i + 0] * a->specout[2 * i + 0] + a->specout[2 * i + 1] * a->specout[2 * i + 1] + REAL_EPSILON));
 		}
 	else
 		// mirror each half of the spectrum in-place
 		for (i = 0, j = mid - 1, m = mid, n = a->fftsize - 1; i < mid; i++, j--, m++, n--)
 		{
-			out[i] = (float)(10.0 * mlog10 (a->specout[2 * j + 0] * a->specout[2 * j + 0] + a->specout[2 * j + 1] * a->specout[2 * j + 1] + 1.0e-60));
-			out[m] = (float)(10.0 * mlog10 (a->specout[2 * n + 0] * a->specout[2 * n + 0] + a->specout[2 * n + 1] * a->specout[2 * n + 1] + 1.0e-60));
+			out[i] = (float)(10.0 * mlog10 (a->specout[2 * j + 0] * a->specout[2 * j + 0] + a->specout[2 * j + 1] * a->specout[2 * j + 1] + REAL_EPSILON));
+			out[m] = (float)(10.0 * mlog10 (a->specout[2 * n + 0] * a->specout[2 * n + 0] + a->specout[2 * n + 1] * a->specout[2 * n + 1] + REAL_EPSILON));
 		}
 }
 
@@ -340,7 +340,7 @@ void flush_siphonEXT (int id)
 }
 
 PORT
-void xsiphonEXT (int id, double* buff)
+void xsiphonEXT (int id, real* buff)
 {
 	SIPHON a = psiphon[id];
 	a->in = buff;

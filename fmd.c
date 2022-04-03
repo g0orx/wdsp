@@ -52,16 +52,16 @@ void decalc_fmd (FMD a)
 	destroy_snotch(a->sntch);
 }
 
-FMD create_fmd( int run, int size, double* in, double* out, int rate, double deviation, double f_low, double f_high, 
-	double fmin, double fmax, double zeta, double omegaN, double tau, double afgain, int sntch_run, double ctcss_freq, int nc_de, int mp_de, int nc_aud, int mp_aud)
+FMD create_fmd( int run, int size, real* in, real* out, int rate, real deviation, real f_low, real f_high, 
+	real fmin, real fmax, real zeta, real omegaN, real tau, real afgain, int sntch_run, real ctcss_freq, int nc_de, int mp_de, int nc_aud, int mp_aud)
 {
 	FMD a = (FMD) malloc0 (sizeof (fmd));
-	double* impulse;
+	real* impulse;
 	a->run = run;
 	a->size = size;
 	a->in = in;
 	a->out = out;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->deviation = deviation;
 	a->f_low = f_low;
 	a->f_high = f_high;
@@ -79,7 +79,7 @@ FMD create_fmd( int run, int size, double* in, double* out, int rate, double dev
 	a->mp_aud = mp_aud;
 	calc_fmd (a);
 	// de-emphasis filter
-	a->audio = (double *) malloc0 (a->size * sizeof (complex));
+	a->audio = (real *) malloc0 (a->size * sizeof (complex));
 	impulse = fc_impulse (a->nc_de, a->f_low, a->f_high, +20.0 * log10(a->f_high / a->f_low), 0.0, 1, a->rate, 1.0 / (2.0 * a->size), 0, 0);
 	a->pde = create_fircore (a->size, a->audio, a->out, a->nc_de, a->mp_de, impulse);
 	_aligned_free (impulse);
@@ -116,8 +116,8 @@ void xfmd (FMD a)
 	if (a->run)
 	{
 		int i;
-		double det, del_out;
-		double vco[2], corr[2];
+		real det, del_out;
+		real vco[2], corr[2];
 		for (i = 0; i < a->size; i++)
 		{
 			// pll
@@ -151,7 +151,7 @@ void xfmd (FMD a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_fmd (FMD a, double* in, double* out)
+void setBuffers_fmd (FMD a, real* in, real* out)
 {
 	decalc_fmd (a);
 	a->in = in;
@@ -163,7 +163,7 @@ void setBuffers_fmd (FMD a, double* in, double* out)
 
 void setSamplerate_fmd (FMD a, int rate)
 {
-	double* impulse;
+	real* impulse;
 	decalc_fmd (a);
 	a->rate = rate;
 	calc_fmd (a);
@@ -179,12 +179,12 @@ void setSamplerate_fmd (FMD a, int rate)
 
 void setSize_fmd (FMD a, int size)
 {
-	double* impulse;
+	real* impulse;
 	decalc_fmd (a);
 	_aligned_free (a->audio);
 	a->size = size;
 	calc_fmd (a);
-	a->audio = (double *) malloc0 (a->size * sizeof (complex));
+	a->audio = (real *) malloc0 (a->size * sizeof (complex));
 	// de-emphasis filter
 	destroy_fircore (a->pde);
 	impulse = fc_impulse (a->nc_de, a->f_low, a->f_high, +20.0 * log10(a->f_high / a->f_low), 0.0, 1, a->rate, 1.0 / (2.0 * a->size), 0, 0);
@@ -204,7 +204,7 @@ void setSize_fmd (FMD a, int size)
 ********************************************************************************************************/
 
 PORT
-void SetRXAFMDeviation (int channel, double deviation)
+void SetRXAFMDeviation (int channel, real deviation)
 {
 	FMD a;
 	EnterCriticalSection (&ch[channel].csDSP);
@@ -215,7 +215,7 @@ void SetRXAFMDeviation (int channel, double deviation)
 }
 
 PORT
-void SetRXACTCSSFreq (int channel, double freq)
+void SetRXACTCSSFreq (int channel, real freq)
 {
 	FMD a;
 	EnterCriticalSection (&ch[channel].csDSP);
@@ -240,7 +240,7 @@ PORT
 void SetRXAFMNCde (int channel, int nc)
 {
 	FMD a;
-	double* impulse;
+	real* impulse;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = rxa[channel].fmd.p;
 	if (a->nc_de != nc)
@@ -269,7 +269,7 @@ PORT
 void SetRXAFMNCaud (int channel, int nc)
 {
 	FMD a;
-	double* impulse;
+	real* impulse;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = rxa[channel].fmd.p;
 	if (a->nc_aud != nc)

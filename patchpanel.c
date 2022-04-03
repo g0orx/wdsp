@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #include "comm.h"
 
-PANEL create_panel (int channel, int run, int size, double* in, double* out, double gain1, double gain2I, double gain2Q, int inselect, int copy)
+PANEL create_panel (int channel, int run, int size, real* in, real* out, real gain1, real gain2I, real gain2Q, int inselect, int copy)
 {
 	PANEL a = (PANEL) malloc0 (sizeof (panel));
 	a->channel = channel;
@@ -55,9 +55,9 @@ void flush_panel (PANEL a)
 void xpanel (PANEL a)
 {
 	int i;
-	double I, Q;
-	double gainI = a->gain1 * a->gain2I;
-	double gainQ = a->gain1 * a->gain2Q;
+	real I, Q;
+	real gainI = a->gain1 * a->gain2I;
+	real gainQ = a->gain1 * a->gain2Q;
 	// inselect is either 0(neither), 1(Q), 2(I), or 3(both)
 	switch (a->copy)
 	{
@@ -100,7 +100,7 @@ void xpanel (PANEL a)
 	}
 }
 
-void setBuffers_panel (PANEL a, double* in, double* out)
+void setBuffers_panel (PANEL a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -139,7 +139,7 @@ void SetRXAPanelSelect (int channel, int select)
 }
 
 PORT
-void SetRXAPanelGain1 (int channel, double gain)
+void SetRXAPanelGain1 (int channel, real gain)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].panel.p->gain1 = gain;
@@ -147,7 +147,7 @@ void SetRXAPanelGain1 (int channel, double gain)
 }
 
 PORT
-void SetRXAPanelGain2 (int channel, double gainI, double gainQ)
+void SetRXAPanelGain2 (int channel, real gainI, real gainQ)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].panel.p->gain2I = gainI;
@@ -156,9 +156,9 @@ void SetRXAPanelGain2 (int channel, double gainI, double gainQ)
 }
 
 PORT
-void SetRXAPanelPan (int channel, double pan)
+void SetRXAPanelPan (int channel, real pan)
 {
-	double gain1, gain2;
+	real gain1, gain2;
 	EnterCriticalSection (&ch[channel].csDSP);
 	if (pan <= 0.5)
 	{
@@ -206,7 +206,7 @@ void SetTXAPanelRun (int channel, int run)
 }
 
 PORT
-void SetTXAPanelGain1 (int channel, double gain)
+void SetTXAPanelGain1 (int channel, real gain)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].panel.p->gain1 = gain;

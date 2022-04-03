@@ -32,9 +32,9 @@ in the January 2010 issue of RadCom magazine.
 COMPRESSOR create_compressor (
 				int run,
 				int buffsize,
-				double* inbuff,
-				double* outbuff,
-				double gain )
+				real* inbuff,
+				real* outbuff,
+				real gain )
 {
 	COMPRESSOR a;
 	a = (COMPRESSOR) malloc0 (sizeof (compressor));
@@ -59,7 +59,7 @@ void flush_compressor (COMPRESSOR a)
 void xcompressor (COMPRESSOR a)
 {
 	int i;
-	double mag;
+	real mag;
 	if (a->run)
 		for (i = 0; i < a->buffsize; i++)
 		{
@@ -74,7 +74,7 @@ void xcompressor (COMPRESSOR a)
 		memcpy(a->outbuff, a->inbuff, a->buffsize * sizeof (complex));
 }
 
-void setBuffers_compressor (COMPRESSOR a, double* in, double* out)
+void setBuffers_compressor (COMPRESSOR a, real* in, real* out)
 {
 	a->inbuff = in;
 	a->outbuff = out;
@@ -109,7 +109,7 @@ SetTXACompressorRun (int channel, int run)
 }
 
 PORT void
-SetTXACompressorGain (int channel, double gain)
+SetTXACompressorGain (int channel, real gain)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].compressor.p->gain = pow (10.0, gain / 20.0);

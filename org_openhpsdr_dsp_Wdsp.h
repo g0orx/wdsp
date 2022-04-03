@@ -115,7 +115,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_WDSPwisdom
  * Signature: (IIIIIIIIDDDDI)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_OpenChannel
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jdouble, jdouble, jdouble, jdouble, jint);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jreal, jreal, jreal, jreal, jint);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -139,7 +139,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetChannelState
  * Signature: (I[D[D[I)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_fexchange0
-  (JNIEnv *, jobject, jint, jdoubleArray, jdoubleArray, jintArray);
+  (JNIEnv *, jobject, jint, jrealArray, jrealArray, jintArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -155,7 +155,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_fexchange2
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCMaxInputLevel
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -171,7 +171,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAShiftRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAShiftFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -195,7 +195,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenMode
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenToneMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -203,7 +203,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenToneMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenToneFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -211,7 +211,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenToneFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenNoiseMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -219,7 +219,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenNoiseMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenSweepMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -227,7 +227,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenSweepMag
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenSweepFreq
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -235,14 +235,14 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenSweepFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPreGenSweepRate
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
  * Method:    GetRXAMeter
  * Signature: (II)D
  */
-JNIEXPORT jdouble JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAMeter
+JNIEXPORT jreal JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAMeter
   (JNIEnv *, jobject, jint, jint);
 
 /*
@@ -275,7 +275,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPSetNotchesRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPGetMinNotchWidth
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -291,7 +291,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPSetAutoIncrease
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPSetTuneFrequency
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -299,7 +299,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPSetTuneFrequency
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPSetShiftFrequency
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -315,7 +315,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPGetNumNotches
  * Signature: (IIDDI)I
  */
 JNIEXPORT jint JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPAddNotch
-  (JNIEnv *, jobject, jint, jint, jdouble, jdouble, jint);
+  (JNIEnv *, jobject, jint, jint, jreal, jreal, jint);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -323,7 +323,7 @@ JNIEXPORT jint JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPAddNotch
  * Signature: (IIDDI)I
  */
 JNIEXPORT jint JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPGetNotch
-  (JNIEnv *, jobject, jint, jint, jdouble, jdouble, jint);
+  (JNIEnv *, jobject, jint, jint, jreal, jreal, jint);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -339,7 +339,7 @@ JNIEXPORT jint JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPDeleteNotch
  * Signature: (IIDDI)I
  */
 JNIEXPORT jint JNICALL Java_org_openhpsdr_dsp_Wdsp_RXANBPEditNotch
-  (JNIEnv *, jobject, jint, jint, jdouble, jdouble, jint);
+  (JNIEnv *, jobject, jint, jint, jreal, jreal, jint);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -363,7 +363,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAMSQRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXAAMSQThreshold
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -371,7 +371,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXAAMSQThreshold
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAMSQMaxTail
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -395,7 +395,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAMDFadeLevel
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAFMDeviation
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -411,7 +411,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXACTCSSRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXACTCSSFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -427,7 +427,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAFMSQRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAFMSQThreshold
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -467,7 +467,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAEQCtfmode
  * Signature: (IIDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAEQProfile
-  (JNIEnv *, jobject, jint, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -507,7 +507,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCHang
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAAGCHangLevel
-  (JNIEnv *, jobject, jint, jdoubleArray);
+  (JNIEnv *, jobject, jint, jrealArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -515,7 +515,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAAGCHangLevel
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCHangLevel
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -539,7 +539,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCHangThreshold
  * Signature: (IDDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAAGCThresh
-  (JNIEnv *, jobject, jint, jdoubleArray, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jrealArray, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -547,7 +547,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAAGCThresh
  * Signature: (IDDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCThresh
-  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -555,7 +555,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCThresh
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAAGCTop
-  (JNIEnv *, jobject, jint, jdoubleArray);
+  (JNIEnv *, jobject, jint, jrealArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -563,7 +563,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_GetRXAAGCTop
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCTop
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -579,7 +579,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCSlope
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAAGCFixed
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -611,7 +611,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANFDelay
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANFGain
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -619,7 +619,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANFGain
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANFLeakage
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -627,7 +627,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANFLeakage
  * Signature: (IIIDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANFVals
-  (JNIEnv *, jobject, jint, jint, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -667,7 +667,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANRDelay
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANRGain
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -675,7 +675,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANRGain
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANRLeakage
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -683,7 +683,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANRLeakage
  * Signature: (IIIDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAANRVals
-  (JNIEnv *, jobject, jint, jint, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -771,7 +771,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXASPCWRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXASPCWFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -779,7 +779,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXASPCWFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXASPCWBandwidth
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -787,7 +787,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXASPCWBandwidth
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXASPCWGain
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -819,7 +819,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAmpeakFilEnable
  * Signature: (IID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAmpeakFilFreq
-  (JNIEnv *, jobject, jint, jint, jdouble);
+  (JNIEnv *, jobject, jint, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -827,7 +827,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAmpeakFilFreq
  * Signature: (IID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAmpeakFilBw
-  (JNIEnv *, jobject, jint, jint, jdouble);
+  (JNIEnv *, jobject, jint, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -835,7 +835,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAmpeakFilBw
  * Signature: (IID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAmpeakFilGain
-  (JNIEnv *, jobject, jint, jint, jdouble);
+  (JNIEnv *, jobject, jint, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -859,7 +859,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPanelSelect
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPanelGain1
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -867,7 +867,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPanelGain1
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPanelGain2
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -875,7 +875,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPanelGain2
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAPanelPan
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -907,7 +907,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetRXAMode
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_RXASetPassband
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -947,7 +947,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenMode
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenToneMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -955,7 +955,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenToneMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenToneFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -963,7 +963,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenToneFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenNoiseMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -971,7 +971,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenNoiseMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSweepMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -979,7 +979,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSweepMag
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSweepFreq
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -987,7 +987,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSweepFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSweepRate
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -995,7 +995,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSweepRate
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSawtoothMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1003,7 +1003,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSawtoothMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSawtoothFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1011,7 +1011,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenSawtoothFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenTriangleMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1019,7 +1019,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenTriangleMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenTriangleFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1027,7 +1027,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenTriangleFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1035,7 +1035,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1043,7 +1043,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseDutyCycle
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1051,7 +1051,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseDutyCycle
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseToneFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1059,7 +1059,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseToneFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPreGenPulseTransition
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1083,7 +1083,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenMode
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenToneMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1091,7 +1091,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenToneMag
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenToneFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1099,7 +1099,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenToneFreq
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenTTMag
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1107,7 +1107,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenTTMag
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenTTFreq
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1115,7 +1115,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenTTFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenSweepMag
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1123,7 +1123,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenSweepMag
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenSweepFreq
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1131,7 +1131,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenSweepFreq
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPostGenSweepRate
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1155,7 +1155,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPanelSelect
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPanelGain1
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1171,7 +1171,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAAMSQRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAAMSQMutedGain
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1179,7 +1179,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAAMSQMutedGain
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAAMSQThreshold
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1211,7 +1211,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAEQCtfmode
  * Signature: (IIDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAEQProfile
-  (JNIEnv *, jobject, jint, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1251,7 +1251,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXALevelerDecay
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXALevelerTop
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1267,7 +1267,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPHROTRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAPHROTCorner
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1291,7 +1291,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPRun
  * Signature: (IIDDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPprofile
-  (JNIEnv *, jobject, jint, jint, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jreal, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1299,7 +1299,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPprofile
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPPrecomp
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1315,7 +1315,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPPeqRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPPrePeq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1323,7 +1323,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACFCOMPPrePeq
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXABandpassFreqs
-  (JNIEnv *, jobject, jint, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1347,7 +1347,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACompressorRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACompressorGain
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1387,7 +1387,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAALCDecay
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAALCMaxGain
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1395,7 +1395,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAALCMaxGain
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAAMCarrierLevel
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1403,7 +1403,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAAMCarrierLevel
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXAFMDeviation
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1419,7 +1419,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACTCSSRun
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetTXACTCSSFreq
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1523,7 +1523,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_DestroyAnalyzer
  * Signature: (IIII[IIIIDIIIIIIIDDI)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetAnalyzer
-  (JNIEnv *, jobject, jint, jint, jint, jint, jintArray, jint, jint, jint, jdouble, jint, jint, jint, jint, jint, jint, jint, jdouble, jdouble, jint);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jintArray, jint, jint, jint, jreal, jint, jint, jint, jint, jint, jint, jint, jreal, jreal, jint);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1531,7 +1531,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetAnalyzer
  * Signature: (III[D)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetCalibration
-  (JNIEnv *, jobject, jint, jint, jint, jdoubleArray);
+  (JNIEnv *, jobject, jint, jint, jint, jrealArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1563,7 +1563,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetDisplayNumAverage
  * Signature: (IID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetDisplayAvBackmult
-  (JNIEnv *, jobject, jint, jint, jdouble);
+  (JNIEnv *, jobject, jint, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1587,7 +1587,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetDisplayNormOneHz
  * Signature: (IIIID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_Spectrum2
-  (JNIEnv *, jobject, jint, jint, jint, jint, jdoubleArray);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jrealArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1595,7 +1595,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_Spectrum2
  * Signature: (IIIID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_Spectrum0
-  (JNIEnv *, jobject, jint, jint, jint, jint, jdoubleArray);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jrealArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1603,7 +1603,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_Spectrum0
  * Signature: (IIIDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_Spectrum
-  (JNIEnv *, jobject, jint, jint, jint, jdoubleArray, jdoubleArray);
+  (JNIEnv *, jobject, jint, jint, jint, jrealArray, jrealArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1619,7 +1619,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_GetPixels
  * Signature: (IIDDDDDDDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_create_anb
-  (JNIEnv *, jobject, jint, jint, jdoubleArray, jdoubleArray, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jrealArray, jrealArray, jreal, jreal, jreal, jreal, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1627,7 +1627,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_create_anb
  * Signature: (IIDDDIDDDDDDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_create_nob
-  (JNIEnv *, jobject, jint, jint, jdoubleArray, jdoubleArray, jdouble, jint, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jrealArray, jrealArray, jreal, jint, jreal, jreal, jreal, jreal, jreal, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1635,7 +1635,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_create_nob
  * Signature: (IIIIDDDDDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_create_nobEXT
-  (JNIEnv *, jobject, jint, jint, jint, jint, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jreal, jreal, jreal, jreal, jreal, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1659,7 +1659,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_flush_nobEXT
  * Signature: (IDD)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_xnobEXT
-  (JNIEnv *, jobject, jint, jdoubleArray, jdoubleArray);
+  (JNIEnv *, jobject, jint, jrealArray, jrealArray);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1699,7 +1699,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBBuffsize
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBTau
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1707,7 +1707,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBTau
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBHangtime
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1715,7 +1715,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBHangtime
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBAdvtime
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1723,7 +1723,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBAdvtime
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBBacktau
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 /*
  * Class:     org_openhpsdr_dsp_Wdsp
@@ -1731,7 +1731,7 @@ JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTNOBBacktau
  * Signature: (ID)V
  */
 JNIEXPORT void JNICALL Java_org_openhpsdr_dsp_Wdsp_SetEXTANBNOBThreshold
-  (JNIEnv *, jobject, jint, jdouble);
+  (JNIEnv *, jobject, jint, jreal);
 
 #ifdef __cplusplus
 }

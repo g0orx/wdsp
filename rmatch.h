@@ -38,7 +38,7 @@ typedef struct _mav
 	int i;
 	int load;
 	int sum;
-	double nom_value;
+	real nom_value;
 } mav, *MAV;
 
 typedef struct _aamav
@@ -51,55 +51,55 @@ typedef struct _aamav
 	int load;
 	int pos;
 	int neg;
-	double nom_ratio;
+	real nom_ratio;
 } aamav, *AAMAV;
 
 typedef struct _rmatch
 {
 	volatile long run;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int insize;
 	int outsize;
-	double* resout;
+	real* resout;
 	int nom_inrate;
 	int nom_outrate;
-	double nom_ratio;
-	double inv_nom_ratio;
-	double fc_high;
-	double fc_low;
-	double gain;
-	double startup_delay;
+	real nom_ratio;
+	real inv_nom_ratio;
+	real fc_high;
+	real fc_low;
+	real gain;
+	real startup_delay;
 	int auto_ringsize;
 	int ringsize;
 	int rsize;
-	double* ring;
+	real* ring;
 	int n_ring;
 	int iin;
 	int iout;
-	double var;
+	real var;
 	int R;
 	AAMAV ffmav;
 	MAV propmav;
 	int ff_ringmin;
 	int ff_ringmax;			// must be a power of two
-	double ff_alpha;
-	double feed_forward;
+	real ff_alpha;
+	real feed_forward;
 	int prop_ringmin;
 	int prop_ringmax;		// must be a power of two
-	double prop_gain;
-	double pr_gain;
-	double av_deviation;
+	real prop_gain;
+	real pr_gain;
+	real av_deviation;
 	VARSAMP v;
 	int varmode;
 	CRITICAL_SECTION cs_ring;
 	CRITICAL_SECTION cs_var;
 	// blend / slew
-	double tslew;
+	real tslew;
 	int ntslew;
-	double* cslew;
-	double* baux;
-	double dlast[2];
+	real* cslew;
+	real* baux;
+	real dlast[2];
 	int ucnt;
 	// variables to check start-up time for control to become active
 	unsigned int readsamps;
@@ -111,16 +111,16 @@ typedef struct _rmatch
 	volatile long underflows;
 	volatile long overflows;
 	int force;
-	double fvar;
+	real fvar;
 } rmatch, *RMATCH;
 
 extern __declspec (dllexport) void* create_rmatchV(int in_size, int out_size, int nom_inrate, int nom_outrate, int ringsize);
 
 extern __declspec (dllexport) void destroy_rmatchV (void* ptr);
 
-extern __declspec (dllexport) void xrmatchOUT (void* b, double* out);
+extern __declspec (dllexport) void xrmatchOUT (void* b, real* out);
 
-extern __declspec (dllexport) void xrmatchIN (void* b, double* in);
+extern __declspec (dllexport) void xrmatchIN (void* b, real* in);
 
 extern __declspec (dllexport) void setRMatchInsize (void* ptr, int insize);
 
@@ -132,10 +132,10 @@ extern __declspec (dllexport) void setRMatchNomOutrate (void* ptr, int nom_outra
 
 extern __declspec (dllexport) void setRMatchRingsize (void* ptr, int ringsize);
 
-extern __declspec (dllexport) void getRMatchDiags (void* b, int* underflows, int* overflows, double* var, int* ringsize);
+extern __declspec (dllexport) void getRMatchDiags (void* b, int* underflows, int* overflows, real* var, int* ringsize);
 
 extern __declspec (dllexport) void resetRMatchDiags (void* b);
 
-extern __declspec (dllexport) void forceRMatchVar (void* b, int force, double fvar);
+extern __declspec (dllexport) void forceRMatchVar (void* b, int force, real fvar);
 
 #endif

@@ -73,7 +73,7 @@ void calc_triangle (GEN a)
 void calc_pulse (GEN a)
 {
 	int i;
-	double delta, theta;
+	real delta, theta;
 	a->pulse.pperiod = 1.0 / a->pulse.pf;
 	a->pulse.tphs = 0.0;
 	a->pulse.tdelta = TWOPI * a->pulse.tf / a->rate;
@@ -85,8 +85,8 @@ void calc_pulse (GEN a)
 	if (a->pulse.pnoff < 0) a->pulse.pnoff = 0;
 	a->pulse.pcount = a->pulse.pnoff;
 	a->pulse.state = 0;
-	a->pulse.ctrans = (double *) malloc0 ((a->pulse.pntrans + 1) * sizeof (double));
-	delta = PI / (double)a->pulse.pntrans;
+	a->pulse.ctrans = (real *) malloc0 ((a->pulse.pntrans + 1) * sizeof (real));
+	delta = PI / (real)a->pulse.pntrans;
 	theta = 0.0;
 	for (i = 0; i <= a->pulse.pntrans; i++)
 	{
@@ -110,14 +110,14 @@ void decalc_gen (GEN a)
 	_aligned_free (a->pulse.ctrans);
 }
 
-GEN create_gen (int run, int size, double* in, double* out, int rate, int mode)
+GEN create_gen (int run, int size, real* in, real* out, int rate, int mode)
 {
 	GEN a = (GEN) malloc0 (sizeof (gen));
 	a->run = run;
 	a->size = size;
 	a->in = in;
 	a->out = out;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->mode = mode;
 	// tone
 	a->tone.mag = 1.0;
@@ -179,9 +179,9 @@ void xgen (GEN a)
 		case 0:	// tone
 			{
 				int i;
-				double t1, t2;
-				double cosphase = cos (a->tone.phs);
-				double sinphase = sin (a->tone.phs);
+				real t1, t2;
+				real cosphase = cos (a->tone.phs);
+				real sinphase = sin (a->tone.phs);
 				for (i = 0; i < a->size; i++)
 				{
 					a->out[2 * i + 0] = + a->tone.mag * cosphase;
@@ -199,11 +199,11 @@ void xgen (GEN a)
 		case 1:	// two-tone
 			{
 				int i;
-				double tcos, tsin;
-				double cosphs1 = cos (a->tt.phs1);
-				double sinphs1 = sin (a->tt.phs1);
-				double cosphs2 = cos (a->tt.phs2);
-				double sinphs2 = sin (a->tt.phs2);
+				real tcos, tsin;
+				real cosphs1 = cos (a->tt.phs1);
+				real sinphs1 = sin (a->tt.phs1);
+				real cosphs2 = cos (a->tt.phs2);
+				real sinphs2 = sin (a->tt.phs2);
 				for (i = 0; i < a->size; i++)
 				{
 					a->out[2 * i + 0] = + a->tt.mag1 * cosphs1 + a->tt.mag2 * cosphs2;
@@ -228,13 +228,13 @@ void xgen (GEN a)
 		case 2: // noise
 			{
 				int i;
-				double r1, r2, c, rad;
+				real r1, r2, c, rad;
 				for (i = 0; i < a->size; i++)
 				{
 					do
 					{
-						r1 = 2.0 * (double)rand() / (double)RAND_MAX - 1.0;
-						r2 = 2.0 * (double)rand() / (double)RAND_MAX - 1.0;
+						r1 = 2.0 * (real)rand() / (real)RAND_MAX - 1.0;
+						r2 = 2.0 * (real)rand() / (real)RAND_MAX - 1.0;
 						c = r1 * r1 + r2 * r2;
 					} while (c >= 1.0);
 					rad = sqrt (-2.0 * log (c) / c);
@@ -288,9 +288,9 @@ void xgen (GEN a)
 		case 6:  // pulse (audio only)
 			{
 				int i;
-				double t1, t2;
-				double cosphase = cos (a->pulse.tphs);
-				double sinphase = sin (a->pulse.tphs);
+				real t1, t2;
+				real cosphase = cos (a->pulse.tphs);
+				real sinphase = sin (a->pulse.tphs);
 				for (i = 0; i < a->size; i++)
 				{
 					if (a->pulse.pnoff != 0)
@@ -353,7 +353,7 @@ void xgen (GEN a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_gen (GEN a, double* in, double* out)
+void setBuffers_gen (GEN a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -398,7 +398,7 @@ void SetRXAPreGenMode (int channel, int mode)
 }
 
 PORT
-void SetRXAPreGenToneMag (int channel, double mag)
+void SetRXAPreGenToneMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].gen0.p->tone.mag = mag;
@@ -406,7 +406,7 @@ void SetRXAPreGenToneMag (int channel, double mag)
 }
 
 PORT
-void SetRXAPreGenToneFreq (int channel, double freq)
+void SetRXAPreGenToneFreq (int channel, real freq)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].gen0.p->tone.freq = freq;
@@ -415,7 +415,7 @@ void SetRXAPreGenToneFreq (int channel, double freq)
 }
 
 PORT
-void SetRXAPreGenNoiseMag (int channel, double mag)
+void SetRXAPreGenNoiseMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].gen0.p->noise.mag = mag;
@@ -423,7 +423,7 @@ void SetRXAPreGenNoiseMag (int channel, double mag)
 }
 
 PORT
-void SetRXAPreGenSweepMag (int channel, double mag)
+void SetRXAPreGenSweepMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].gen0.p->sweep.mag = mag;
@@ -431,7 +431,7 @@ void SetRXAPreGenSweepMag (int channel, double mag)
 }
 
 PORT
-void SetRXAPreGenSweepFreq (int channel, double freq1, double freq2)
+void SetRXAPreGenSweepFreq (int channel, real freq1, real freq2)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].gen0.p->sweep.f1 = freq1;
@@ -441,7 +441,7 @@ void SetRXAPreGenSweepFreq (int channel, double freq1, double freq2)
 }
 
 PORT
-void SetRXAPreGenSweepRate (int channel, double rate)
+void SetRXAPreGenSweepRate (int channel, real rate)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].gen0.p->sweep.sweeprate = rate;
@@ -475,7 +475,7 @@ void SetTXAPreGenMode (int channel, int mode)
 }
 
 PORT
-void SetTXAPreGenToneMag (int channel, double mag)
+void SetTXAPreGenToneMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->tone.mag = mag;
@@ -483,7 +483,7 @@ void SetTXAPreGenToneMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPreGenToneFreq (int channel, double freq)
+void SetTXAPreGenToneFreq (int channel, real freq)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->tone.freq = freq;
@@ -492,7 +492,7 @@ void SetTXAPreGenToneFreq (int channel, double freq)
 }
 
 PORT
-void SetTXAPreGenNoiseMag (int channel, double mag)
+void SetTXAPreGenNoiseMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->noise.mag = mag;
@@ -500,7 +500,7 @@ void SetTXAPreGenNoiseMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPreGenSweepMag (int channel, double mag)
+void SetTXAPreGenSweepMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->sweep.mag = mag;
@@ -508,7 +508,7 @@ void SetTXAPreGenSweepMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPreGenSweepFreq (int channel, double freq1, double freq2)
+void SetTXAPreGenSweepFreq (int channel, real freq1, real freq2)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->sweep.f1 = freq1;
@@ -518,7 +518,7 @@ void SetTXAPreGenSweepFreq (int channel, double freq1, double freq2)
 }
 
 PORT
-void SetTXAPreGenSweepRate (int channel, double rate)
+void SetTXAPreGenSweepRate (int channel, real rate)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->sweep.sweeprate = rate;
@@ -527,7 +527,7 @@ void SetTXAPreGenSweepRate (int channel, double rate)
 }
 
 PORT
-void SetTXAPreGenSawtoothMag (int channel, double mag)
+void SetTXAPreGenSawtoothMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->saw.mag = mag;
@@ -535,7 +535,7 @@ void SetTXAPreGenSawtoothMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPreGenSawtoothFreq (int channel, double freq)
+void SetTXAPreGenSawtoothFreq (int channel, real freq)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->saw.f = freq;
@@ -544,7 +544,7 @@ void SetTXAPreGenSawtoothFreq (int channel, double freq)
 }
 
 PORT
-void SetTXAPreGenTriangleMag (int channel, double mag)
+void SetTXAPreGenTriangleMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->tri.mag = mag;
@@ -552,7 +552,7 @@ void SetTXAPreGenTriangleMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPreGenTriangleFreq (int channel, double freq)
+void SetTXAPreGenTriangleFreq (int channel, real freq)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->tri.f = freq;
@@ -561,7 +561,7 @@ void SetTXAPreGenTriangleFreq (int channel, double freq)
 }
 
 PORT
-void SetTXAPreGenPulseMag (int channel, double mag)
+void SetTXAPreGenPulseMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->pulse.mag = mag;
@@ -569,7 +569,7 @@ void SetTXAPreGenPulseMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPreGenPulseFreq (int channel, double freq)
+void SetTXAPreGenPulseFreq (int channel, real freq)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->pulse.pf = freq;
@@ -578,7 +578,7 @@ void SetTXAPreGenPulseFreq (int channel, double freq)
 }
 
 PORT
-void SetTXAPreGenPulseDutyCycle (int channel, double dc)
+void SetTXAPreGenPulseDutyCycle (int channel, real dc)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->pulse.pdutycycle = dc;
@@ -587,7 +587,7 @@ void SetTXAPreGenPulseDutyCycle (int channel, double dc)
 }
 
 PORT
-void SetTXAPreGenPulseToneFreq (int channel, double freq)
+void SetTXAPreGenPulseToneFreq (int channel, real freq)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->pulse.tf = freq;
@@ -596,7 +596,7 @@ void SetTXAPreGenPulseToneFreq (int channel, double freq)
 }
 
 PORT
-void SetTXAPreGenPulseTransition (int channel, double transtime)
+void SetTXAPreGenPulseTransition (int channel, real transtime)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen0.p->pulse.ptranstime = transtime;
@@ -623,7 +623,7 @@ void SetTXAPostGenMode (int channel, int mode)
 }
 
 PORT
-void SetTXAPostGenToneMag (int channel, double mag)
+void SetTXAPostGenToneMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen1.p->tone.mag = mag;
@@ -631,7 +631,7 @@ void SetTXAPostGenToneMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPostGenToneFreq (int channel, double freq)
+void SetTXAPostGenToneFreq (int channel, real freq)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen1.p->tone.freq = freq;
@@ -640,7 +640,7 @@ void SetTXAPostGenToneFreq (int channel, double freq)
 }
 
 PORT
-void SetTXAPostGenTTMag (int channel, double mag1, double mag2)
+void SetTXAPostGenTTMag (int channel, real mag1, real mag2)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen1.p->tt.mag1 = mag1;
@@ -649,7 +649,7 @@ void SetTXAPostGenTTMag (int channel, double mag1, double mag2)
 }
 
 PORT
-void SetTXAPostGenTTFreq (int channel, double freq1, double freq2)
+void SetTXAPostGenTTFreq (int channel, real freq1, real freq2)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen1.p->tt.f1 = freq1;
@@ -659,7 +659,7 @@ void SetTXAPostGenTTFreq (int channel, double freq1, double freq2)
 }
 
 PORT
-void SetTXAPostGenSweepMag (int channel, double mag)
+void SetTXAPostGenSweepMag (int channel, real mag)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen1.p->sweep.mag = mag;
@@ -667,7 +667,7 @@ void SetTXAPostGenSweepMag (int channel, double mag)
 }
 
 PORT
-void SetTXAPostGenSweepFreq (int channel, double freq1, double freq2)
+void SetTXAPostGenSweepFreq (int channel, real freq1, real freq2)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen1.p->sweep.f1 = freq1;
@@ -677,7 +677,7 @@ void SetTXAPostGenSweepFreq (int channel, double freq1, double freq2)
 }
 
 PORT
-void SetTXAPostGenSweepRate (int channel, double rate)
+void SetTXAPostGenSweepRate (int channel, real rate)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].gen1.p->sweep.sweeprate = rate;

@@ -31,47 +31,47 @@ typedef struct _fmsq
 {
 	int run;							// 0 if squelch system is OFF; 1 if it's ON
 	int size;							// size of input/output buffers
-	double* insig;						// squelch input signal buffer
-	double* outsig;						// squelch output signal buffer
-	double* trigger;					// buffer used to trigger mute/unmute (may be same as input; matches timing of input buffer)
-	double rate;						// sample rate
-	double* noise;
-	double fc;							// corner frequency for sig / noise detection
-	double* pllpole;					// pointer to pole frequency of the fm demodulator pll
-	double F[4];
-	double G[4];
-	double avtau;						// time constant for averaging noise
-	double avm;						
-	double onem_avm;
-	double avnoise;
-	double longtau;						// time constant for long averaging
-	double longavm;
-	double onem_longavm;
-	double longnoise;
+	real* insig;						// squelch input signal buffer
+	real* outsig;						// squelch output signal buffer
+	real* trigger;					// buffer used to trigger mute/unmute (may be same as input; matches timing of input buffer)
+	real rate;						// sample rate
+	real* noise;
+	real fc;							// corner frequency for sig / noise detection
+	real* pllpole;					// pointer to pole frequency of the fm demodulator pll
+	real F[4];
+	real G[4];
+	real avtau;						// time constant for averaging noise
+	real avm;						
+	real onem_avm;
+	real avnoise;
+	real longtau;						// time constant for long averaging
+	real longavm;
+	real onem_longavm;
+	real longnoise;
 	int state;							// state machine control
 	int count;
-	double tup;
-	double tdown;
+	real tup;
+	real tdown;
 	int ntup;
 	int ntdown;
-	double* cup;
-	double* cdown;
-	double tail_thresh;
-	double unmute_thresh;
-	double min_tail;
-	double max_tail;
+	real* cup;
+	real* cdown;
+	real tail_thresh;
+	real unmute_thresh;
+	real min_tail;
+	real max_tail;
 	int ready;
-	double ramp;
-	double rstep;
-	double tdelay;
+	real ramp;
+	real rstep;
+	real tdelay;
 	int nc;
 	int mp;
 	FIRCORE p;
 } fmsq, *FMSQ;
 
-extern FMSQ create_fmsq (int run, int size, double* insig, double* outsig, double* trigger, int rate, double fc, 
-	double* pllpole, double tdelay, double avtau, double longtau, double tup, double tdown, double tail_thresh, 
-	double unmute_thresh, double min_tail, double max_tail, int nc, int mp);
+extern FMSQ create_fmsq (int run, int size, real* insig, real* outsig, real* trigger, int rate, real fc, 
+	real* pllpole, real tdelay, real avtau, real longtau, real tup, real tdown, real tail_thresh, 
+	real unmute_thresh, real min_tail, real max_tail, int nc, int mp);
 
 extern void destroy_fmsq (FMSQ a);
 
@@ -79,7 +79,7 @@ extern void flush_fmsq (FMSQ a);
 
 extern void xfmsq (FMSQ a);
 
-extern void setBuffers_fmsq (FMSQ a, double* in, double* out, double* trig);
+extern void setBuffers_fmsq (FMSQ a, real* in, real* out, real* trig);
 
 extern void setSamplerate_fmsq (FMSQ a, int rate);
 
@@ -87,7 +87,7 @@ extern void setSize_fmsq (FMSQ a, int size);
 
 // RXA Properties
 
-extern __declspec (dllexport) void SetRXAFMSQThreshold (int channel, double threshold);
+extern __declspec (dllexport) void SetRXAFMSQThreshold (int channel, real threshold);
 
 extern __declspec (dllexport) void SetRXAFMSQNC (int channel, int nc);
 

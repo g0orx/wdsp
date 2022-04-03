@@ -28,11 +28,11 @@ warren@wpratt.com
 
 void calc_fmsq (FMSQ a)
 {
-	double delta, theta;
-	double* impulse;
+	real delta, theta;
+	real* impulse;
 	int i;
 	// noise filter
-	a->noise = (double *)malloc0(2 * a->size * sizeof(complex));
+	a->noise = (real *)malloc0(2 * a->size * sizeof(complex));
 	a->F[0] = 0.0;
 	a->F[1] = a->fc;
 	a->F[2] = *a->pllpole;
@@ -54,16 +54,16 @@ void calc_fmsq (FMSQ a)
 	// level change
 	a->ntup   = (int)(a->tup   * a->rate);
 	a->ntdown = (int)(a->tdown * a->rate);
-	a->cup   = (double *)malloc0 ((a->ntup   + 1) * sizeof(double));
-	a->cdown = (double *)malloc0 ((a->ntdown + 1) * sizeof(double));
-	delta = PI / (double)a->ntup;
+	a->cup   = (real *)malloc0 ((a->ntup   + 1) * sizeof(real));
+	a->cdown = (real *)malloc0 ((a->ntdown + 1) * sizeof(real));
+	delta = PI / (real)a->ntup;
 	theta = 0.0;
 	for (i = 0; i <= a->ntup; i++)
 	{
 		a->cup[i] = 0.5 * (1.0 - cos(theta));
 		theta += delta;
 	}
-	delta = PI / (double)a->ntdown;
+	delta = PI / (real)a->ntdown;
 	theta = 0.0;
 	for (i = 0; i <= a->ntdown; i++)
 	{
@@ -85,9 +85,9 @@ void decalc_fmsq (FMSQ a)
 	_aligned_free(a->noise);
 }
 
-FMSQ create_fmsq (int run, int size, double* insig, double* outsig, double* trigger, int rate, double fc, 
-	double* pllpole, double tdelay, double avtau, double longtau, double tup, double tdown, double tail_thresh, 
-	double unmute_thresh, double min_tail, double max_tail, int nc, int mp)
+FMSQ create_fmsq (int run, int size, real* insig, real* outsig, real* trigger, int rate, real fc, 
+	real* pllpole, real tdelay, real avtau, real longtau, real tup, real tdown, real tail_thresh, 
+	real unmute_thresh, real min_tail, real max_tail, int nc, int mp)
 {
 	FMSQ a = (FMSQ) malloc0 (sizeof (fmsq));
 	a->run = run;
@@ -95,7 +95,7 @@ FMSQ create_fmsq (int run, int size, double* insig, double* outsig, double* trig
 	a->insig = insig;
 	a->outsig = outsig;
 	a->trigger = trigger;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->fc = fc;
 	a->pllpole = pllpole;
 	a->tdelay = tdelay;
@@ -143,7 +143,7 @@ void xfmsq (FMSQ a)
 	if (a->run)
 	{
 		int i;
-		double noise, lnlimit;
+		real noise, lnlimit;
 		xfircore (a->p);
 		for (i = 0; i < a->size; i++)
 		{
@@ -204,7 +204,7 @@ void xfmsq (FMSQ a)
 		memcpy (a->outsig, a->insig, a->size * sizeof (complex));
 }
 
-void setBuffers_fmsq (FMSQ a, double* in, double* out, double* trig)
+void setBuffers_fmsq (FMSQ a, real* in, real* out, real* trig)
 {
 	a->insig = in;
 	a->outsig = out;
@@ -241,7 +241,7 @@ void SetRXAFMSQRun (int channel, int run)
 }
 
 PORT
-void SetRXAFMSQThreshold (int channel, double threshold)
+void SetRXAFMSQThreshold (int channel, real threshold)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].fmsq.p->tail_thresh = threshold;
@@ -253,7 +253,7 @@ PORT
 void SetRXAFMSQNC (int channel, int nc)
 {
 	FMSQ a;
-	double* impulse;
+	real* impulse;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = rxa[channel].fmsq.p;
 	if (a->nc != nc)

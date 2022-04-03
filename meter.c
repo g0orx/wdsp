@@ -33,14 +33,14 @@ void calc_meter (METER a)
 	flush_meter(a);
 }
 
-METER create_meter (int run, int* prun, int size, double* buff, int rate, double tau_av, double tau_decay, double* result, CRITICAL_SECTION** pmtupdate, int enum_av, int enum_pk, int enum_gain, double* pgain)
+METER create_meter (int run, int* prun, int size, real* buff, int rate, real tau_av, real tau_decay, real* result, CRITICAL_SECTION** pmtupdate, int enum_av, int enum_pk, int enum_gain, real* pgain)
 {
 	METER a = (METER) malloc0 (sizeof (meter));
 	a->run = run;
 	a->prun = prun;
 	a->size = size;
 	a->buff = buff;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->tau_average = tau_av;
 	a->tau_peak_decay = tau_decay;
 	a->result = result;
@@ -83,8 +83,8 @@ void xmeter (METER a)
 	if (a->run && srun)
 	{
 		int i;
-		double smag;
-		double np = 0.0;
+		real smag;
+		real np = 0.0;
 		for (i = 0; i < a->size; i++)
 		{
 			smag = a->buff[2 * i + 0] * a->buff[2 * i + 0] + a->buff[2 * i + 1] * a->buff[2 * i + 1];
@@ -107,7 +107,7 @@ void xmeter (METER a)
 	LeaveCriticalSection (&a->mtupdate);
 }
 
-void setBuffers_meter (METER a, double* in)
+void setBuffers_meter (METER a, real* in)
 {
 	a->buff = in;
 }
@@ -131,9 +131,9 @@ void setSize_meter (METER a, int size)
 ********************************************************************************************************/
 
 PORT
-double GetRXAMeter (int channel, int mt)
+real GetRXAMeter (int channel, int mt)
 {
-	double val;
+	real val;
 	CRITICAL_SECTION* a = rxa[channel].pmtupdate[mt];
 	EnterCriticalSection (a);
 	val = rxa[channel].meter[mt];
@@ -148,9 +148,9 @@ double GetRXAMeter (int channel, int mt)
 ********************************************************************************************************/
 
 PORT
-double GetTXAMeter (int channel, int mt)
+real GetTXAMeter (int channel, int mt)
 {
-	double val;
+	real val;
 	CRITICAL_SECTION* a = txa[channel].pmtupdate[mt];
 	EnterCriticalSection (a);
 	val = txa[channel].meter[mt];

@@ -31,27 +31,27 @@ typedef struct _cbl
 {
 	int run;							//run
 	int buff_size;						//buffer size
-	double *in_buff;					//pointer to input buffer
-	double *out_buff;					//pointer to output buffer
+	real *in_buff;					//pointer to input buffer
+	real *out_buff;					//pointer to output buffer
 	int mode;
-	double sample_rate;					//sample rate
-	double prevIin;
-	double prevQin;
-	double prevIout;
-	double prevQout;
-	double tau;							//carrier removal time constant
-	double mtau;						//carrier removal multiplier
+	real sample_rate;					//sample rate
+	real prevIin;
+	real prevQin;
+	real prevIout;
+	real prevQout;
+	real tau;							//carrier removal time constant
+	real mtau;						//carrier removal multiplier
 } cbl, *CBL;
 
 extern CBL create_cbl
 	(
 	int run,
 	int buff_size,
-	double *in_buff,
-	double *out_buff,
+	real *in_buff,
+	real *out_buff,
 	int mode,
 	int sample_rate,
-	double tau
+	real tau
 	);
 
 extern void destroy_cbl (CBL a);
@@ -60,7 +60,7 @@ extern void flush_cbl (CBL a);
 
 extern void xcbl (CBL a);
 
-extern void setBuffers_cbl (CBL a, double* in, double* out);
+extern void setBuffers_cbl (CBL a, real* in, real* out);
 
 extern void setSamplerate_cbl (CBL a, int rate);
 

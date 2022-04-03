@@ -27,7 +27,7 @@ warren@wpratt.com
 #include "comm.h"
 
 PORT
-GAIN create_gain (int run, int* prun, int size, double* in, double* out, double Igain, double Qgain)
+GAIN create_gain (int run, int* prun, int size, real* in, real* out, real Igain, real Qgain)
 {
 	GAIN a = (GAIN) malloc0 (sizeof (gain));
 	a->run = run;
@@ -77,7 +77,7 @@ void xgain (GAIN a)
 	LeaveCriticalSection (&a->cs_update);
 }
 
-void setBuffers_gain (GAIN a, double* in, double* out)
+void setBuffers_gain (GAIN a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -100,7 +100,7 @@ void setSize_gain (GAIN a, int size)
 ********************************************************************************************************/
 
 PORT
-void pSetTXOutputLevel (GAIN a, double level)
+void pSetTXOutputLevel (GAIN a, real level)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->Igain = level;
