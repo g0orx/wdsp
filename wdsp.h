@@ -4,6 +4,12 @@
 extern "C" {
 #endif
 
+#if USE_FLOAT32
+typedef float real;
+#else
+typedef double real;
+#endif
+
 #define INREAL float
 #define OUTREAL float
 #define dINREAL float
