@@ -31,43 +31,43 @@ typedef struct _varsamp
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int in_rate;
 	int out_rate;
-	double fcin;
-	double fc;
-	double fc_low;
-	double gain;
+	real fcin;
+	real fc;
+	real fc_low;
+	real gain;
 	int idx_in;
 	int ncoef;
-	double* h;
+	real* h;
 	int rsize;
-	double* ring;
-	double var;
+	real* ring;
+	real var;
 	int varmode;
-	double cvar;
-	double inv_cvar;
-	double old_inv_cvar;
-	double dicvar;
-	double delta;
-	double* hs;
+	real cvar;
+	real inv_cvar;
+	real old_inv_cvar;
+	real dicvar;
+	real delta;
+	real* hs;
 	int R;
-	double h_offset;
-	double isamps;
-	double nom_ratio;
+	real h_offset;
+	real isamps;
+	real nom_ratio;
 } varsamp, *VARSAMP;
 
-extern VARSAMP create_varsamp ( int run, int size, double* in, double* out,  
-	int in_rate, int out_rate, double fc, double fc_low, int R, double gain, double var, int varmode);
+extern VARSAMP create_varsamp ( int run, int size, real* in, real* out,  
+	int in_rate, int out_rate, real fc, real fc_low, int R, real gain, real var, int varmode);
 
 extern void destroy_varsamp (VARSAMP a);
 
 extern void flush_varsamp (VARSAMP a);
 
-extern int xvarsamp (VARSAMP a, double var);
+extern int xvarsamp (VARSAMP a, real var);
 
-extern void setBuffers_varsamp (VARSAMP a, double* in, double* out);
+extern void setBuffers_varsamp (VARSAMP a, real* in, real* out);
 
 extern void setSize_varsamp (VARSAMP a, int size);
 
@@ -75,8 +75,8 @@ extern void setInRate_varsamp (VARSAMP a, int rate);
 
 extern void setOutRate_varsamp (VARSAMP a, int rate);
 
-extern void setFCLow_varsamp (VARSAMP a, double fc_low);
+extern void setFCLow_varsamp (VARSAMP a, real fc_low);
 
-extern void setBandwidth_varsamp (VARSAMP a, double fc_low, double fc_high);
+extern void setBandwidth_varsamp (VARSAMP a, real fc_low, real fc_high);
 
 #endif

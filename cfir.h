@@ -33,23 +33,23 @@ typedef struct _cfir
 	int size;
 	int nc;
 	int mp;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int runrate;
 	int cicrate; 
 	int DD; 
 	int R; 
 	int Pairs; 
-	double cutoff;
-	double scale;
+	real cutoff;
+	real scale;
 	int xtype;
-	double xbw;
+	real xbw;
 	int wintype;
 	FIRCORE p;
 } cfir, *CFIR;
 
-extern CFIR create_cfir (int run, int size, int nc, int mp, double* in, double* out, int runrate, int cicrate, 
-	int DD, int R, int Pairs, double cutoff, int xtype, double xbw, int wintype);
+extern CFIR create_cfir (int run, int size, int nc, int mp, real* in, real* out, int runrate, int cicrate, 
+	int DD, int R, int Pairs, real cutoff, int xtype, real xbw, int wintype);
 
 extern void destroy_cfir (CFIR a);
 
@@ -57,7 +57,7 @@ extern void flush_cfir (CFIR a);
 
 extern void xcfir (CFIR a);
 
-extern void setBuffers_cfir (CFIR a, double* in, double* out);
+extern void setBuffers_cfir (CFIR a, real* in, real* out);
 
 extern void setSamplerate_cfir (CFIR a, int rate);
 
@@ -65,7 +65,7 @@ extern void setSize_cfir (CFIR a, int size);
 
 extern void setOutRate_cfir (CFIR a, int rate);
 
-extern double* cfir_impulse (int N, int DD, int R, int Pairs, double runrate, double cicrate, 
-	double cutoff, int xtype, double xbw, int rtype, double scale, int wintype);
+extern real* cfir_impulse (int N, int DD, int R, int Pairs, real runrate, real cicrate, 
+	real cutoff, int xtype, real xbw, int rtype, real scale, int wintype);
 
 #endif

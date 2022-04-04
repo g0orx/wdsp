@@ -29,15 +29,15 @@ warren@wpratt.com
 void compute_slews(AMSQ a)
 {
 	int i;
-	double delta, theta;
-	delta = PI / (double)a->ntup;
+	real delta, theta;
+	delta = PI / (real)a->ntup;
 	theta = 0.0;
 	for (i = 0; i <= a->ntup; i++)
 	{
 		a->cup[i] = a->muted_gain + (1.0 - a->muted_gain) * 0.5 * (1.0 - cos (theta));
 		theta += delta;
 	}
-	delta = PI / (double)a->ntdown;
+	delta = PI / (real)a->ntdown;
 	theta = 0.0;
 	for (i = 0; i <= a->ntdown; i++)
 	{
@@ -49,15 +49,15 @@ void compute_slews(AMSQ a)
 void calc_amsq(AMSQ a)
 {
 	// signal averaging
-	a->trigsig = (double *)malloc0(a->size * sizeof(complex));
+	a->trigsig = (real *)malloc0(a->size * sizeof(complex));
 	a->avm = exp(-1.0 / (a->rate * a->avtau));
 	a->onem_avm = 1.0 - a->avm;
 	a->avsig = 0.0;
 	// level change
 	a->ntup = (int)(a->tup * a->rate);
 	a->ntdown = (int)(a->tdown * a->rate);
-	a->cup = (double *)malloc0((a->ntup + 1) * sizeof(double));
-	a->cdown = (double *)malloc0((a->ntdown + 1) * sizeof(double));
+	a->cup = (real *)malloc0((a->ntup + 1) * sizeof(real));
+	a->cdown = (real *)malloc0((a->ntdown + 1) * sizeof(real));
 	compute_slews(a);
 	// control
 	a->state = 0;
@@ -70,15 +70,15 @@ void decalc_amsq (AMSQ a)
 	_aligned_free (a->trigsig);
 }
 
-AMSQ create_amsq (int run, int size, double* in, double* out, double* trigger, int rate, double avtau, 
-	double tup, double tdown, double tail_thresh, double unmute_thresh, double min_tail, double max_tail, double muted_gain)
+AMSQ create_amsq (int run, int size, real* in, real* out, real* trigger, int rate, real avtau, 
+	real tup, real tdown, real tail_thresh, real unmute_thresh, real min_tail, real max_tail, real muted_gain)
 {
 	AMSQ a = (AMSQ) malloc0 (sizeof (amsq));
 	a->run = run;
 	a->size = size;
 	a->in = in;
 	a->out = out;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->muted_gain = muted_gain;
 	a->trigger = trigger;
 	a->avtau = avtau;
@@ -119,7 +119,7 @@ void xamsq (AMSQ a)
 	if (a->run)
 	{
 		int i;
-		double sig, siglimit;
+		real sig, siglimit;
 		for (i = 0; i < a->size; i++)
 		{
 			sig = sqrt (a->trigsig[2 * i + 0] * a->trigsig[2 * i + 0] + a->trigsig[2 * i + 1] * a->trigsig[2 * i + 1]);
@@ -180,7 +180,7 @@ void xamsqcap (AMSQ a)
 	memcpy (a->trigsig, a->trigger, a->size * sizeof (complex));
 }
 
-void setBuffers_amsq (AMSQ a, double* in, double* out, double* trigger)
+void setBuffers_amsq (AMSQ a, real* in, real* out, real* trigger)
 {
 	a->in = in;
 	a->out = out;
@@ -216,9 +216,9 @@ void SetRXAAMSQRun (int channel, int run)
 }
 
 PORT
-void SetRXAAMSQThreshold (int channel, double threshold)
+void SetRXAAMSQThreshold (int channel, real threshold)
 {
-	double thresh = pow (10.0, threshold / 20.0);
+	real thresh = pow (10.0, threshold / 20.0);
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].amsq.p->tail_thresh = 0.9 * thresh;
 	rxa[channel].amsq.p->unmute_thresh =  thresh;
@@ -226,7 +226,7 @@ void SetRXAAMSQThreshold (int channel, double threshold)
 }
 
 PORT
-void SetRXAAMSQMaxTail (int channel, double tail)
+void SetRXAAMSQMaxTail (int channel, real tail)
 {
 	AMSQ a;
 	EnterCriticalSection (&ch[channel].csDSP);
@@ -251,7 +251,7 @@ void SetTXAAMSQRun (int channel, int run)
 }
 
 PORT
-void SetTXAAMSQMutedGain (int channel, double dBlevel)
+void SetTXAAMSQMutedGain (int channel, real dBlevel)
 {	// dBlevel is negative
 	AMSQ a;
 	EnterCriticalSection (&ch[channel].csDSP);
@@ -262,9 +262,9 @@ void SetTXAAMSQMutedGain (int channel, double dBlevel)
 }
 
 PORT
-void SetTXAAMSQThreshold (int channel, double threshold)
+void SetTXAAMSQThreshold (int channel, real threshold)
 {
-	double thresh = pow (10.0, threshold / 20.0);
+	real thresh = pow (10.0, threshold / 20.0);
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].amsq.p->tail_thresh = 0.9 * thresh;
 	txa[channel].amsq.p->unmute_thresh =  thresh;

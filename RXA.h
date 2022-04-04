@@ -58,11 +58,11 @@ enum rxaMeterType
 
 struct _rxa
 {
-	double* inbuff;
-	double* outbuff;
-	double* midbuff;
+	real* inbuff;
+	real* outbuff;
+	real* midbuff;
 	int mode;
-	double meter[RXA_METERTYPE_LAST];
+	real meter[RXA_METERTYPE_LAST];
 	CRITICAL_SECTION* pmtupdate[RXA_METERTYPE_LAST];
 	struct
 	{

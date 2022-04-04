@@ -34,10 +34,10 @@ warren@wpratt.com
 
 void calc_bps (BPS a)
 {
-	double* impulse;
-	a->infilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->product = (double *)malloc0(2 * a->size * sizeof(complex));
-	impulse = fir_bandpass(a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (double)(2 * a->size));
+	real* impulse;
+	a->infilt = (real *)malloc0(2 * a->size * sizeof(complex));
+	a->product = (real *)malloc0(2 * a->size * sizeof(complex));
+	impulse = fir_bandpass(a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (real)(2 * a->size));
 	a->mults = fftcv_mults(2 * a->size, impulse);
 	a->CFor = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->infilt, (fftw_complex *)a->product, FFTW_FORWARD, FFTW_PATIENT);
 	a->CRev = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->product, (fftw_complex *)a->out, FFTW_BACKWARD, FFTW_PATIENT);
@@ -53,14 +53,14 @@ void decalc_bps (BPS a)
 	_aligned_free(a->infilt);
 }
 
-BPS create_bps (int run, int position, int size, double* in, double* out, 
-	double f_low, double f_high, int samplerate, int wintype, double gain)
+BPS create_bps (int run, int position, int size, real* in, real* out, 
+	real f_low, real f_high, int samplerate, int wintype, real gain)
 {
 	BPS a = (BPS) malloc0 (sizeof (bps));
 	a->run = run;
 	a->position = position;
 	a->size = size;
-	a->samplerate = (double)samplerate;
+	a->samplerate = (real)samplerate;
 	a->wintype = wintype;
 	a->gain = gain;
 	a->in = in;
@@ -85,7 +85,7 @@ void flush_bps (BPS a)
 void xbps (BPS a, int pos)
 {
 	int i;
-	double I, Q;
+	real I, Q;
 	if (a->run && pos == a->position)
 	{
 		memcpy (&(a->infilt[2 * a->size]), a->in, a->size * sizeof (complex));
@@ -104,7 +104,7 @@ void xbps (BPS a, int pos)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_bps (BPS a, double* in, double* out)
+void setBuffers_bps (BPS a, real* in, real* out)
 {
 	decalc_bps (a);
 	a->in = in;
@@ -126,7 +126,7 @@ void setSize_bps (BPS a, int size)
 	calc_bps (a);
 }
 
-void setFreqs_bps (BPS a, double f_low, double f_high)
+void setFreqs_bps (BPS a, real f_low, real f_high)
 {
 	decalc_bps (a);
 	a->f_low = f_low;
@@ -149,9 +149,9 @@ void SetRXABPSRun (int channel, int run)
 }
 
 PORT
-void SetRXABPSFreqs (int channel, double f_low, double f_high)
+void SetRXABPSFreqs (int channel, real f_low, real f_high)
 {
-	double* impulse;
+	real* impulse;
 	BPS a1;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a1 = rxa[channel].bp1.p;
@@ -160,7 +160,7 @@ void SetRXABPSFreqs (int channel, double f_low, double f_high)
 		a1->f_low = f_low;
 		a1->f_high = f_high;
 		_aligned_free (a1->mults);
-		impulse = fir_bandpass(a1->size + 1, f_low, f_high, a1->samplerate, a1->wintype, 1, 1.0 / (double)(2 * a1->size));
+		impulse = fir_bandpass(a1->size + 1, f_low, f_high, a1->samplerate, a1->wintype, 1, 1.0 / (real)(2 * a1->size));
 		a1->mults = fftcv_mults (2 * a1->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -170,7 +170,7 @@ void SetRXABPSFreqs (int channel, double f_low, double f_high)
 PORT
 void SetRXABPSWindow (int channel, int wintype)
 {
-	double* impulse;
+	real* impulse;
 	BPS a1;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a1 = rxa[channel].bp1.p;
@@ -178,7 +178,7 @@ void SetRXABPSWindow (int channel, int wintype)
 	{
 		a1->wintype = wintype;
 		_aligned_free (a1->mults);
-		impulse = fir_bandpass(a1->size + 1, a1->f_low, a1->f_high, a1->samplerate, a1->wintype, 1, 1.0 / (double)(2 * a1->size));
+		impulse = fir_bandpass(a1->size + 1, a1->f_low, a1->f_high, a1->samplerate, a1->wintype, 1, 1.0 / (real)(2 * a1->size));
 		a1->mults = fftcv_mults (2 * a1->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -200,9 +200,9 @@ void SetTXABPSRun (int channel, int run)
 }
 
 PORT
-void SetTXABPSFreqs (int channel, double f_low, double f_high)
+void SetTXABPSFreqs (int channel, real f_low, real f_high)
 {
-	double* impulse;
+	real* impulse;
 	BPS a;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = txa[channel].bp0.p;
@@ -211,7 +211,7 @@ void SetTXABPSFreqs (int channel, double f_low, double f_high)
 		a->f_low = f_low;
 		a->f_high = f_high;
 		_aligned_free (a->mults);
-		impulse = fir_bandpass(a->size + 1, f_low, f_high, a->samplerate, a->wintype, 1, 1.0 / (double)(2 * a->size));
+		impulse = fir_bandpass(a->size + 1, f_low, f_high, a->samplerate, a->wintype, 1, 1.0 / (real)(2 * a->size));
 		a->mults = fftcv_mults (2 * a->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -221,7 +221,7 @@ void SetTXABPSFreqs (int channel, double f_low, double f_high)
 		a->f_low = f_low;
 		a->f_high = f_high;
 		_aligned_free (a->mults);
-		impulse = fir_bandpass(a->size + 1, f_low, f_high, a->samplerate, a->wintype, 1, 1.0 / (double)(2 * a->size));
+		impulse = fir_bandpass(a->size + 1, f_low, f_high, a->samplerate, a->wintype, 1, 1.0 / (real)(2 * a->size));
 		a->mults = fftcv_mults (2 * a->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -231,7 +231,7 @@ void SetTXABPSFreqs (int channel, double f_low, double f_high)
 		a->f_low = f_low;
 		a->f_high = f_high;
 		_aligned_free (a->mults);
-		impulse = fir_bandpass(a->size + 1, f_low, f_high, a->samplerate, a->wintype, 1, 1.0 / (double)(2 * a->size));
+		impulse = fir_bandpass(a->size + 1, f_low, f_high, a->samplerate, a->wintype, 1, 1.0 / (real)(2 * a->size));
 		a->mults = fftcv_mults (2 * a->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -241,7 +241,7 @@ void SetTXABPSFreqs (int channel, double f_low, double f_high)
 PORT
 void SetTXABPSWindow (int channel, int wintype)
 {
-	double* impulse;
+	real* impulse;
 	BPS a;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = txa[channel].bp0.p;
@@ -249,7 +249,7 @@ void SetTXABPSWindow (int channel, int wintype)
 	{
 		a->wintype = wintype;
 		_aligned_free (a->mults);
-		impulse = fir_bandpass(a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (double)(2 * a->size));
+		impulse = fir_bandpass(a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (real)(2 * a->size));
 		a->mults = fftcv_mults (2 * a->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -258,7 +258,7 @@ void SetTXABPSWindow (int channel, int wintype)
 	{
 		a->wintype = wintype;
 		_aligned_free (a->mults);
-		impulse = fir_bandpass(a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (double)(2 * a->size));
+		impulse = fir_bandpass(a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (real)(2 * a->size));
 		a->mults = fftcv_mults (2 * a->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -267,7 +267,7 @@ void SetTXABPSWindow (int channel, int wintype)
 	{
 		a->wintype = wintype;
 		_aligned_free (a->mults);
-		impulse = fir_bandpass (a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (double)(2 * a->size));
+		impulse = fir_bandpass (a->size + 1, a->f_low, a->f_high, a->samplerate, a->wintype, 1, 1.0 / (real)(2 * a->size));
 		a->mults = fftcv_mults (2 * a->size, impulse);
 		_aligned_free (impulse);
 	}
@@ -281,12 +281,12 @@ void SetTXABPSWindow (int channel, int wintype)
 *																										*
 ********************************************************************************************************/
 
-BANDPASS create_bandpass (int run, int position, int size, int nc, int mp, double* in, double* out, 
-	double f_low, double f_high, int samplerate, int wintype, double gain)
+BANDPASS create_bandpass (int run, int position, int size, int nc, int mp, real* in, real* out, 
+	real f_low, real f_high, int samplerate, int wintype, real gain)
 {
 	// NOTE:  'nc' must be >= 'size'
 	BANDPASS a = (BANDPASS) malloc0 (sizeof (bandpass));
-	double* impulse;
+	real* impulse;
 	a->run = run;
 	a->position = position;
 	a->size = size;
@@ -299,7 +299,7 @@ BANDPASS create_bandpass (int run, int position, int size, int nc, int mp, doubl
 	a->samplerate = samplerate;
 	a->wintype = wintype;
 	a->gain = gain;
-	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 	a->p = create_fircore (a->size, a->in, a->out, a->nc, a->mp, impulse);
 	_aligned_free (impulse);
 	return a;
@@ -324,7 +324,7 @@ void xbandpass (BANDPASS a, int pos)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_bandpass (BANDPASS a, double* in, double* out)
+void setBuffers_bandpass (BANDPASS a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -333,9 +333,9 @@ void setBuffers_bandpass (BANDPASS a, double* in, double* out)
 
 void setSamplerate_bandpass (BANDPASS a, int rate)
 {
-	double* impulse;
+	real* impulse;
 	a->samplerate = rate;
-	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 	setImpulse_fircore (a->p, impulse, 1);
 	_aligned_free (impulse);
 }
@@ -343,33 +343,33 @@ void setSamplerate_bandpass (BANDPASS a, int rate)
 void setSize_bandpass (BANDPASS a, int size)
 {
 	// NOTE:  'size' must be <= 'nc'
-	double* impulse;
+	real* impulse;
 	a->size = size;
 	setSize_fircore (a->p, a->size);
 	// recalc impulse because scale factor is a function of size
-	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 	setImpulse_fircore (a->p, impulse, 1);
 	_aligned_free (impulse);
 }
 
-void setGain_bandpass (BANDPASS a, double gain, int update)
+void setGain_bandpass (BANDPASS a, real gain, int update)
 {
-	double* impulse;
+	real* impulse;
 	a->gain = gain;
-	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+	impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 	setImpulse_fircore (a->p, impulse, update);
 	_aligned_free (impulse);
 }
 
-void CalcBandpassFilter (BANDPASS a, double f_low, double f_high, double gain)
+void CalcBandpassFilter (BANDPASS a, real f_low, real f_high, real gain)
 {
-	double* impulse;
+	real* impulse;
 	if ((a->f_low != f_low) || (a->f_high != f_high) || (a->gain != gain))
 	{
 		a->f_low = f_low;
 		a->f_high = f_high;
 		a->gain = gain;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setImpulse_fircore (a->p, impulse, 1);
 		_aligned_free (impulse);
 	}
@@ -390,14 +390,14 @@ void SetRXABandpassRun (int channel, int run)
 }
 
 PORT
-void SetRXABandpassFreqs (int channel, double f_low, double f_high)
+void SetRXABandpassFreqs (int channel, real f_low, real f_high)
 {
-	double* impulse;
+	real* impulse;
 	BANDPASS a = rxa[channel].bp1.p;
 	if ((f_low != a->f_low) || (f_high != a->f_high))
 	{
 		impulse = fir_bandpass (a->nc, f_low, f_high, a->samplerate, 
-			a->wintype, 1, a->gain / (double)(2 * a->size));
+			a->wintype, 1, a->gain / (real)(2 * a->size));
 		setImpulse_fircore (a->p, impulse, 0);
 		_aligned_free (impulse);
 		EnterCriticalSection (&ch[channel].csDSP);
@@ -411,12 +411,12 @@ void SetRXABandpassFreqs (int channel, double f_low, double f_high)
 PORT
 void SetRXABandpassWindow (int channel, int wintype)
 {
-	double* impulse;
+	real* impulse;
 	BANDPASS a = rxa[channel].bp1.p;
 	if ((a->wintype != wintype))
 	{
 		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, 
-			wintype, 1, a->gain / (double)(2 * a->size));
+			wintype, 1, a->gain / (real)(2 * a->size));
 		setImpulse_fircore (a->p, impulse, 0);
 		_aligned_free (impulse);
 		EnterCriticalSection (&ch[channel].csDSP);
@@ -430,14 +430,14 @@ PORT
 void SetRXABandpassNC (int channel, int nc)
 {
 	// NOTE:  'nc' must be >= 'size'
-	double* impulse;
+	real* impulse;
 	BANDPASS a;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = rxa[channel].bp1.p;
 	if (nc != a->nc)
 	{
 		a->nc = nc;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setNc_fircore (a->p, a->nc, impulse);
 		_aligned_free (impulse);
 	}
@@ -471,16 +471,16 @@ void SetTXABandpassRun (int channel, int run)
 }
 
 //PORT
-//void SetTXABandpassFreqs (int channel, double f_low, double f_high)
+//void SetTXABandpassFreqs (int channel, real f_low, real f_high)
 //{
-//	double* impulse;
+//	real* impulse;
 //	BANDPASS a;
 //	a = txa[channel].bp0.p;
 //	if ((f_low != a->f_low) || (f_high != a->f_high))
 //	{
 //		a->f_low = f_low;
 //		a->f_high = f_high;
-//		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+//		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 //		setImpulse_fircore (a->p, impulse, 1);
 //		_aligned_free (impulse);
 //	}
@@ -489,7 +489,7 @@ void SetTXABandpassRun (int channel, int run)
 //	{
 //		a->f_low = f_low;
 //		a->f_high = f_high;
-//		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+//		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 //		setImpulse_fircore (a->p, impulse, 1);
 //		_aligned_free (impulse);
 //	}
@@ -498,7 +498,7 @@ void SetTXABandpassRun (int channel, int run)
 //	{
 //		a->f_low = f_low;
 //		a->f_high = f_high;
-//		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+//		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 //		setImpulse_fircore (a->p, impulse, 1);
 //		_aligned_free (impulse);
 //	}
@@ -507,13 +507,13 @@ void SetTXABandpassRun (int channel, int run)
 PORT
 void SetTXABandpassWindow (int channel, int wintype)
 {
-	double* impulse;
+	real* impulse;
 	BANDPASS a;
 	a = txa[channel].bp0.p;
 	if (a->wintype != wintype)
 	{
 		a->wintype = wintype;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setImpulse_fircore (a->p, impulse, 1);
 		_aligned_free (impulse);
 	}
@@ -521,7 +521,7 @@ void SetTXABandpassWindow (int channel, int wintype)
 	if (a->wintype != wintype)
 	{
 		a->wintype = wintype;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setImpulse_fircore (a->p, impulse, 1);
 		_aligned_free (impulse);
 	}
@@ -529,7 +529,7 @@ void SetTXABandpassWindow (int channel, int wintype)
 	if (a->wintype != wintype)
 	{
 		a->wintype = wintype;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setImpulse_fircore (a->p, impulse, 1);
 		_aligned_free (impulse);
 	}
@@ -539,14 +539,14 @@ PORT
 void SetTXABandpassNC (int channel, int nc)
 {
 	// NOTE:  'nc' must be >= 'size'
-	double* impulse;
+	real* impulse;
 	BANDPASS a;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = txa[channel].bp0.p;
 	if (a->nc != nc)
 	{
 		a->nc = nc;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setNc_fircore (a->p, a->nc, impulse);
 		_aligned_free (impulse);
 	}
@@ -554,7 +554,7 @@ void SetTXABandpassNC (int channel, int nc)
 	if (a->nc != nc)
 	{
 		a->nc = nc;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setNc_fircore (a->p, a->nc, impulse);
 		_aligned_free (impulse);
 	}
@@ -562,7 +562,7 @@ void SetTXABandpassNC (int channel, int nc)
 	if (a->nc != nc)
 	{
 		a->nc = nc;
-		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		impulse = fir_bandpass (a->nc, a->f_low, a->f_high, a->samplerate, a->wintype, 1, a->gain / (real)(2 * a->size));
 		setNc_fircore (a->p, a->nc, impulse);
 		_aligned_free (impulse);
 	}

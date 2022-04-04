@@ -37,21 +37,21 @@ typedef struct _siphon
 	int mode;
 	int disp;
 	int insize;
-	double* in;
+	real* in;
 	int sipsize;	// NOTE:  sipsize MUST BE A POWER OF TWO!!
-	double* sipbuff;
+	real* sipbuff;
 	int outsize;
 	int idx;
-	double* sipout;
+	real* sipout;
 	int fftsize;
-	double* specout;
+	real* specout;
 	volatile long specmode;
 	fftw_plan sipplan;
-	double* window;
+	real* window;
 	CRITICAL_SECTION update;
 } siphon, *SIPHON;
 
-extern SIPHON create_siphon (int run, int position, int mode, int disp, int insize, double* in, int sipsize, 
+extern SIPHON create_siphon (int run, int position, int mode, int disp, int insize, real* in, int sipsize, 
 	int fftsize, int specmode);
 
 extern void destroy_siphon (SIPHON a);
@@ -60,7 +60,7 @@ extern void flush_siphon (SIPHON a);
 
 extern void xsiphon (SIPHON a, int pos);
 
-extern void setBuffers_siphon (SIPHON a, double* in);
+extern void setBuffers_siphon (SIPHON a, real* in);
 
 extern void setSamplerate_siphon (SIPHON a, int rate);
 
@@ -86,7 +86,7 @@ extern __declspec (dllexport) void create_siphonEXT (int id, int run, int insize
 
 extern __declspec (dllexport) void destroy_siphonEXT (int id);
 
-extern __declspec (dllexport) void xsiphonEXT (int id, double* buff);
+extern __declspec (dllexport) void xsiphonEXT (int id, real* buff);
 
 extern __declspec (dllexport) void SetSiphonInsize (int id, int size);
 

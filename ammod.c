@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #include "comm.h"
 
-AMMOD create_ammod (int run, int mode, int size, double* in, double* out, double c_level)
+AMMOD create_ammod (int run, int mode, int size, real* in, real* out, real c_level)
 {
 	AMMOD a = (AMMOD) malloc0 (sizeof (ammod));
 	a->run = run;
@@ -78,7 +78,7 @@ void xammod (AMMOD a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_ammod (AMMOD a, double* in, double* out)
+void setBuffers_ammod (AMMOD a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -101,7 +101,7 @@ void setSize_ammod (AMMOD a, int size)
 ********************************************************************************************************/
 
 PORT void
-SetTXAAMCarrierLevel (int channel, double c_level)
+SetTXAAMCarrierLevel (int channel, real c_level)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	txa[channel].ammod.p->c_level = c_level;

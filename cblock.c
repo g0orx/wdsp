@@ -39,11 +39,11 @@ CBL create_cbl
 	(
 	int run,
 	int buff_size,
-	double *in_buff,
-	double *out_buff,
+	real *in_buff,
+	real *out_buff,
 	int mode,
 	int sample_rate,
-	double tau
+	real tau
 	)
 {
 	CBL a = (CBL) malloc0 (sizeof(cbl));
@@ -52,7 +52,7 @@ CBL create_cbl
 	a->in_buff = in_buff;
 	a->out_buff = out_buff;
 	a->mode = mode;
-	a->sample_rate = (double)sample_rate;
+	a->sample_rate = (real)sample_rate;
 	a->tau = tau;
 	calc_cbl (a);
 	return a;
@@ -76,7 +76,7 @@ void xcbl (CBL a)
 	if (a->run)
 	{
 		int i;
-		double tempI, tempQ;
+		real tempI, tempQ;
 		for (i = 0; i < a->buff_size; i++)
 		{
 			tempI  = a->in_buff[2 * i + 0];
@@ -85,15 +85,15 @@ void xcbl (CBL a)
 			a->out_buff[2 * i + 1] = a->in_buff[2 * i + 1] - a->prevQin + a->mtau * a->prevQout;
 			a->prevIin  = tempI;
 			a->prevQin  = tempQ;
-			if (fabs(a->prevIout = a->out_buff[2 * i + 0]) < 1.0e-100) a->prevIout = 0.0;
-			if (fabs(a->prevQout = a->out_buff[2 * i + 1]) < 1.0e-100) a->prevQout = 0.0;
+			if (fabs(a->prevIout = a->out_buff[2 * i + 0]) < REAL_EPSILON) a->prevIout = 0.0;
+			if (fabs(a->prevQout = a->out_buff[2 * i + 1]) < REAL_EPSILON) a->prevQout = 0.0;
 		}
 	}
 	else if (a->in_buff != a->out_buff)
 		memcpy (a->out_buff, a->in_buff, a->buff_size * sizeof (complex));
 }
 
-void setBuffers_cbl (CBL a, double* in, double* out)
+void setBuffers_cbl (CBL a, real* in, real* out)
 {
 	a->in_buff = in;
 	a->out_buff = out;

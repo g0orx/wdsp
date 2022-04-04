@@ -32,22 +32,22 @@ typedef struct _div
 	int run;
 	int nr;							// number of receivers to mix
 	int size;						// size of input/output buffers
-	double **in;					// input buffers
-	double *out;					// output buffer
+	real **in;					// input buffers
+	real *out;					// output buffer
 	int output;						// which rcvr to output; ==nr for mix
-	double *Irotate;
-	double *Qrotate;
+	real *Irotate;
+	real *Qrotate;
 	CRITICAL_SECTION cs_update;
-	double *legacy[4];																	///////////// legacy interface - remove
+	real *legacy[4];																	///////////// legacy interface - remove
 } mdiv, *MDIV;
 
-extern MDIV create_div (int run, int nr, int size, double **in, double *out);
+extern MDIV create_div (int run, int nr, int size, real **in, real *out);
 
 extern void destroy_div (MDIV pdiv);
 
 extern void xdiv (MDIV pdiv);
 
-extern __declspec(dllexport) void xdivEXT (int id, int nsamples, double **in, double *out);
+extern __declspec(dllexport) void xdivEXT (int id, int nsamples, real **in, real *out);
 
 extern __declspec(dllexport) void create_divEXT (int id, int run, int nr, int size);
 

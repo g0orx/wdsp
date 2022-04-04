@@ -44,24 +44,24 @@ typedef struct _calcc
 	int convex;
 	int stbl;
 	int scOK;
-	double hw_scale;
-	double rx_scale;
-	double alpha;
-	double* t;
-	double* tmap;
-	double* cm;
-	double* cc;
-	double* cs;
-	double* rxs;
-	double* txs;
-	double ptol;
+	real hw_scale;
+	real rx_scale;
+	real alpha;
+	real* t;
+	real* tmap;
+	real* cm;
+	real* cc;
+	real* cs;
+	real* rxs;
+	real* txs;
+	real ptol;
 	int* info;
 	int* binfo;
-	double txdel;
+	real txdel;
 	struct _ctrl
 	{
-		double moxdelay;
-		double loopdelay;
+		real moxdelay;
+		real loopdelay;
 		int state;
 		int reset;
 		int automode;
@@ -78,20 +78,20 @@ typedef struct _calcc
 		volatile LONG calcdone;
 		int waitsamps;
 		int waitcount;
-		double env_maxtx;
+		real env_maxtx;
 		volatile long running;
 		int bs_count;
 		volatile long current_state;
 	} ctrl;
 	struct _disp
 	{
-		double* x;
-		double* ym;
-		double* yc;
-		double* ys;
-		double* cm;
-		double* cc;
-		double* cs;
+		real* x;
+		real* ym;
+		real* yc;
+		real* ys;
+		real* cm;
+		real* cc;
+		real* cs;
 		CRITICAL_SECTION cs_disp;
 	} disp;
 	DELAY rxdelay;
@@ -103,19 +103,19 @@ typedef struct _calcc
 		int ints;
 		int channel;
 	} util;
-	double* temptx;				//////////////////////////////////////////////////// temporary tx complex buffer - remove with new callback3port()
-	double* temprx;				//////////////////////////////////////////////////// temporary rx complex buffer - remove with new callback3port()
+	real* temptx;				//////////////////////////////////////////////////// temporary tx complex buffer - remove with new callback3port()
+	real* temprx;				//////////////////////////////////////////////////// temporary rx complex buffer - remove with new callback3port()
 } calcc, *CALCC;
 
-extern CALCC create_calcc (int channel, int runcal, int size, int rate, int ints, int spi, double hw_scale, 
-	double moxdelay, double loopdelay, double ptol, int mox, int solidmox, int pin, int map, int stbl,
-	int npsamps, double alpha);
+extern CALCC create_calcc (int channel, int runcal, int size, int rate, int ints, int spi, real hw_scale, 
+	real moxdelay, real loopdelay, real ptol, int mox, int solidmox, int pin, int map, int stbl,
+	int npsamps, real alpha);
 
 extern void destroy_calcc (CALCC a);
 
 extern void flush_calcc (CALCC a);
 
-extern __declspec(dllexport) void pscc (int channel, int size, double* tx, double* rx);
+extern __declspec(dllexport) void pscc (int channel, int size, real* tx, real* rx);
 
 #endif
 

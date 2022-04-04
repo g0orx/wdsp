@@ -32,16 +32,16 @@ typedef struct _patchpanel
 	int channel;
 	int run;
 	int size;
-	double* in;
-	double* out;
-	double gain1;
-	double gain2I;
-	double gain2Q;
+	real* in;
+	real* out;
+	real gain1;
+	real gain2I;
+	real gain2Q;
 	int inselect;
 	int copy;
 } panel, *PANEL;
 
-extern PANEL create_panel (int channel, int run, int size, double* in, double* out, double gain1, double gain2I, double gain2Q, int inselect, int copy);
+extern PANEL create_panel (int channel, int run, int size, real* in, real* out, real gain1, real gain2I, real gain2Q, int inselect, int copy);
 
 extern void destroy_panel (PANEL a);
 
@@ -49,7 +49,7 @@ extern void flush_panel (PANEL a);
 
 extern void xpanel (PANEL a);
 
-extern void setBuffers_panel (PANEL a, double* in, double* out);
+extern void setBuffers_panel (PANEL a, real* in, real* out);
 
 extern void setSamplerate_panel (PANEL a, int rate);
 
@@ -59,11 +59,11 @@ extern void setSize_panel (PANEL a, int size);
 
 extern __declspec (dllexport) void SetRXAPanelRun (int channel, int run);
 
-extern __declspec (dllexport) void SetRXAPanelGain1 (int channel, double gain);
+extern __declspec (dllexport) void SetRXAPanelGain1 (int channel, real gain);
 
-extern __declspec (dllexport) void SetRXAPanelGain2 (int channel, double gainI, double gainQ);
+extern __declspec (dllexport) void SetRXAPanelGain2 (int channel, real gainI, real gainQ);
 
-extern __declspec (dllexport) void SetRXAPanelPan (int channel, double pan);
+extern __declspec (dllexport) void SetRXAPanelPan (int channel, real pan);
 
 extern __declspec (dllexport) void SetRXAPanelCopy (int channel, int copy);
 

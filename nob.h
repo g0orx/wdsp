@@ -31,48 +31,48 @@ typedef struct _anb
 {
 	int run;
 	int buffsize;					// size of input/output buffer
-	double* in;						// input buffer
-	double* out;					// output buffer
-	int dline_size;					// length of delay line which is 'double dline[length][2]'
-	double *dline;					// pointer to delay line
-	double samplerate;				// samplerate, used to convert times into sample counts
-	double tau;						// transition time, signal<->zero
-	double hangtime;				// time to stay at zero after noise is no longer detected
-	double advtime;					// deadtime (zero output) in advance of detected noise
-	double backtau;					// time constant used in averaging the magnitude of the input signal
-	double threshold;				// triggers if (noise > threshold * average_signal_magnitude)
-    double *wave;                   // pointer to array holding transition waveform
+	real* in;						// input buffer
+	real* out;					// output buffer
+	int dline_size;					// length of delay line which is 'real dline[length][2]'
+	real *dline;					// pointer to delay line
+	real samplerate;				// samplerate, used to convert times into sample counts
+	real tau;						// transition time, signal<->zero
+	real hangtime;				// time to stay at zero after noise is no longer detected
+	real advtime;					// deadtime (zero output) in advance of detected noise
+	real backtau;					// time constant used in averaging the magnitude of the input signal
+	real threshold;				// triggers if (noise > threshold * average_signal_magnitude)
+    real *wave;                   // pointer to array holding transition waveform
     int state;                      // state of the state machine
-    double avg;                     // average value of the signal magnitude
+    real avg;                     // average value of the signal magnitude
     int dtime;                      // count when decreasing the signal magnitude
     int htime;                      // count when hanging
     int itime;                      // count when increasing the signal magnitude
     int atime;                      // count at zero before the noise burst (advance count)
-    double coef;					// parameter in calculating transition waveform
+    real coef;					// parameter in calculating transition waveform
     int trans_count;                // number of samples to equal 'tau' time
     int hang_count;                 // number of samples to equal 'hangtime' time
     int adv_count;                  // number of samples to equal 'advtime' time
     int in_idx;                     // ring buffer position into which new samples are inserted
     int out_idx;                    // ring buffer position from which delayed samples are pulled
-    double power;					// level at which signal was increasing when a new decrease is started
+    real power;					// level at which signal was increasing when a new decrease is started
     int count;						// set each time a noise sample is detected, counts down
-    double backmult;				// multiplier for waveform averaging
-    double ombackmult;				// multiplier for waveform averaging
+    real backmult;				// multiplier for waveform averaging
+    real ombackmult;				// multiplier for waveform averaging
 	CRITICAL_SECTION cs_update;
-	double *legacy;																										////////////  legacy interface - remove
+	real *legacy;																										////////////  legacy interface - remove
 } anb, *ANB;
 
 __declspec (dllexport) ANB create_anb	(
 	int run,
 	int buffsize,
-	double* in,
-	double* out,
-	double samplerate,
-	double tau,
-	double hangtime,
-	double advtime,
-	double backtau,
-	double threshold
+	real* in,
+	real* out,
+	real samplerate,
+	real tau,
+	real hangtime,
+	real advtime,
+	real backtau,
+	real threshold
 						);
 
 __declspec (dllexport) void destroy_anb (ANB a);
@@ -85,21 +85,21 @@ extern __declspec (dllexport) void create_anbEXT	(
 	int id,
 	int run,
 	int buffsize,
-	double samplerate,
-	double tau,
-	double hangtime,
-	double advtime,
-	double backtau,
-	double threshold
+	real samplerate,
+	real tau,
+	real hangtime,
+	real advtime,
+	real backtau,
+	real threshold
 					);
 
 extern __declspec (dllexport) void destroy_anbEXT (int id);
 
 extern __declspec (dllexport) void flush_anbEXT (int id);
 
-extern __declspec (dllexport) void xanbEXT (int id, double* in, double* out);
+extern __declspec (dllexport) void xanbEXT (int id, real* in, real* out);
 
-extern void setBuffers_anb (ANB a, double* in, double* out);
+extern void setBuffers_anb (ANB a, real* in, real* out);
 
 extern void setSamplerate_anb (ANB a, int rate);
 
@@ -112,14 +112,14 @@ extern __declspec (dllexport) void pSetRCVRANBBuffsize (ANB a, int size);
 
 extern __declspec (dllexport) void pSetRCVRANBSamplerate (ANB a, int rate);
 
-extern __declspec (dllexport) void pSetRCVRANBTau (ANB a, double tau);
+extern __declspec (dllexport) void pSetRCVRANBTau (ANB a, real tau);
 
-extern __declspec (dllexport) void pSetRCVRANBHangtime (ANB a, double time);
+extern __declspec (dllexport) void pSetRCVRANBHangtime (ANB a, real time);
 
-extern __declspec (dllexport) void pSetRCVRANBAdvtime (ANB a, double time);
+extern __declspec (dllexport) void pSetRCVRANBAdvtime (ANB a, real time);
 
-extern __declspec (dllexport) void pSetRCVRANBBacktau (ANB a, double tau);
+extern __declspec (dllexport) void pSetRCVRANBBacktau (ANB a, real tau);
 
-extern __declspec (dllexport) void pSetRCVRANBThreshold (ANB a, double thresh);
+extern __declspec (dllexport) void pSetRCVRANBThreshold (ANB a, real thresh);
 
 #endif

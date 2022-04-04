@@ -33,14 +33,14 @@ void calc_shift (SHIFT a)
 	a->sin_delta = sin (a->delta);
 }
 
-SHIFT create_shift (int run, int size, double* in, double* out, int rate, double fshift)
+SHIFT create_shift (int run, int size, real* in, real* out, int rate, real fshift)
 {
 	SHIFT a = (SHIFT) malloc0 (sizeof (shift));
 	a->run = run;
 	a->size = size;
 	a->in = in;
 	a->out = out;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->shift = fshift;
 	a->phase = 0.0;
 	calc_shift (a);
@@ -62,9 +62,9 @@ void xshift (SHIFT a)
 	if (a->run)
 	{
 		int i;
-		double I1, Q1, t1, t2;
-		double cos_phase = cos (a->phase);
-		double sin_phase = sin (a->phase);
+		real I1, Q1, t1, t2;
+		real cos_phase = cos (a->phase);
+		real sin_phase = sin (a->phase);
 		for (i = 0; i < a->size; i++)
 		{
 			I1 = a->in[2 * i + 0];
@@ -84,7 +84,7 @@ void xshift (SHIFT a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_shift(SHIFT a, double* in, double* out)
+void setBuffers_shift(SHIFT a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -118,7 +118,7 @@ void SetRXAShiftRun (int channel, int run)
 }
 
 PORT
-void SetRXAShiftFreq (int channel, double fshift)
+void SetRXAShiftFreq (int channel, real fshift)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].shift.p->shift = fshift;

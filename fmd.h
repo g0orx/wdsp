@@ -32,33 +32,33 @@ typedef struct _fmd
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
-	double rate;
-	double f_low;						// audio low cutoff
-	double f_high;						// audio high cutoff
+	real* in;
+	real* out;
+	real rate;
+	real f_low;						// audio low cutoff
+	real f_high;						// audio high cutoff
 	// pll
-	double fmin;						// pll - minimum carrier freq to lock
-	double fmax;						// pll - maximum carrier freq to lock
-	double omega_min;					// pll - minimum lock check parameter
-	double omega_max;					// pll - maximum lock check parameter
-	double zeta;						// pll - damping factor; as coded, must be <=1.0
-	double omegaN;						// pll - natural frequency
-	double phs;							// pll - phase accumulator
-	double omega;						// pll - locked pll frequency
-	double fil_out;						// pll - filter output
-	double g1, g2;						// pll - filter gain parameters
-	double pllpole;						// pll - pole frequency
+	real fmin;						// pll - minimum carrier freq to lock
+	real fmax;						// pll - maximum carrier freq to lock
+	real omega_min;					// pll - minimum lock check parameter
+	real omega_max;					// pll - maximum lock check parameter
+	real zeta;						// pll - damping factor; as coded, must be <=1.0
+	real omegaN;						// pll - natural frequency
+	real phs;							// pll - phase accumulator
+	real omega;						// pll - locked pll frequency
+	real fil_out;						// pll - filter output
+	real g1, g2;						// pll - filter gain parameters
+	real pllpole;						// pll - pole frequency
 	// for dc removal
-	double tau;
-	double mtau;
-	double onem_mtau;
-	double fmdc;
+	real tau;
+	real mtau;
+	real onem_mtau;
+	real fmdc;
 	// pll audio gain
-	double deviation;
-	double again;
+	real deviation;
+	real again;
 	// for de-emphasis filter
-	double* audio;
+	real* audio;
 	FIRCORE pde;
 	int nc_de;
 	int mp_de;
@@ -66,16 +66,16 @@ typedef struct _fmd
 	FIRCORE paud;
 	int nc_aud;
 	int mp_aud;
-	double afgain;
+	real afgain;
 	// CTCSS removal
 	SNOTCH sntch;
 	int sntch_run;
-	double ctcss_freq;
+	real ctcss_freq;
 } fmd, *FMD;
 
-extern FMD create_fmd ( int run, int size, double* in, double* out, int rate, double deviation, 
-	double f_low, double f_high, double fmin, double fmax, double zeta, double omegaN, double tau, 
-	double afgain, int sntch_run, double ctcss_freq, int nc_de, int mp_de, int nc_aud, int mp_aud);
+extern FMD create_fmd ( int run, int size, real* in, real* out, int rate, real deviation, 
+	real f_low, real f_high, real fmin, real fmax, real zeta, real omegaN, real tau, 
+	real afgain, int sntch_run, real ctcss_freq, int nc_de, int mp_de, int nc_aud, int mp_aud);
 
 extern void destroy_fmd (FMD a);
 
@@ -83,7 +83,7 @@ extern void flush_fmd (FMD a);
 
 extern void xfmd (FMD a);
 
-extern void setBuffers_fmd (FMD a, double* in, double* out);
+extern void setBuffers_fmd (FMD a, real* in, real* out);
 
 extern void setSamplerate_fmd (FMD a, int rate);
 
@@ -91,7 +91,7 @@ extern void setSize_fmd (FMD a, int size);
 
 // RXA Properties
 
-extern __declspec (dllexport) void SetRXAFMDeviation (int channel, double deviation);
+extern __declspec (dllexport) void SetRXAFMDeviation (int channel, real deviation);
 
 extern __declspec (dllexport) void SetRXAFMNCde (int channel, int nc);
 

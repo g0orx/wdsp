@@ -36,7 +36,7 @@ warren@wpratt.com
 void init_nob (NOB a)
 {
 	int i;
-	double coef;
+	real coef;
 	a->adv_slew_count = (int)(a->advslewtime * a->samplerate);
 	a->adv_count = (int)(a->advtime * a->samplerate);
 	a->hang_count = (int)(a->hangtime * a->samplerate);
@@ -64,17 +64,17 @@ PORT
 NOB create_nob (
 	int run,
 	int buffsize,
-	double* in,
-	double* out,
-	double samplerate,
+	real* in,
+	real* out,
+	real samplerate,
 	int mode,
-	double advslewtime,
-	double advtime,
-	double hangslewtime,
-	double hangtime,
-	double max_imp_seq_time,
-	double backtau,
-	double threshold
+	real advslewtime,
+	real advtime,
+	real hangslewtime,
+	real hangtime,
+	real max_imp_seq_time,
+	real backtau,
+	real threshold
 	)
 {
 	NOB a = (NOB) malloc0 (sizeof (nob));
@@ -96,15 +96,15 @@ NOB create_nob (
 											MAX_HANG_SLEW_TIME + 
 											MAX_HANG_TIME + 
 											MAX_SEQ_TIME ) + 2);
-	a->dline = (double *)malloc0 (a->dline_size * sizeof (complex));
+	a->dline = (real *)malloc0 (a->dline_size * sizeof (complex));
 	a->imp = (int *)malloc0 (a->dline_size * sizeof (int));
-	a->awave = (double *)malloc0 ((int)(MAX_ADV_SLEW_TIME  * MAX_SAMPLERATE + 1) * sizeof (double));
-	a->hwave = (double *)malloc0 ((int)(MAX_HANG_SLEW_TIME * MAX_SAMPLERATE + 1) * sizeof (double));
+	a->awave = (real *)malloc0 ((int)(MAX_ADV_SLEW_TIME  * MAX_SAMPLERATE + 1) * sizeof (real));
+	a->hwave = (real *)malloc0 ((int)(MAX_HANG_SLEW_TIME * MAX_SAMPLERATE + 1) * sizeof (real));
 
 	a->filterlen = 10;
-	a->bfbuff = (double *)malloc0 (a->filterlen * sizeof (complex));
-	a->ffbuff = (double *)malloc0 (a->filterlen * sizeof (complex));
-	a->fcoefs = (double *)malloc0 (a->filterlen * sizeof (double));
+	a->bfbuff = (real *)malloc0 (a->filterlen * sizeof (complex));
+	a->ffbuff = (real *)malloc0 (a->filterlen * sizeof (complex));
+	a->fcoefs = (real *)malloc0 (a->filterlen * sizeof (real));
 	a->fcoefs[0] = 0.308720593;
 	a->fcoefs[1] = 0.216104415;
 	a->fcoefs[2] = 0.151273090;
@@ -119,7 +119,7 @@ NOB create_nob (
 	InitializeCriticalSectionAndSpinCount (&a->cs_update, 2500);
 	init_nob (a);
 
-	a->legacy = (double *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
+	a->legacy = (real *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
 	return a;
 }
 
@@ -157,8 +157,8 @@ void flush_nob (NOB a)
 PORT
 void xnob (NOB a)
 {
-	double scale;
-    double mag;
+	real scale;
+    real mag;
     int bf_idx;
     int ff_idx;
     int lidx, tidx;
@@ -494,7 +494,7 @@ void xnob (NOB a)
 	LeaveCriticalSection (&a->cs_update);
 }
 
-void setBuffers_nob (NOB a, double* in, double* out)
+void setBuffers_nob (NOB a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -546,13 +546,13 @@ PORT
 void pSetRCVRNOBSamplerate (NOB a, int rate)
 {
 	EnterCriticalSection (&a->cs_update);
-	a->samplerate = (double) rate;
+	a->samplerate = (real) rate;
 	init_nob (a);
 	LeaveCriticalSection (&a->cs_update);
 }
 
 PORT
-void pSetRCVRNOBTau (NOB a, double tau)
+void pSetRCVRNOBTau (NOB a, real tau)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->advslewtime = tau;
@@ -562,7 +562,7 @@ void pSetRCVRNOBTau (NOB a, double tau)
 }
 
 PORT
-void pSetRCVRNOBHangtime (NOB a, double time)
+void pSetRCVRNOBHangtime (NOB a, real time)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->hangtime = time;
@@ -571,7 +571,7 @@ void pSetRCVRNOBHangtime (NOB a, double time)
 }
 
 PORT
-void pSetRCVRNOBAdvtime (NOB a, double time)
+void pSetRCVRNOBAdvtime (NOB a, real time)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->advtime = time;
@@ -580,7 +580,7 @@ void pSetRCVRNOBAdvtime (NOB a, double time)
 }
 
 PORT
-void pSetRCVRNOBBacktau (NOB a, double tau)
+void pSetRCVRNOBBacktau (NOB a, real tau)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->backtau = tau;
@@ -589,7 +589,7 @@ void pSetRCVRNOBBacktau (NOB a, double tau)
 }
 
 PORT
-void pSetRCVRNOBThreshold (NOB a, double thresh)
+void pSetRCVRNOBThreshold (NOB a, real thresh)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->threshold = thresh;
@@ -611,17 +611,17 @@ void create_nobEXT	(
 	int run,
 	int mode,
 	int buffsize,
-	double samplerate,
-	double slewtime,
-	double hangtime,
-	double advtime,
-	double backtau,
-	double threshold
+	real samplerate,
+	real slewtime,
+	real hangtime,
+	real advtime,
+	real backtau,
+	real threshold
 					)
 {
-	double advslewtime = slewtime;
-	double hangslewtime = slewtime;
-	double max_imp_seq_time = 0.025;
+	real advslewtime = slewtime;
+	real hangslewtime = slewtime;
+	real max_imp_seq_time = 0.025;
 	pnob[id] = create_nob (run, buffsize, 0, 0, samplerate, mode, advslewtime, advtime, hangslewtime, hangtime, max_imp_seq_time, backtau, threshold);
 }
 
@@ -638,7 +638,7 @@ void flush_nobEXT (int id)
 }
 
 PORT
-void xnobEXT (int id, double* in, double* out)
+void xnobEXT (int id, real* in, real* out)
 {
 	NOB a = pnob[id];
 	a->in = in;
@@ -678,13 +678,13 @@ void SetEXTNOBSamplerate (int id, int rate)
 {
 	NOB a = pnob[id];
 	EnterCriticalSection (&a->cs_update);
-	a->samplerate = (double) rate;
+	a->samplerate = (real) rate;
 	init_nob (a);
 	LeaveCriticalSection (&a->cs_update);
 }
 
 PORT
-void SetEXTNOBTau (int id, double tau)
+void SetEXTNOBTau (int id, real tau)
 {
 	NOB a = pnob[id];
 	EnterCriticalSection (&a->cs_update);
@@ -695,7 +695,7 @@ void SetEXTNOBTau (int id, double tau)
 }
 
 PORT
-void SetEXTNOBHangtime (int id, double time)
+void SetEXTNOBHangtime (int id, real time)
 {
 	NOB a = pnob[id];
 	EnterCriticalSection (&a->cs_update);
@@ -705,7 +705,7 @@ void SetEXTNOBHangtime (int id, double time)
 }
 
 PORT
-void SetEXTNOBAdvtime (int id, double time)
+void SetEXTNOBAdvtime (int id, real time)
 {
 	NOB a = pnob[id];
 	EnterCriticalSection (&a->cs_update);
@@ -715,7 +715,7 @@ void SetEXTNOBAdvtime (int id, double time)
 }
 
 PORT
-void SetEXTNOBBacktau (int id, double tau)
+void SetEXTNOBBacktau (int id, real tau)
 {
 	NOB a = pnob[id];
 	EnterCriticalSection (&a->cs_update);
@@ -725,7 +725,7 @@ void SetEXTNOBBacktau (int id, double tau)
 }
 
 PORT
-void SetEXTNOBThreshold (int id, double thresh)
+void SetEXTNOBThreshold (int id, real thresh)
 {
 	NOB a = pnob[id];
 	EnterCriticalSection (&a->cs_update);
@@ -748,8 +748,8 @@ void xnobEXTF (int id, float *I, float *Q)
 	a->out = a->legacy;
 	for (i = 0; i < a->buffsize; i++)
 	{
-		a->legacy[2 * i + 0] = (double)I[i];
-		a->legacy[2 * i + 1] = (double)Q[i];
+		a->legacy[2 * i + 0] = (real)I[i];
+		a->legacy[2 * i + 1] = (real)Q[i];
 	}
 	xnob (a);
 	for (i = 0; i < a->buffsize; i++)

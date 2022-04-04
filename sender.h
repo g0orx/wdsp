@@ -38,16 +38,16 @@ typedef struct _sender
 	int flag;			// secondary 'run'; AND'd with 'run'
 	int mode;			// selects the specific processing and function call
 	int size;			// size of the data buffer (complex samples)
-	double* in;			// buffer from which to take the data
+	real* in;			// buffer from which to take the data
 	int arg0;			// parameters that can be passed to the function called
 	int arg1;
 	int arg2;
 	int arg3;
-	double* out;		// internally created buffer into which processed data is placed
+	real* out;		// internally created buffer into which processed data is placed
 						// a pointer to *out is passed to the external function that is called
 } sender, *SENDER;
 
-extern SENDER create_sender (int run, int flag, int mode, int size, double* in, int arg0, int arg1, int arg2, int arg3);
+extern SENDER create_sender (int run, int flag, int mode, int size, real* in, int arg0, int arg1, int arg2, int arg3);
 
 extern void destroy_sender (SENDER a);
 
@@ -55,7 +55,7 @@ extern void flush_sender (SENDER a);
 
 extern void xsender (SENDER a);
 
-extern void setBuffers_sender (SENDER a, double* in);
+extern void setBuffers_sender (SENDER a, real* in);
 
 extern void setSamplerate_sender (SENDER a, int rate);
 

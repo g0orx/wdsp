@@ -32,8 +32,8 @@ warren@wpratt.com
 typedef struct _snba
 {
 	int run;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int inrate;
 	int internalrate;
 	int bsize;
@@ -43,53 +43,53 @@ typedef struct _snba
 	int iasize;
 	int iainidx;
 	int iaoutidx;
-	double* inaccum;
-	double* xbase;
-	double* xaux;
+	real* inaccum;
+	real* xbase;
+	real* xaux;
 	int nsamps;
 	int oasize;
 	int oainidx;
 	int oaoutidx;
 	int init_oaoutidx;
-	double* outaccum;
+	real* outaccum;
 
 	int resamprun;
 	int isize;
 	RESAMPLE inresamp;
 	RESAMPLE outresamp;
-	double* inbuff;
-	double* outbuff;
+	real* inbuff;
+	real* outbuff;
 	struct _exec
 	{
 		int asize;
-		double* a;
-		double* v;
+		real* a;
+		real* v;
 		int* detout;
-		double* savex;
-		double* xHout;
+		real* savex;
+		real* xHout;
 		int* unfixed;
 		int npasses;
 	} exec;
 	struct _det
 	{
-		double k1;
-		double k2;
+		real k1;
+		real k2;
 		int b;
 		int pre;
 		int post;
-		double* vp;
-		double* vpwr;
+		real* vp;
+		real* vpwr;
 	} sdet;
 	struct _scan
 	{
-		double pmultmin;
+		real pmultmin;
 	} scan;
-	double out_low_cut;
-	double out_high_cut;
+	real out_low_cut;
+	real out_high_cut;
 } snba, *SNBA;
 
-extern SNBA create_snba (int run, double* in, double* out, int inrate, int internalrate, int bsize, int ovrlp, int xsize,
-	int asize, int npasses, double k1, double k2, int b, int pre, int post, double pmultmin, double out_low_cut, double out_high_cut);
+extern SNBA create_snba (int run, real* in, real* out, int inrate, int internalrate, int bsize, int ovrlp, int xsize,
+	int asize, int npasses, real k1, real k2, int b, int pre, int post, real pmultmin, real out_low_cut, real out_high_cut);
 
 extern void destroy_snba (SNBA d);
 
@@ -97,13 +97,13 @@ extern void flush_snba (SNBA d);
 
 extern void xsnba (SNBA d);
 
-extern void setBuffers_snba (SNBA a, double* in, double* out);
+extern void setBuffers_snba (SNBA a, real* in, real* out);
 
 extern void setSamplerate_snba (SNBA a, int rate);
 
 extern void setSize_snba (SNBA a, int size);
 
-__declspec (dllexport) void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh);
+__declspec (dllexport) void SetRXASNBAOutputBandwidth (int channel, real flow, real fhigh);
 
 typedef struct _bpsnba
 {
@@ -113,17 +113,17 @@ typedef struct _bpsnba
 		int size;						// buffer size
 		int nc;							// number of filter coefficients
 		int mp;							// minimum phase flag
-		double* in;						// input buffer
-		double* out;					// output buffer
+		real* in;						// input buffer
+		real* out;					// output buffer
 		int rate;						// sample rate
-		double* buff;					// internal buffer
+		real* buff;					// internal buffer
 		NBP bpsnba;						// pointer to the notched bandpass filter, nbp
-		double f_low;					// low cutoff frequency
-		double f_high;					// high cutoff frequency
-		double abs_low_freq;			// lowest positive freq supported by SNB
-		double abs_high_freq;			// highest positive freq supported by SNG
+		real f_low;					// low cutoff frequency
+		real f_high;					// high cutoff frequency
+		real abs_low_freq;			// lowest positive freq supported by SNB
+		real abs_high_freq;			// highest positive freq supported by SNG
 		int wintype;					// filter window type
-		double gain;					// filter gain
+		real gain;					// filter gain
 		int autoincr;					// use auto increment for notch width
 		int maxpb;						// maximum passband segments supported
 		NOTCHDB* ptraddr;				// pointer to address of NOTCH DATABASE
@@ -133,15 +133,15 @@ extern void calc_bpsnba (BPSNBA a);
 
 extern void decalc_bpsnba (BPSNBA a);
 
-extern BPSNBA create_bpsnba (int run, int run_notches, int position, int size, int nc, int mp, double* in, double* out, int rate,  
-	double abs_low_freq, double abs_high_freq, double f_low, double f_high, int wintype, double gain, int autoincr, 
+extern BPSNBA create_bpsnba (int run, int run_notches, int position, int size, int nc, int mp, real* in, real* out, int rate,  
+	real abs_low_freq, real abs_high_freq, real f_low, real f_high, int wintype, real gain, int autoincr, 
 	int maxpb, NOTCHDB* ptraddr);
 
 extern void destroy_bpsnba (BPSNBA a);
 
 extern void flush_bpsnba (BPSNBA a);
 
-extern void setBuffers_bpsnba (BPSNBA a, double* in, double* out);
+extern void setBuffers_bpsnba (BPSNBA a, real* in, real* out);
 
 extern void setSamplerate_bpsnba (BPSNBA a, int rate);
 

@@ -27,7 +27,7 @@ warren@wpratt.com
 #include "comm.h"
 
 PORT
-EER create_eer (int run, int size, double* in, double* out, double* outM, int rate, double mgain, double pgain, int rundelays, double mdelay, double pdelay, int amiq)
+EER create_eer (int run, int size, real* in, real* out, real* outM, int rate, real mgain, real pgain, int rundelays, real mdelay, real pdelay, int amiq)
 {
 	EER a = (EER) malloc0 (sizeof (eer));
 	a->run = run;
@@ -60,8 +60,8 @@ EER create_eer (int run, int size, double* in, double* out, double* outM, int ra
 		a->pdelay);									// delay
 	InitializeCriticalSectionAndSpinCount(&a->cs_update, 2500);
 
-	a->legacy  = (double *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
-	a->legacyM = (double *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
+	a->legacy  = (real *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
+	a->legacyM = (real *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
 
 	return a;
 }
@@ -89,7 +89,7 @@ void xeer (EER a)
 	if (a->run)
 	{
 		int i;
-		double I, Q, mag;
+		real I, Q, mag;
 		for (i = 0; i < a->size; i++)
 		{
 			I = a->in[2 * i + 0];
@@ -132,7 +132,7 @@ __declspec (align (16)) EER peer[MAX_EXT_EERS];		// array of pointers for EERs u
 
 
 PORT
-void create_eerEXT (int id, int run, int size, int rate, double mgain, double pgain, int rundelays, double mdelay, double pdelay, int amiq)
+void create_eerEXT (int id, int run, int size, int rate, real mgain, real pgain, int rundelays, real mdelay, real pdelay, int amiq)
 {
 	peer[id] = create_eer (run, size, 0, 0, 0, rate, mgain, pgain, rundelays, mdelay, pdelay, amiq);
 }
@@ -168,7 +168,7 @@ void SetEERAMIQ (int id, int amiq)
 }
 
 PORT
-void SetEERMgain (int id, double gain)
+void SetEERMgain (int id, real gain)
 {
 	EER a = peer[id];
 	EnterCriticalSection (&a->cs_update);
@@ -177,7 +177,7 @@ void SetEERMgain (int id, double gain)
 }
 
 PORT
-void SetEERPgain (int id, double gain)
+void SetEERPgain (int id, real gain)
 {
 	EER a = peer[id];
 	EnterCriticalSection (&a->cs_update);
@@ -197,7 +197,7 @@ void SetEERRunDelays (int id, int run)
 }
 
 PORT
-void SetEERMdelay (int id, double delay)
+void SetEERMdelay (int id, real delay)
 {
 	EER a = peer[id];
 	EnterCriticalSection (&a->cs_update);
@@ -207,7 +207,7 @@ void SetEERMdelay (int id, double delay)
 }
 
 PORT
-void SetEERPdelay (int id, double delay)
+void SetEERPdelay (int id, real delay)
 {
 	EER a = peer[id];
 	EnterCriticalSection (&a->cs_update);
@@ -277,7 +277,7 @@ void pSetEERAMIQ (EER a, int amiq)
 }
 
 PORT
-void pSetEERMgain (EER a, double gain)
+void pSetEERMgain (EER a, real gain)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->mgain = gain;
@@ -285,7 +285,7 @@ void pSetEERMgain (EER a, double gain)
 }
 
 PORT
-void pSetEERPgain (EER a, double gain)
+void pSetEERPgain (EER a, real gain)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->pgain = gain;
@@ -303,7 +303,7 @@ void pSetEERRunDelays (EER a, int run)
 }
 
 PORT
-void pSetEERMdelay (EER a, double delay)
+void pSetEERMdelay (EER a, real delay)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->mdelay = delay;
@@ -312,7 +312,7 @@ void pSetEERMdelay (EER a, double delay)
 }
 
 PORT
-void pSetEERPdelay (EER a, double delay)
+void pSetEERPdelay (EER a, real delay)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->pdelay = delay;
@@ -378,8 +378,8 @@ void xeerEXTF (int id, float* inI, float* inQ, float* outI, float* outQ, float* 
 		SetDelayBuffs (a->pdel, a->size, a->out, a->out);
 		for (i = 0; i < a->size; i++)
 		{
-			a->legacy[2 * i + 0] = (double)inI[i];
-			a->legacy[2 * i + 1] = (double)inQ[i];
+			a->legacy[2 * i + 0] = (real)inI[i];
+			a->legacy[2 * i + 1] = (real)inQ[i];
 		}
 		xeer (a);
 		for (i = 0; i < a->size; i++)

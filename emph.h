@@ -40,17 +40,17 @@ typedef struct _emphp
 	int size;
 	int nc;
 	int mp;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int ctype;
-	double f_low;
-	double f_high;
-	double rate;
+	real f_low;
+	real f_high;
+	real rate;
 	FIRCORE p;
 } emphp, *EMPHP;
 
 extern EMPHP create_emphp (int run, int position, int size, int nc, int mp, 
-	double* in, double* out, int rate, int ctype, double f_low, double f_high);
+	real* in, real* out, int rate, int ctype, real f_low, real f_high);
 
 extern void destroy_emphp (EMPHP a);
 
@@ -58,7 +58,7 @@ extern void flush_emphp (EMPHP a);
 
 extern void xemphp (EMPHP a, int position);
 
-extern void setBuffers_emphp (EMPHP a, double* in, double* out);
+extern void setBuffers_emphp (EMPHP a, real* in, real* out);
 
 extern void setSamplerate_emphp (EMPHP a, int rate);
 
@@ -84,20 +84,20 @@ typedef struct _emph
 	int run;
 	int position;
 	int size;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int ctype;
-	double f_low;
-	double f_high;
-	double* infilt;
-	double* product;
-	double* mults;
-	double rate;
+	real f_low;
+	real f_high;
+	real* infilt;
+	real* product;
+	real* mults;
+	real rate;
 	fftw_plan CFor;
 	fftw_plan CRev;
 } emph, *EMPH;
 
-extern EMPH create_emph (int run, int position, int size, double* in, double* out, int rate, int ctype, double f_low, double f_high);
+extern EMPH create_emph (int run, int position, int size, real* in, real* out, int rate, int ctype, real f_low, real f_high);
 
 extern void destroy_emph (EMPH a);
 
@@ -105,7 +105,7 @@ extern void flush_emph (EMPH a);
 
 extern void xemph (EMPH a, int position);
 
-extern void setBuffers_emph (EMPH a, double* in, double* out);
+extern void setBuffers_emph (EMPH a, real* in, real* out);
 
 extern void setSamplerate_emph (EMPH a, int rate);
 

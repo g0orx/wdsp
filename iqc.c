@@ -29,14 +29,14 @@ warren@wpratt.com
 void size_iqc (IQC a)
 {
 	int i;
-	a->t =	(double *) malloc0 ((a->ints + 1) * sizeof(double));
+	a->t =	(real *) malloc0 ((a->ints + 1) * sizeof(real));
 	for (i = 0; i <= a->ints; i++)
-		a->t[i] = (double)i / (double)a->ints;
+		a->t[i] = (real)i / (real)a->ints;
 	for (i = 0; i < 2; i++)
 	{
-		a->cm[i] = (double *) malloc0 (a->ints * 4 * sizeof(double));
-		a->cc[i] = (double *) malloc0 (a->ints * 4 * sizeof(double));
-		a->cs[i] = (double *) malloc0 (a->ints * 4 * sizeof(double));
+		a->cm[i] = (real *) malloc0 (a->ints * 4 * sizeof(real));
+		a->cc[i] = (real *) malloc0 (a->ints * 4 * sizeof(real));
+		a->cs[i] = (real *) malloc0 (a->ints * 4 * sizeof(real));
 	}
 	a->dog.cpi = (int *) malloc0 (a->ints * sizeof (int));
 	a->dog.count = 0;
@@ -59,14 +59,14 @@ void desize_iqc (IQC a)
 void calc_iqc (IQC a)
 {
 	int i;
-	double delta, theta;
+	real delta, theta;
 	a->cset = 0;
 	a->count = 0;
 	a->state = 0;
 	a->busy = 0;
 	a->ntup = (int)(a->tup * a->rate);
-	a->cup = (double *) malloc0 ((a->ntup + 1) * sizeof (double));
-	delta = PI / (double)a->ntup;
+	a->cup = (real *) malloc0 ((a->ntup + 1) * sizeof (real));
+	delta = PI / (real)a->ntup;
 	theta = 0.0;
 	for (i = 0; i <= a->ntup; i++)
 	{
@@ -84,7 +84,7 @@ void decalc_iqc (IQC a)
 	_aligned_free (a->cup);
 }
 
-IQC create_iqc (int run, int size, double* in, double* out, double rate, int ints, double tup, int spi)
+IQC create_iqc (int run, int size, real* in, real* out, real rate, int ints, real tup, int spi)
 {
 	IQC a = (IQC) malloc0 (sizeof (iqc));
 	a->run = run;
@@ -124,7 +124,7 @@ void xiqc (IQC a)
 	if (_InterlockedAnd(&a->run, 1))
 	{
 		int i, k, cset, mset;
-		double I, Q, env, dx, ym, yc, ys, PRE0, PRE1;
+		real I, Q, env, dx, ym, yc, ys, PRE0, PRE1;
 		for (i = 0; i < a->size; i++)
 		{
 			I = a->in[2 * i + 0];
@@ -202,7 +202,7 @@ void xiqc (IQC a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_iqc (IQC a, double* in, double* out)
+void setBuffers_iqc (IQC a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -227,40 +227,40 @@ void setSize_iqc (IQC a, int size)
 ********************************************************************************************************/
 
 PORT
-void GetTXAiqcValues (int channel, double* cm, double* cc, double* cs)
+void GetTXAiqcValues (int channel, real* cm, real* cc, real* cs)
 {
 	IQC a;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = txa[channel].iqc.p0;
-	memcpy (cm, a->cm[a->cset], a->ints * 4 * sizeof (double));
-	memcpy (cc, a->cc[a->cset], a->ints * 4 * sizeof (double));
-	memcpy (cs, a->cs[a->cset], a->ints * 4 * sizeof (double));
+	memcpy (cm, a->cm[a->cset], a->ints * 4 * sizeof (real));
+	memcpy (cc, a->cc[a->cset], a->ints * 4 * sizeof (real));
+	memcpy (cs, a->cs[a->cset], a->ints * 4 * sizeof (real));
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
 PORT
-void SetTXAiqcValues (int channel, double* cm, double* cc, double* cs)
+void SetTXAiqcValues (int channel, real* cm, real* cc, real* cs)
 {
 	IQC a;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = txa[channel].iqc.p0;
 	a->cset = 1 - a->cset;
-	memcpy (a->cm[a->cset], cm, a->ints * 4 * sizeof (double));
-	memcpy (a->cc[a->cset], cc, a->ints * 4 * sizeof (double));
-	memcpy (a->cs[a->cset], cs, a->ints * 4 * sizeof (double));
+	memcpy (a->cm[a->cset], cm, a->ints * 4 * sizeof (real));
+	memcpy (a->cc[a->cset], cc, a->ints * 4 * sizeof (real));
+	memcpy (a->cs[a->cset], cs, a->ints * 4 * sizeof (real));
 	a->state = RUN;
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
 PORT
-void SetTXAiqcSwap (int channel, double* cm, double* cc, double* cs)
+void SetTXAiqcSwap (int channel, real* cm, real* cc, real* cs)
 {
 	IQC a = txa[channel].iqc.p1;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a->cset = 1 - a->cset;
-	memcpy (a->cm[a->cset], cm, a->ints * 4 * sizeof (double));
-	memcpy (a->cc[a->cset], cc, a->ints * 4 * sizeof (double));
-	memcpy (a->cs[a->cset], cs, a->ints * 4 * sizeof (double));
+	memcpy (a->cm[a->cset], cm, a->ints * 4 * sizeof (real));
+	memcpy (a->cc[a->cset], cc, a->ints * 4 * sizeof (real));
+	memcpy (a->cs[a->cset], cs, a->ints * 4 * sizeof (real));
 	InterlockedBitTestAndSet (&a->busy, 0);
 	a->state = SWAP;
 	a->count = 0;
@@ -269,14 +269,14 @@ void SetTXAiqcSwap (int channel, double* cm, double* cc, double* cs)
 }
 
 PORT
-void SetTXAiqcStart (int channel, double* cm, double* cc, double* cs)
+void SetTXAiqcStart (int channel, real* cm, real* cc, real* cs)
 {
 	IQC a = txa[channel].iqc.p1;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a->cset = 0;
-	memcpy (a->cm[a->cset], cm, a->ints * 4 * sizeof (double));
-	memcpy (a->cc[a->cset], cc, a->ints * 4 * sizeof (double));
-	memcpy (a->cs[a->cset], cs, a->ints * 4 * sizeof (double));
+	memcpy (a->cm[a->cset], cm, a->ints * 4 * sizeof (real));
+	memcpy (a->cc[a->cset], cc, a->ints * 4 * sizeof (real));
+	memcpy (a->cs[a->cset], cs, a->ints * 4 * sizeof (real));
 	InterlockedBitTestAndSet (&a->busy, 0);
 	a->state = BEGIN;
 	a->count = 0;

@@ -33,9 +33,9 @@ void create_txa (int channel)
 	txa[channel].mode   = TXA_LSB;
 	txa[channel].f_low  = -5000.0;
 	txa[channel].f_high = - 100.0;
-	txa[channel].inbuff  = (double *) malloc0 (1 * ch[channel].dsp_insize  * sizeof (complex));
-	txa[channel].outbuff = (double *) malloc0 (1 * ch[channel].dsp_outsize * sizeof (complex));
-	txa[channel].midbuff = (double *) malloc0 (2 * ch[channel].dsp_size    * sizeof (complex));
+	txa[channel].inbuff  = (real *) malloc0 (1 * ch[channel].dsp_insize  * sizeof (complex));
+	txa[channel].outbuff = (real *) malloc0 (1 * ch[channel].dsp_outsize * sizeof (complex));
+	txa[channel].midbuff = (real *) malloc0 (2 * ch[channel].dsp_size    * sizeof (complex));
 
 	txa[channel].rsmpin.p = create_resample (
 		0,											// run - will be turned on below if needed
@@ -109,9 +109,9 @@ void create_txa (int channel)
 		0.200);										// muted gain
 
 	{
-	double default_F[11] = {0.0,  32.0,  63.0, 125.0, 250.0, 500.0, 1000.0, 2000.0, 4000.0, 8000.0, 16000.0};
-	double default_G[11] = {0.0, -12.0, -12.0, -12.0,  -1.0,  +1.0,   +4.0,   +9.0,  +12.0,  -10.0,   -10.0};
-	//double default_G[11] =   {0.0,   0.0,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0,    0.0,    0.0,     0.0};
+	real default_F[11] = {0.0,  32.0,  63.0, 125.0, 250.0, 500.0, 1000.0, 2000.0, 4000.0, 8000.0, 16000.0};
+	real default_G[11] = {0.0, -12.0, -12.0, -12.0,  -1.0,  +1.0,   +4.0,   +9.0,  +12.0,  -10.0,   -10.0};
+	//real default_G[11] =   {0.0,   0.0,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0,    0.0,    0.0,     0.0};
 	txa[channel].eqp.p = create_eqp (
 		0,											// run - OFF by default
 		ch[channel].dsp_size,						// size
@@ -196,9 +196,9 @@ void create_txa (int channel)
 		&txa[channel].leveler.p->gain);				// pointer for gain computation
 
 	{
-	double default_F[5] = {200.0, 1000.0, 2000.0, 3000.0, 4000.0};
-	double default_G[5] = {0.0, 5.0, 10.0, 10.0, 5.0};
-	double default_E[5] = {7.0, 7.0, 7.0, 7.0, 7.0};
+	real default_F[5] = {200.0, 1000.0, 2000.0, 3000.0, 4000.0};
+	real default_G[5] = {0.0, 5.0, 10.0, 10.0, 5.0};
+	real default_E[5] = {7.0, 7.0, 7.0, 7.0, 7.0};
 	txa[channel].cfcomp.p = create_cfcomp (
 		0,											// run
 		0,											// position
@@ -425,7 +425,7 @@ void create_txa (int channel)
 		ch[channel].dsp_size,						// size
 		txa[channel].midbuff,						// input buffer
 		txa[channel].midbuff,						// output buffer
-		(double)ch[channel].dsp_rate,				// sample rate
+		(real)ch[channel].dsp_rate,				// sample rate
 		16,											// ints
 		0.005,										// changeover time
 		256);										// spi
@@ -594,7 +594,7 @@ void setInputSamplerate_txa (int channel)
 {
 	// buffers
 	_aligned_free (txa[channel].inbuff);
-	txa[channel].inbuff = (double *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
+	txa[channel].inbuff = (real *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
 	// input resampler
 	setBuffers_resample (txa[channel].rsmpin.p, txa[channel].inbuff, txa[channel].midbuff);
 	setSize_resample (txa[channel].rsmpin.p, ch[channel].dsp_insize);
@@ -606,7 +606,7 @@ void setOutputSamplerate_txa (int channel)
 {
 	// buffers
 	_aligned_free (txa[channel].outbuff);
-	txa[channel].outbuff = (double *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
+	txa[channel].outbuff = (real *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
 	// cfir - needs to know input rate of firmware CIC
 	setOutRate_cfir (txa[channel].cfir.p, ch[channel].out_rate);
 	// output resampler
@@ -623,9 +623,9 @@ void setDSPSamplerate_txa (int channel)
 {
 	// buffers
 	_aligned_free (txa[channel].inbuff);
-	txa[channel].inbuff = (double *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
+	txa[channel].inbuff = (real *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
 	_aligned_free (txa[channel].outbuff);
-	txa[channel].outbuff = (double *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
+	txa[channel].outbuff = (real *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
 	// input resampler
 	setBuffers_resample (txa[channel].rsmpin.p, txa[channel].inbuff, txa[channel].midbuff);
 	setSize_resample (txa[channel].rsmpin.p, ch[channel].dsp_insize);
@@ -671,11 +671,11 @@ void setDSPBuffsize_txa (int channel)
 {
 	// buffers
 	_aligned_free (txa[channel].inbuff);
-	txa[channel].inbuff = (double *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
+	txa[channel].inbuff = (real *)malloc0(1 * ch[channel].dsp_insize  * sizeof(complex));
 	_aligned_free (txa[channel].midbuff);
-	txa[channel].midbuff = (double *)malloc0(2 * ch[channel].dsp_size * sizeof(complex));
+	txa[channel].midbuff = (real *)malloc0(2 * ch[channel].dsp_size * sizeof(complex));
 	_aligned_free (txa[channel].outbuff);
-	txa[channel].outbuff = (double *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
+	txa[channel].outbuff = (real *)malloc0(1 * ch[channel].dsp_outsize * sizeof(complex));
 	// input resampler
 	setBuffers_resample (txa[channel].rsmpin.p, txa[channel].inbuff, txa[channel].midbuff);
 	setSize_resample (txa[channel].rsmpin.p, ch[channel].dsp_insize);
@@ -788,7 +788,7 @@ void SetTXAMode (int channel, int mode)
 }
 
 PORT
-void SetTXABandpassFreqs (int channel, double f_low, double f_high)
+void SetTXABandpassFreqs (int channel, real f_low, real f_high)
 {
 	if ((txa[channel].f_low != f_low) || (txa[channel].f_high != f_high))
 	{

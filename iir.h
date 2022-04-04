@@ -37,17 +37,17 @@ typedef struct _snotch
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
-	double rate;
-	double f;
-	double bw;
-	double a0, a1, a2, b1, b2;
-	double x0, x1, x2, y1, y2;
+	real* in;
+	real* out;
+	real rate;
+	real f;
+	real bw;
+	real a0, a1, a2, b1, b2;
+	real x0, x1, x2, y1, y2;
 	CRITICAL_SECTION cs_update;
 } snotch, *SNOTCH;
 
-extern SNOTCH create_snotch (int run, int size, double* in, double* out, int rate, double f, double bw);
+extern SNOTCH create_snotch (int run, int size, real* in, real* out, int rate, real f, real bw);
 
 extern void destroy_snotch (SNOTCH a);
 
@@ -55,13 +55,13 @@ extern void flush_snotch (SNOTCH a);
 
 extern void xsnotch (SNOTCH a);
 
-extern void setBuffers_snotch (SNOTCH a, double* in, double* out);
+extern void setBuffers_snotch (SNOTCH a, real* in, real* out);
 
 extern void setSamplerate_snotch (SNOTCH a, int rate);
 
 extern void setSize_snotch (SNOTCH a, int size);
 
-extern void SetSNCTCSSFreq (SNOTCH a, double freq);
+extern void SetSNCTCSSFreq (SNOTCH a, real freq);
 
 extern void SetSNCTCSSRun (SNOTCH a, int run);
 
@@ -80,22 +80,22 @@ typedef struct _speak
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
-	double rate;
-	double f;
-	double bw;
-	double cbw;
-	double gain;
-	double fgain;
+	real* in;
+	real* out;
+	real rate;
+	real f;
+	real bw;
+	real cbw;
+	real gain;
+	real fgain;
 	int nstages;
 	int design;
-	double a0, a1, a2, b1, b2;
-	double *x0, *x1, *x2, *y0, *y1, *y2;
+	real a0, a1, a2, b1, b2;
+	real *x0, *x1, *x2, *y0, *y1, *y2;
 	CRITICAL_SECTION cs_update;
 } speak, *SPEAK;
 
-extern SPEAK create_speak (int run, int size, double* in, double* out, int rate, double f, double bw, double gain, int nstages, int design);
+extern SPEAK create_speak (int run, int size, real* in, real* out, int rate, real f, real bw, real gain, int nstages, int design);
 
 extern void destroy_speak (SPEAK a);
 
@@ -103,7 +103,7 @@ extern void flush_speak (SPEAK a);
 
 extern void xspeak (SPEAK a);
 
-extern void setBuffers_speak (SPEAK a, double* in, double* out);
+extern void setBuffers_speak (SPEAK a, real* in, real* out);
 
 extern void setSamplerate_speak (SPEAK a, int rate);
 
@@ -124,22 +124,22 @@ typedef struct _mpeak
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int rate;
 	int npeaks;
 	int* enable;
-	double* f;
-	double* bw;
-	double* gain;
+	real* f;
+	real* bw;
+	real* gain;
 	int nstages;
 	SPEAK* pfil;
-	double* tmp;
-	double* mix;
+	real* tmp;
+	real* mix;
 	CRITICAL_SECTION cs_update;
 } mpeak, *MPEAK;
 
-extern MPEAK create_mpeak (int run, int size, double* in, double* out, int rate, int npeaks, int* enable, double* f, double* bw, double* gain, int nstages);
+extern MPEAK create_mpeak (int run, int size, real* in, real* out, int rate, int npeaks, int* enable, real* f, real* bw, real* gain, int nstages);
 
 extern void destroy_mpeak (MPEAK a);
 
@@ -147,7 +147,7 @@ extern void flush_mpeak (MPEAK a);
 
 extern void xmpeak (MPEAK a);
 
-extern void setBuffers_mpeak (MPEAK a, double* in, double* out);
+extern void setBuffers_mpeak (MPEAK a, real* in, real* out);
 
 extern void setSamplerate_mpeak (MPEAK a, int rate);
 
@@ -168,18 +168,18 @@ typedef struct _phrot
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
+	real* in;
+	real* out;
 	int rate;
-	double fc;
+	real fc;
 	int nstages;
 	// normalized such that a0 = 1
-	double a1, b0, b1;
-	double *x0, *x1, *y0, *y1;
+	real a1, b0, b1;
+	real *x0, *x1, *y0, *y1;
 	CRITICAL_SECTION cs_update;
 } phrot, *PHROT;
 
-extern PHROT create_phrot (int run, int size, double* in, double* out, int rate, double fc, int nstages);
+extern PHROT create_phrot (int run, int size, real* in, real* out, int rate, real fc, int nstages);
 
 extern void destroy_phrot (PHROT a);
 
@@ -187,7 +187,7 @@ extern void flush_phrot (PHROT a);
 
 extern void xphrot (PHROT a);
 
-extern void setBuffers_phrot (PHROT a, double* in, double* out);
+extern void setBuffers_phrot (PHROT a, real* in, real* out);
 
 extern void setSamplerate_phrot (PHROT a, int rate);
 

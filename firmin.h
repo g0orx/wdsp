@@ -38,23 +38,23 @@ typedef struct _firmin
 	int run;				// run control
 	int position;			// position at which to execute
 	int size;				// input/output buffer size, power of two
-	double* in;				// input buffer
-	double* out;			// output buffer, can be same as input
+	real* in;				// input buffer
+	real* out;			// output buffer, can be same as input
 	int nc;					// number of filter coefficients, power of two
-	double f_low;			// low cutoff frequency
-	double f_high;			// high cutoff frequency
-	double* ring;			// internal complex ring buffer
-	double* h;				// complex filter coefficients
+	real f_low;			// low cutoff frequency
+	real f_high;			// high cutoff frequency
+	real* ring;			// internal complex ring buffer
+	real* h;				// complex filter coefficients
 	int rsize;				// ring size, number of complex samples, power of two
 	int mask;				// mask to update indexes
 	int idx;				// ring input/output index
-	double samplerate;		// sample rate
+	real samplerate;		// sample rate
 	int wintype;			// filter window type
-	double gain;			// filter gain
+	real gain;			// filter gain
 }firmin, *FIRMIN;
 
-extern FIRMIN create_firmin (int run, int position, int size, double* in, double* out, 
-	int nc, double f_low, double f_high, int samplerate, int wintype, double gain);
+extern FIRMIN create_firmin (int run, int position, int size, real* in, real* out, 
+	int nc, real f_low, real f_high, int samplerate, int wintype, real gain);
 
 extern void destroy_firmin (FIRMIN a);
 
@@ -62,13 +62,13 @@ extern void flush_firmin (FIRMIN a);
 
 extern void xfirmin (FIRMIN a, int pos);
 
-extern void setBuffers_firmin (FIRMIN a, double* in, double* out);
+extern void setBuffers_firmin (FIRMIN a, real* in, real* out);
 
 extern void setSamplerate_firmin (FIRMIN a, int rate);
 
 extern void setSize_firmin (FIRMIN a, int size);
 
-extern void setFreqs_firmin (FIRMIN a, double f_low, double f_high);
+extern void setFreqs_firmin (FIRMIN a, real f_low, real f_high);
 
 #endif
 
@@ -86,29 +86,29 @@ typedef struct _firopt
 	int run;				// run control
 	int position;			// position at which to execute
 	int size;				// input/output buffer size, power of two
-	double* in;				// input buffer
-	double* out;			// output buffer, can be same as input
+	real* in;				// input buffer
+	real* out;			// output buffer, can be same as input
 	int nc;					// number of filter coefficients, power of two, >= size
-	double f_low;			// low cutoff frequency
-	double f_high;			// high cutoff frequency
-	double samplerate;		// sample rate
+	real f_low;			// low cutoff frequency
+	real f_high;			// high cutoff frequency
+	real samplerate;		// sample rate
 	int wintype;			// filter window type
-	double gain;			// filter gain
+	real gain;			// filter gain
 	int nfor;				// number of buffers in delay line
-	double* fftin;			// fft input buffer
-	double** fmask;			// frequency domain masks
-	double** fftout;		// fftout delay line
-	double* accum;			// frequency domain accumulator
+	real* fftin;			// fft input buffer
+	real** fmask;			// frequency domain masks
+	real** fftout;		// fftout delay line
+	real* accum;			// frequency domain accumulator
 	int buffidx;			// fft out buffer index
 	int idxmask;			// mask for index computations
-	double* maskgen;		// input for mask generation FFT
+	real* maskgen;		// input for mask generation FFT
 	fftw_plan* pcfor;		// array of forward FFT plans
 	fftw_plan crev;			// reverse fft plan
 	fftw_plan* maskplan;	// plans for frequency domain masks
 } firopt, *FIROPT;
 
-extern FIROPT create_firopt (int run, int position, int size, double* in, double* out, 
-	int nc, double f_low, double f_high, int samplerate, int wintype, double gain);
+extern FIROPT create_firopt (int run, int position, int size, real* in, real* out, 
+	int nc, real f_low, real f_high, int samplerate, int wintype, real gain);
 
 extern void xfiropt (FIROPT a, int pos);
 
@@ -116,13 +116,13 @@ extern void destroy_firopt (FIROPT a);
 
 extern void flush_firopt (FIROPT a);
 
-extern void setBuffers_firopt (FIROPT a, double* in, double* out);
+extern void setBuffers_firopt (FIROPT a, real* in, real* out);
 
 extern void setSamplerate_firopt (FIROPT a, int rate);
 
 extern void setSize_firopt (FIROPT a, int size);
 
-extern void setFreqs_firopt (FIROPT a, double f_low, double f_high);
+extern void setFreqs_firopt (FIROPT a, real f_low, real f_high);
 
 #endif
 
@@ -138,19 +138,19 @@ extern void setFreqs_firopt (FIROPT a, double f_low, double f_high);
 typedef struct _fircore
 {
 	int size;				// input/output buffer size, power of two
-	double* in;				// input buffer
-	double* out;			// output buffer, can be same as input
+	real* in;				// input buffer
+	real* out;			// output buffer, can be same as input
 	int nc;					// number of filter coefficients, power of two, >= size
-	double* impulse;		// impulse response of filter
-	double* imp;
+	real* impulse;		// impulse response of filter
+	real* imp;
 	int nfor;				// number of buffers in delay line
-	double* fftin;			// fft input buffer
-	double*** fmask;		// frequency domain masks
-	double** fftout;		// fftout delay line
-	double* accum;			// frequency domain accumulator
+	real* fftin;			// fft input buffer
+	real*** fmask;		// frequency domain masks
+	real** fftout;		// fftout delay line
+	real* accum;			// frequency domain accumulator
 	int buffidx;			// fft out buffer index
 	int idxmask;			// mask for index computations
-	double* maskgen;		// input for mask generation FFT
+	real* maskgen;		// input for mask generation FFT
 	fftw_plan* pcfor;		// array of forward FFT plans
 	fftw_plan crev;			// reverse fft plan
 	fftw_plan** maskplan;	// plans for frequency domain masks
@@ -160,8 +160,8 @@ typedef struct _fircore
 	int masks_ready;
 } fircore, *FIRCORE;
 
-extern FIRCORE create_fircore (int size, double* in, double* out, 
-	int nc, int mp, double* impulse);
+extern FIRCORE create_fircore (int size, real* in, real* out, 
+	int nc, int mp, real* impulse);
 
 extern void xfircore (FIRCORE a);
 
@@ -169,13 +169,13 @@ extern void destroy_fircore (FIRCORE a);
 
 extern void flush_fircore (FIRCORE a);
 
-extern void setBuffers_fircore (FIRCORE a, double* in, double* out);
+extern void setBuffers_fircore (FIRCORE a, real* in, real* out);
 
 extern void setSize_fircore (FIRCORE a, int size);
 
-extern void setImpulse_fircore (FIRCORE a, double* impulse, int update);
+extern void setImpulse_fircore (FIRCORE a, real* impulse, int update);
 
-extern void setNc_fircore (FIRCORE a, int nc, double* impulse);
+extern void setNc_fircore (FIRCORE a, int nc, real* impulse);
 
 extern void setMp_fircore (FIRCORE a, int mp);
 

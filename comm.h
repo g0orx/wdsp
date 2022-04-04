@@ -47,7 +47,37 @@ warren@wpratt.com
 #endif
 #include <math.h>
 #include <time.h>
+#include <float.h>
 #include "fftw3.h"
+
+#if USE_FLOAT32
+typedef float real;
+#define fftw_complex fftwf_complex
+#define fftw_plan fftwf_plan
+#define fftw_plan_dft_1d fftwf_plan_dft_1d
+#define fftw_plan_dft_r2c_1d fftwf_plan_dft_r2c_1d
+#define fftw_plan_dft_c2r_1d fftwf_plan_dft_c2r_1d
+#define fftw_destroy_plan fftwf_destroy_plan
+#define fftw_execute fftwf_execute
+#define fabs fabsf
+#define pow powf
+#define cos cosf
+#define sin sinf
+#define exp expf
+#define sqrt sqrtf
+#define log10 log10f
+#define REAL "%e"
+#define REAL_MAX FLT_MAX
+#define REAL_MIN FLT_MIN
+#define REAL_EPSILON FLT_EPSILON
+#else
+typedef double real;
+typedef fftw_complex fftw_complex;
+#define REAL "%le"
+#define REAL_MAX DBL_MAX
+#define REAL_MIN DBL_MIN
+#define REAL_EPSILON DBL_EPSILON
+#endif
 
 #include "amd.h"
 #include "ammod.h"
@@ -120,7 +150,7 @@ warren@wpratt.com
 #define dMAX_PIXELS						16384				// maximum number of pixels that can be requested
 #define dMAX_AVERAGE					60					// maximum number of pixel frames that will be window-averaged
 #ifdef _Thetis
-#define dINREAL							double
+#define dINREAL							real
 #else
 #define dINREAL							float
 #endif
@@ -141,5 +171,5 @@ warren@wpratt.com
 #define TWOPI							6.2831853071795864
 
 // miscellaneous
-typedef double complex[2];
+typedef real complex[2];
 #define PORT							__declspec( dllexport )

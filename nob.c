@@ -55,14 +55,14 @@ PORT
 ANB create_anb	(
 	int run,
 	int buffsize,
-	double* in,
-	double* out,
-	double samplerate,
-	double tau,
-	double hangtime,
-	double advtime,
-	double backtau,
-	double threshold
+	real* in,
+	real* out,
+	real samplerate,
+	real tau,
+	real hangtime,
+	real advtime,
+	real backtau,
+	real threshold
 				)
 {
 	ANB a;
@@ -77,12 +77,12 @@ ANB create_anb	(
 	a->advtime = advtime;
 	a->backtau = backtau;
 	a->threshold = threshold;
-	a->wave = (double *) malloc0 (((int)(MAX_SAMPLERATE * MAX_TAU) + 1) * sizeof(double));
+	a->wave = (real *) malloc0 (((int)(MAX_SAMPLERATE * MAX_TAU) + 1) * sizeof(real));
 	a->dline_size = (int)((MAX_TAU + MAX_ADVTIME) * MAX_SAMPLERATE) + 1;
-	a->dline = (double *) malloc0 (a->dline_size * sizeof(complex));
+	a->dline = (real *) malloc0 (a->dline_size * sizeof(complex));
 	InitializeCriticalSectionAndSpinCount (&a->cs_update, 2500);
 	initBlanker(a);
-	a->legacy = (double *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
+	a->legacy = (real *) malloc0 (2048 * sizeof (complex));														/////////////// legacy interface - remove
 	return a;
 }
 
@@ -107,8 +107,8 @@ void flush_anb (ANB a)
 PORT
 void xanb (ANB a)
 {
-    double scale;
-    double mag;
+    real scale;
+    real mag;
 	int i;
     if (a->run)
 	{
@@ -186,7 +186,7 @@ void xanb (ANB a)
 		memcpy (a->out, a->in, a->buffsize * sizeof (complex));
 }
 
-void setBuffers_anb (ANB a, double* in, double* out)
+void setBuffers_anb (ANB a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -249,13 +249,13 @@ PORT
 void pSetRCVRANBSamplerate (ANB a, int rate)
 {
 	EnterCriticalSection (&a->cs_update);
-	a->samplerate = (double) rate;
+	a->samplerate = (real) rate;
 	initBlanker (a);
 	LeaveCriticalSection (&a->cs_update);
 }
 
 PORT
-void pSetRCVRANBTau (ANB a, double tau)
+void pSetRCVRANBTau (ANB a, real tau)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->tau = tau;
@@ -264,7 +264,7 @@ void pSetRCVRANBTau (ANB a, double tau)
 }
 
 PORT
-void pSetRCVRANBHangtime (ANB a, double time)
+void pSetRCVRANBHangtime (ANB a, real time)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->hangtime = time;
@@ -273,7 +273,7 @@ void pSetRCVRANBHangtime (ANB a, double time)
 }
 
 PORT
-void pSetRCVRANBAdvtime (ANB a, double time)
+void pSetRCVRANBAdvtime (ANB a, real time)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->advtime = time;
@@ -282,7 +282,7 @@ void pSetRCVRANBAdvtime (ANB a, double time)
 }
 
 PORT
-void pSetRCVRANBBacktau (ANB a, double tau)
+void pSetRCVRANBBacktau (ANB a, real tau)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->backtau = tau;
@@ -291,7 +291,7 @@ void pSetRCVRANBBacktau (ANB a, double tau)
 }
 
 PORT
-void pSetRCVRANBThreshold (ANB a, double thresh)
+void pSetRCVRANBThreshold (ANB a, real thresh)
 {
 	EnterCriticalSection (&a->cs_update);
 	a->threshold = thresh;
@@ -312,12 +312,12 @@ void create_anbEXT	(
 	int id,
 	int run,
 	int buffsize,
-	double samplerate,
-	double tau,
-	double hangtime,
-	double advtime,
-	double backtau,
-	double threshold
+	real samplerate,
+	real tau,
+	real hangtime,
+	real advtime,
+	real backtau,
+	real threshold
 					)
 {
 	panb[id] = create_anb (run, buffsize, 0, 0,samplerate, tau, hangtime, advtime, backtau, threshold);
@@ -336,7 +336,7 @@ void flush_anbEXT (int id)
 }
 
 PORT
-void xanbEXT (int id, double* in, double* out)
+void xanbEXT (int id, real* in, real* out)
 {
 	ANB a = panb[id];
 	a->in = in;
@@ -367,13 +367,13 @@ void SetEXTANBSamplerate (int id, int rate)
 {
 	ANB a = panb[id];
 	EnterCriticalSection (&a->cs_update);
-	a->samplerate = (double) rate;
+	a->samplerate = (real) rate;
 	initBlanker (a);
 	LeaveCriticalSection (&a->cs_update);
 }
 
 PORT
-void SetEXTANBTau (int id, double tau)
+void SetEXTANBTau (int id, real tau)
 {
 	ANB a = panb[id];
 	EnterCriticalSection (&a->cs_update);
@@ -383,7 +383,7 @@ void SetEXTANBTau (int id, double tau)
 }
 
 PORT
-void SetEXTANBHangtime (int id, double time)
+void SetEXTANBHangtime (int id, real time)
 {
 	ANB a = panb[id];
 	EnterCriticalSection (&a->cs_update);
@@ -393,7 +393,7 @@ void SetEXTANBHangtime (int id, double time)
 }
 
 PORT
-void SetEXTANBAdvtime (int id, double time)
+void SetEXTANBAdvtime (int id, real time)
 {
 	ANB a = panb[id];
 	EnterCriticalSection (&a->cs_update);
@@ -403,7 +403,7 @@ void SetEXTANBAdvtime (int id, double time)
 }
 
 PORT
-void SetEXTANBBacktau (int id, double tau)
+void SetEXTANBBacktau (int id, real tau)
 {
 	ANB a = panb[id];
 	EnterCriticalSection (&a->cs_update);
@@ -413,7 +413,7 @@ void SetEXTANBBacktau (int id, double tau)
 }
 
 PORT
-void SetEXTANBThreshold (int id, double thresh)
+void SetEXTANBThreshold (int id, real thresh)
 {
 	ANB a = panb[id];
 	EnterCriticalSection (&a->cs_update);
@@ -436,8 +436,8 @@ void xanbEXTF (int id, float *I, float *Q)
 	a->out = a->legacy;
 	for (i = 0; i < a->buffsize; i++)
 	{
-		a->legacy[2 * i + 0] = (double)I[i];
-		a->legacy[2 * i + 1] = (double)Q[i];
+		a->legacy[2 * i + 0] = (real)I[i];
+		a->legacy[2 * i + 1] = (real)Q[i];
 	}
 	xanb (a);
 	for (i = 0; i < a->buffsize; i++)

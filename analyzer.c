@@ -30,10 +30,10 @@ warren@wpratt.com
 
 DP pdisp[dMAX_DISPLAYS];
 
-double bessi0(double x)
+real bessi0(real x)
 {
-	double ax,ans;
-	double y;
+	real ax,ans;
+	real y;
 
 	if ((ax=fabs(x)) < 3.75) {
 		y = x / 3.75,  y = y * y;
@@ -49,111 +49,111 @@ double bessi0(double x)
 	return ans;
 }
 
-void new_window(int disp, int type, int size, double PiAlpha)
+void new_window(int disp, int type, int size, real PiAlpha)
 {
 	DP a = pdisp[disp];
 	int i;
-	double arg0, arg1, cgsum, igsum;
+	real arg0, arg1, cgsum, igsum;
 	switch (type)
 	{
 	case 0:					// rectangular window
 		{
 			a->inv_coherent_gain = 1.0;
-			igsum = (double)size;
+			igsum = (real)size;
 			for (i = 0; i < size; i++)
 				a->window[i] = a->inv_coherent_gain * 1.0;
 			break;
 		}
 	case 1:					// blackman-harris window (4 term)
 		{
-			arg0 = 2.0 * PI / ((double)size - 1.0);
+			arg0 = 2.0 * PI / ((real)size - 1.0);
 			cgsum = 0.0;
 			igsum = 0.0;
 			for (i = 0; i < size; i++)
 			{
-				arg1 = arg0 * (double)i;
+				arg1 = arg0 * (real)i;
 				a->window[i] = 0.35875 - 0.48829 * cos(arg1) + 0.14128 * cos(2.0 * arg1) - 0.01168 * cos(3.0 * arg1);
 				cgsum += a->window[i];
 				igsum += a->window[i] * a->window[i];
 			}
-			a->inv_coherent_gain = (double)size / cgsum;
+			a->inv_coherent_gain = (real)size / cgsum;
 			for (i = 0; i < size; i++)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
 	case 2:					// hann window
 		{
-			arg0 = 2.0 * PI / ((double)size - 1.0);
+			arg0 = 2.0 * PI / ((real)size - 1.0);
 			cgsum = 0.0;
 			igsum = 0.0;
 			for (i = 0; i < size; i++)
 			{
-				a->window[i] = 0.5 * (1.0 - cos((double)i * arg0));
+				a->window[i] = 0.5 * (1.0 - cos((real)i * arg0));
 				cgsum += a->window[i];
 				igsum += a->window[i] * a->window[i];
 			}
-			a->inv_coherent_gain = (double)size / cgsum;
+			a->inv_coherent_gain = (real)size / cgsum;
 			for (i = 0; i < size; i++)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
 	case 3:					// flat-top window
 		{
-			arg0 = 2.0 * PI / ((double)size - 1.0);
+			arg0 = 2.0 * PI / ((real)size - 1.0);
 			cgsum = 0.0;
 			igsum = 0.0;
 			for (i = 0; i < size; i++)
 			{
-				arg1 = arg0 * (double)i;
+				arg1 = arg0 * (real)i;
 				a->window[i] = 0.21557895 - 0.41663158 * cos(arg1) + 0.277263158 * cos(2.0 * arg1) - 0.083578947 * cos(3.0 * arg1) + 0.006947368 * cos (4.0 * arg1);
 				cgsum += a->window[i];
 				igsum += a->window[i] * a->window[i];
 			}
-			a->inv_coherent_gain = (double)size / cgsum;
+			a->inv_coherent_gain = (real)size / cgsum;
 			for (i = 0; i < size; i++)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
 	case 4:					// hamming window
 		{
-			arg0 = 2.0 * PI / ((double)size - 1.0);
+			arg0 = 2.0 * PI / ((real)size - 1.0);
 			cgsum = 0.0;
 			igsum = 0.0;
 			for (i = 0; i < size; i++)
 			{
-				a->window[i] = (0.54 - 0.46 * cos((double)i * arg0));
+				a->window[i] = (0.54 - 0.46 * cos((real)i * arg0));
 				cgsum += a->window[i];
 				igsum += a->window[i] * a->window[i];
 			}
-			a->inv_coherent_gain = (double)size / cgsum;
+			a->inv_coherent_gain = (real)size / cgsum;
 			for (i = 0; i < size; i++)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
 	case 5:					// Kaiser window
 		{	arg0 = bessi0(PiAlpha);
-			arg1 = (double)(size - 1);
+			arg1 = (real)(size - 1);
 			cgsum = 0.0;
 			igsum = 0.0;
 			for (i = 0; i < size; ++i)
 			{
-				a->window[i] = bessi0(PiAlpha * sqrt(1.0 - pow(2.0 * (double)i / arg1 - 1.0, 2))) / arg0;
+				a->window[i] = bessi0(PiAlpha * sqrt(1.0 - pow(2.0 * (real)i / arg1 - 1.0, 2))) / arg0;
 				cgsum += a->window[i];
 				igsum += a->window[i] * a->window[i];
 			}
-			a->inv_coherent_gain = (double)size / cgsum;
+			a->inv_coherent_gain = (real)size / cgsum;
 			for (i = 0; i < size; i++)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
 	case 6:					// Blackman-Harris window (7-term)
 		{
-			arg0 = 2.0 * PI / ((double)size - 1.0);
+			arg0 = 2.0 * PI / ((real)size - 1.0);
 			cgsum = 0.0;
 			igsum = 0.0;
 			for (i = 0; i < size; ++i)
 			{
-				arg1 = cos (arg0 * (double)i);
+				arg1 = cos (arg0 * (real)i);
 				a->window[i]   =	+ 6.3964424114390378e-02
 						+ arg1 *  ( - 2.3993864599352804e-01
 						+ arg1 *  ( + 3.5015956323820469e-01
@@ -164,13 +164,13 @@ void new_window(int disp, int type, int size, double PiAlpha)
 				cgsum += a->window[i];
 				igsum += a->window[i] * a->window[i];
 			}
-			a->inv_coherent_gain = (double)size / cgsum;
+			a->inv_coherent_gain = (real)size / cgsum;
 			for (i = 0; i < size; i++)
 				a->window[i] *= a->inv_coherent_gain;
 			break;
 		}
 	}
-	a->inherent_power_gain = igsum / (double)size;
+	a->inherent_power_gain = igsum / (real)size;
 	a->inv_enb = 1.0 / (a->inherent_power_gain * a->inv_coherent_gain * a->inv_coherent_gain);
 	// print_window_gain ("windows.txt", type, a->inv_coherent_gain, a->inherent_power_gain);
 }
@@ -180,7 +180,7 @@ void eliminate(int disp, int ss, int LO)
 {
 	DP a = pdisp[disp];
 	int i, k, begin, end, ilim;
-	double mag;
+	real mag;
 
 	if (ss == a->begin_ss)
 		begin = a->fscL + a->clip;
@@ -215,7 +215,7 @@ void Celiminate(int disp, int ss, int LO)
 {
 	DP a = pdisp[disp];
 	int i, k, begin0, end0, begin1, end1, ilim;
-	double mag;
+	real mag;
 
 	if (ss == a->begin_ss)
 	{
@@ -282,17 +282,17 @@ void Celiminate(int disp, int ss, int LO)
 void detector (	int det_type,			// detector type
 				int m,					// number of bins
 				int num_pixels,			// number of output pixels
-				double pix_per_bin,		// pixels per bin
-				double bin_per_pix,		// bins per pixel
-				double* bins,			// input buffer
-				double* pixels,			// output buffer
-				double inv_enb			// inverse equivalent noise bandwidth
+				real pix_per_bin,		// pixels per bin
+				real bin_per_pix,		// bins per pixel
+				real* bins,			// input buffer
+				real* pixels,			// output buffer
+				real inv_enb			// inverse equivalent noise bandwidth
 				)
 {
 	int i;
 	int pix_count = 0;
 	int rose, fell, next_pix_count, bcount, last_pix_count;
-	double prev_maxi, mini, maxi, psum;
+	real prev_maxi, mini, maxi, psum;
 	if (pix_per_bin <= 1.0)
 	{
 		switch (det_type)
@@ -300,11 +300,11 @@ void detector (	int det_type,			// detector type
 
 		case 0:		// positive peak
 			for (i = 0; i < num_pixels; i++)
-				pixels[i]   = - 1.0e300;
+				pixels[i]   = REAL_MIN;
 
 			for (i = 0; i < m; i++)
 			{
-				pix_count = (int)((double)i * pix_per_bin);
+				pix_count = (int)((real)i * pix_per_bin);
 				if (bins[i] > pixels[pix_count])
 					pixels[pix_count] = bins[i];
 			}
@@ -313,16 +313,16 @@ void detector (	int det_type,			// detector type
 		case 1:		// rosenfell
 			rose         = 0;
 			fell         = 0;
-			mini         = + 1.0e300;
-			maxi         = - 1.0e300;
-			prev_maxi    = - 1.0e300;
+			mini         = REAL_MAX;
+			maxi         = REAL_MIN;
+			prev_maxi    = REAL_MIN;
 
 			for (i = 0; i < m; i++)		// for each FFT bin
 			{
 				// determine the pixel number that this FFT bin goes into
-				pix_count = (int)((double)i * pix_per_bin);
+				pix_count = (int)((real)i * pix_per_bin);
 				// determine the pixel number for the NEXT FFT bin
-				next_pix_count = (int)((double)(i + 1) * pix_per_bin);
+				next_pix_count = (int)((real)(i + 1) * pix_per_bin);
 				// update the minimum and maximum of the set of bins within the pixel
 				if (bins[i] <   mini)     mini = bins[i];
 				if (bins[i] >   maxi)     maxi = bins[i];
@@ -349,8 +349,8 @@ void detector (	int det_type,			// detector type
 					rose = 0;
 					fell = 0;
 					prev_maxi = maxi;
-					mini = + 1.0e300;
-					maxi = - 1.0e300;
+					mini = REAL_MAX;
+					maxi = REAL_MIN;
 				}
 			}
 			break;
@@ -361,7 +361,7 @@ void detector (	int det_type,			// detector type
 			for (i = 0; i < m; i++)
 			{
 				last_pix_count = pix_count;
-				pix_count = (int)((double)i * pix_per_bin);
+				pix_count = (int)((real)i * pix_per_bin);
 				if (pix_count == last_pix_count)
 				{
 					psum += bins[i];
@@ -369,13 +369,13 @@ void detector (	int det_type,			// detector type
 				}
 				else
 				{
-					pixels[last_pix_count] = psum / (double)bcount * inv_enb;
+					pixels[last_pix_count] = psum / (real)bcount * inv_enb;
 					psum = bins[i];
 					bcount = 1;
 				}
 				if (i == m - 1)
 				{
-					pixels[pix_count] = psum / (double)bcount * inv_enb;
+					pixels[pix_count] = psum / (real)bcount * inv_enb;
 				}
 			}
 			break;
@@ -385,7 +385,7 @@ void detector (	int det_type,			// detector type
 			for (i = 0; i < m; i++)
 			{
 				last_pix_count = pix_count;
-				pix_count = (int)((double)i * pix_per_bin);
+				pix_count = (int)((real)i * pix_per_bin);
 				if (pix_count == last_pix_count)
 				{
 					bcount++;
@@ -405,13 +405,13 @@ void detector (	int det_type,			// detector type
 	}
 	else
 	{
-		double frac;
-		double pix_pos = 0;
+		real frac;
+		real pix_pos = 0;
 		for (i = 1; i < m; i++)
 		{
-			while (pix_pos < (double)i)
+			while (pix_pos < (real)i)
 			{
-				frac = pix_pos - (double)(i - 1);
+				frac = pix_pos - (real)(i - 1);
 				pixels[pix_count]   = bins[i - 1] * (1.0 - frac) + bins[i] * frac;
 				pix_count++;
 				pix_pos += bin_per_pix;
@@ -427,19 +427,19 @@ void avenger (  int av_mode,				// averaging mode
 				int num_average,			// number of frames to average within a window
 				int* av_in_idx,				// in index for av_buff
 				int* av_out_idx,			// out index for av_buff
-				double av_backmult,			// multiplier for recursive averaging
-				double scale,				// scale factor
-				double* t_pixels,			// input buffer
-				double* av_sum,				// history buffer for averaging
-				double** av_buff,			// frame buffer for window averaging
-				double* cd,					// correction factor buffer
+				real av_backmult,			// multiplier for recursive averaging
+				real scale,				// scale factor
+				real* t_pixels,			// input buffer
+				real* av_sum,				// history buffer for averaging
+				real** av_buff,			// frame buffer for window averaging
+				real* cd,					// correction factor buffer
 				int norm,					// if TRUE, normalize to one Hz bandwidth
-				double norm_oneHz,			// normalization factor to add
+				real norm_oneHz,			// normalization factor to add
 				dOUTREAL* pixels			// output buffer
 	)
 {
 	int i;
-	double factor;
+	real factor;
 	switch (av_mode)
 	{
 	case -1:	// peak-hold
@@ -448,7 +448,7 @@ void avenger (  int av_mode,				// averaging mode
 			{
 				if (t_pixels[i] > av_sum[i])
 					av_sum[i] = t_pixels[i];
-				pixels[i] = (dOUTREAL)(10.0 * mlog10(scale * cd[i] * av_sum[i] + 1.0e-60));
+				pixels[i] = (dOUTREAL)(10.0 * mlog10(scale * cd[i] * av_sum[i] + REAL_EPSILON));
 			}
 			break;
 		}
@@ -456,16 +456,16 @@ void avenger (  int av_mode,				// averaging mode
 	default:
 		{
 			for (i = 0; i < num_pixels; i++)
-				pixels[i] = (dOUTREAL)(10.0 * mlog10(scale * cd[i] * t_pixels[i] + 1.0e-60));
+				pixels[i] = (dOUTREAL)(10.0 * mlog10(scale * cd[i] * t_pixels[i] + REAL_EPSILON));
 			break;
 		}
 	case 1:		// weighted averaging of linear data
 		{
-			double onem_avb = 1.0 - av_backmult;
+			real onem_avb = 1.0 - av_backmult;
 			for (i = 0; i < num_pixels; i++)
 			{
 				av_sum[i] = av_backmult * av_sum[i] + onem_avb * t_pixels[i];
-				pixels[i] = (dOUTREAL)(10.0 * mlog10(scale * cd[i] * av_sum[i] + 1.0e-60));
+				pixels[i] = (dOUTREAL)(10.0 * mlog10(scale * cd[i] * av_sum[i] + REAL_EPSILON));
 			}
 			break;
 		}
@@ -473,22 +473,22 @@ void avenger (  int av_mode,				// averaging mode
 		{
 			if (*avail_frames < num_average)
 			{
-				factor = scale / (double)++(*avail_frames);
+				factor = scale / (real)++(*avail_frames);
 				for (i = 0; i < num_pixels; i++)
 				{
 					av_sum[i] += t_pixels[i];
 					av_buff[*av_in_idx][i] = t_pixels[i];
-					pixels[i] = (dOUTREAL)(10.0 * mlog10(cd[i] * av_sum[i] * factor + 1.0e-60));
+					pixels[i] = (dOUTREAL)(10.0 * mlog10(cd[i] * av_sum[i] * factor + REAL_EPSILON));
 				}
 			}
 			else
 			{
-				factor = scale / (double)(*avail_frames);
+				factor = scale / (real)(*avail_frames);
 				for (i = 0; i < num_pixels; i++)
 				{
 					av_sum[i] += t_pixels[i] - (av_buff[*av_out_idx])[i];
 					av_buff[*av_in_idx][i] = t_pixels[i];
-					pixels[i] = (dOUTREAL)(10.0 * mlog10(cd[i] * av_sum[i] * factor + 1.0e-60));
+					pixels[i] = (dOUTREAL)(10.0 * mlog10(cd[i] * av_sum[i] * factor + REAL_EPSILON));
 				}
 				if (++(*av_out_idx) == dMAX_AVERAGE)
 						*av_out_idx = 0;
@@ -499,10 +499,10 @@ void avenger (  int av_mode,				// averaging mode
 		}
 	case 3:		// weighted averaging of log data - looks nice, not accurate for time-varying signals
 		{
-			double onem_avb = 1.0 - av_backmult;
+			real onem_avb = 1.0 - av_backmult;
 			for (i = 0; i < num_pixels; i++)
 			{
-				av_sum[i] = av_backmult * av_sum[i] + onem_avb * (10.0 * mlog10(scale * cd[i] * t_pixels[i] + 1e-60));
+				av_sum[i] = av_backmult * av_sum[i] + onem_avb * (10.0 * mlog10(scale * cd[i] * t_pixels[i] + REAL_EPSILON));
 				pixels[i] = (dOUTREAL)av_sum[i];
 			}
 			break;
@@ -517,14 +517,14 @@ void stitch(int disp)
 {
 	DP a = pdisp[disp];
 	int i, j, k, n, m;
-	double* ptr;
+	real* ptr;
 
 	// stitch
 	m = 0;
 	ptr = a->pre_av_out;
 	for (n = a->begin_ss; n <= a->end_ss; n++)
 	{
-		memcpy(ptr, a->result[n], a->ss_bins[n] * sizeof(double));
+		memcpy(ptr, a->result[n], a->ss_bins[n] * sizeof(real));
 		ptr += a->ss_bins[n];
 		m += a->ss_bins[n];
 	}
@@ -544,7 +544,7 @@ void stitch(int disp)
 			// detect
 			detector (a->det_type[i], m, a->num_pixels, a->pix_per_bin, a->bin_per_pix, a->pre_av_out, a->t_pixels[i], a->inv_enb);
 		else
-			memcpy (a->t_pixels[i], a->t_pixels[k], a->num_pixels * sizeof (double));
+			memcpy (a->t_pixels[i], a->t_pixels[k], a->num_pixels * sizeof (real));
 		// average & convert to dBm
 		avenger (a->av_mode[i], a->num_pixels, &a->avail_frames[i], a->num_average[i], &a->av_in_idx[i], &a->av_out_idx[i],
 			a->av_backmult[i], a->scale, a->t_pixels[i], a->av_sum[i], a->av_buff[i], a->cd, a->normalize[i], a->norm_oneHz,
@@ -577,7 +577,7 @@ DWORD WINAPI spectra (void *pargs)
 	{
 		for (i = 0; i < a->size; i++)
 		{
-			(a->fft_in[ss][LO])[i] = a->window[i] * (double)((a->I_samples[ss][LO])[a->IQO_idx[ss][LO]]);
+			(a->fft_in[ss][LO])[i] = a->window[i] * (real)((a->I_samples[ss][LO])[a->IQO_idx[ss][LO]]);
 			if(++a->IQO_idx[ss][LO] >= a->bsize)
 				 a->IQO_idx[ss][LO] -= a->bsize;
 		}
@@ -643,7 +643,7 @@ DWORD WINAPI Cspectra (void *pargs)
 	int ss = (((int)pargs) >> 4) & 255;
 	int LO = ((int)pargs) & 15;
 	DP a = pdisp[disp];
-	int trans_size = a->size * sizeof(double);
+	int trans_size = a->size * sizeof(real);
 
 	if (a->stop)
 	{
@@ -655,8 +655,8 @@ DWORD WINAPI Cspectra (void *pargs)
 	{
 		for (i = 0; i < a->size; i++)
 		{
-			(a->Cfft_in[ss][LO])[i][0] = a->window[i] * (double)((a->I_samples[ss][LO])[a->IQO_idx[ss][LO]]);
-			(a->Cfft_in[ss][LO])[i][1] = a->window[i] * (double)((a->Q_samples[ss][LO])[a->IQO_idx[ss][LO]]);
+			(a->Cfft_in[ss][LO])[i][0] = a->window[i] * (real)((a->I_samples[ss][LO])[a->IQO_idx[ss][LO]]);
+			(a->Cfft_in[ss][LO])[i][1] = a->window[i] * (real)((a->Q_samples[ss][LO])[a->IQO_idx[ss][LO]]);
 			if(++a->IQO_idx[ss][LO] >= a->bsize)
 				 a->IQO_idx[ss][LO] -= a->bsize;
 		}
@@ -721,22 +721,22 @@ DWORD WINAPI Cspectra (void *pargs)
 		return 1;
 }
 
-void interpolate(int disp, int set, double fmin, double fmax, int num_pixels)
+void interpolate(int disp, int set, real fmin, real fmax, int num_pixels)
 {
 	DP a = pdisp[disp];
 	int i; 
-	double f;
+	real f;
 	int n = a->n_freqs[set];
 	int k;
 	int kmin = 0;
 	int kmax = n - 1;
 	int kdelta;
-	double dx;
-	double mag;
+	real dx;
+	real mag;
 
 	for (i = 0; i < num_pixels; i++)
     {
-		f = fmin + (double)i * (fmax - fmin) / (double)(num_pixels - 1);
+		f = fmin + (real)i * (fmax - fmin) / (real)(num_pixels - 1);
 		
 		if (f < (a->freqs[set])[0])
             k = 0;
@@ -774,19 +774,19 @@ void interpolate(int disp, int set, double fmin, double fmax, int num_pixels)
 	}
 }
 
-int build_interpolants(int disp, int set, int n, int m, double *x, double (*y)[dMAX_M])
+int build_interpolants(int disp, int set, int n, int m, real *x, real (*y)[dMAX_M])
 {
 	DP a = pdisp[disp];
-	double dx[dMAX_N];
-	double idx[dMAX_N];
-	double dmain[dMAX_N];
-	double dsub[dMAX_N];
-	double dsup[dMAX_N];
-	double d[dMAX_N][dMAX_M];
-	double S[dMAX_N][dMAX_M];
-	double b[dMAX_N];
-	double v[dMAX_N][dMAX_M];
-	double tmp;
+	real dx[dMAX_N];
+	real idx[dMAX_N];
+	real dmain[dMAX_N];
+	real dsub[dMAX_N];
+	real dsup[dMAX_N];
+	real d[dMAX_N][dMAX_M];
+	real S[dMAX_N][dMAX_M];
+	real b[dMAX_N];
+	real v[dMAX_N][dMAX_M];
+	real tmp;
 	int i, j;
 
     for (i = 0; i < n - 1; i++)
@@ -895,8 +895,8 @@ void __cdecl sendbuf(void *arg)
 
 void CalcBandwidthNormalization (DP a)
 {
-	double bin_width;
-	bin_width = (double)a->sample_rate / (double)a->size;
+	real bin_width;
+	bin_width = (real)a->sample_rate / (real)a->size;
 	a->norm_oneHz = 10.0 * mlog10 (1.0 / bin_width);
 }
 
@@ -909,7 +909,7 @@ void SetAnalyzer (	int disp,			// display identifier
 					int sz,				// size of the fft, i.e., number of input samples
 					int bf_sz,			// number of samples transferred for each OpenBuffer()/CloseBuffer()
 					int win_type,		// integer specifying which window function to use
-					double pi,			// PiAlpha parameter for Kaiser window
+					real pi,			// PiAlpha parameter for Kaiser window
 					int ovrlp,			// number of samples each fft (other than the first) is to re-use from the previous 
 					int clp,			// number of fft output bins to be clipped from EACH side of each sub-span
 					int fscLin,			// number of bins to clip from low end of entire span
@@ -917,8 +917,8 @@ void SetAnalyzer (	int disp,			// display identifier
 					int n_pix,			// number of pixel values to return.  may be either <= or > number of bins 
 					int n_stch,			// number of sub-spans to concatenate to form a complete span 
 					int calset,			// identifier of which set of calibration data to use 
-					double fmin,		// frequency at first pixel value 
-					double fmax,		// frequency at last pixel value
+					real fmin,		// frequency at first pixel value 
+					real fmax,		// frequency at last pixel value
 					int max_w
 				 )
 {
@@ -981,12 +981,12 @@ void SetAnalyzer (	int disp,			// display identifier
 	if (a->type == 0)
 	{
 		a->out_size = a->size / 2 + 1;
-		a->scale = 4.0 / ((double)a->size * (double)a->size);
+		a->scale = 4.0 / ((real)a->size * (real)a->size);
 	}
 	else
 	{
 		a->out_size = a->size;
-		a->scale = 1.0 / ((double)a->size * (double)a->size);
+		a->scale = 1.0 / ((real)a->size * (real)a->size);
 	}
 
 	a->begin_ss = 0;
@@ -1006,8 +1006,8 @@ void SetAnalyzer (	int disp,			// display identifier
 		a->end_ss--;
 	}
 
-	a->pix_per_bin = (double)a->num_pixels / (double)(a->num_stitch * (a->out_size - 2 * a->clip) - a->fsclipL - a->fsclipH);
-	a->bin_per_pix = (double)(a->num_stitch * (a->out_size - 2 * a->clip) - 1 - a->fsclipL - a->fsclipH) / (double)a->num_pixels;
+	a->pix_per_bin = (real)a->num_pixels / (real)(a->num_stitch * (a->out_size - 2 * a->clip) - a->fsclipL - a->fsclipH);
+	a->bin_per_pix = (real)(a->num_stitch * (a->out_size - 2 * a->clip) - 1 - a->fsclipL - a->fsclipH) / (real)a->num_pixels;
 
 	for (i = 0; i < dMAX_STITCH; i++)
 		for (j = 0; j < dMAX_NUM_FFT; j++)
@@ -1078,11 +1078,11 @@ void XCreateAnalyzer(	int disp,
 			InitializeCriticalSectionAndSpinCount(&(a->BufferControlSection[i][j]), 0);
 	}
 
-	a->window = (double*) malloc0 (sizeof(double) * a->max_size);
+	a->window = (real*) malloc0 (sizeof(real) * a->max_size);
 
 	for (i = 0; i < a->max_stitch; i++)
 	{
-		a->result[i] = (double*) malloc0 (sizeof(double) * a->max_size);
+		a->result[i] = (real*) malloc0 (sizeof(real) * a->max_size);
 
 	}
 	for (i = 0; i < a->max_stitch; i++)
@@ -1090,36 +1090,36 @@ void XCreateAnalyzer(	int disp,
 		{
 			a->plan[i][j] = 0;
 			a->Cplan[i][j] = 0;
-			a->fft_in[i][j]   = (double*) malloc0 (sizeof(double) * a->max_size);
+			a->fft_in[i][j]   = (real*) malloc0 (sizeof(real) * a->max_size);
 			a->Cfft_in[i][j]  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * a->max_size);
 			a->fft_out[i][j]  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * a->max_size);
 		}
-	a->pre_av_sum = (double*) malloc0 (sizeof(double) * a->max_size * a->max_stitch);
-	a->pre_av_out = (double*) malloc0 (sizeof(double) * a->max_size * a->max_stitch);
+	a->pre_av_sum = (real*) malloc0 (sizeof(real) * a->max_size * a->max_stitch);
+	a->pre_av_out = (real*) malloc0 (sizeof(real) * a->max_size * a->max_stitch);
 	for (i = 0; i < dMAX_PIXOUTS; i++)
 	{
 		a->det_type[i] = 0;
 		a->av_mode[i] = 0;
-		a->av_sum[i] = (double*) malloc0 (sizeof(double) * dMAX_PIXELS);
+		a->av_sum[i] = (real*) malloc0 (sizeof(real) * dMAX_PIXELS);
 		for (j = 0; j < dMAX_AVERAGE; j++)
-			a->av_buff[i][j] = (double*) malloc0 (sizeof(double) * dMAX_PIXELS);
-		a->t_pixels[i] = (double*) malloc0 (sizeof(double) * dMAX_PIXELS);
+			a->av_buff[i][j] = (real*) malloc0 (sizeof(real) * dMAX_PIXELS);
+		a->t_pixels[i] = (real*) malloc0 (sizeof(real) * dMAX_PIXELS);
 		for (j = 0; j < dNUM_PIXEL_BUFFS; j++)
 			a->pixels[i][j] = (dOUTREAL*) malloc0 (sizeof(dOUTREAL) * dMAX_PIXELS);
 	}
 	
-	a->cd = (double*) malloc0 (sizeof(double) * dMAX_PIXELS);
+	a->cd = (real*) malloc0 (sizeof(real) * dMAX_PIXELS);
 	for (j = 0; j < dMAX_PIXELS; j++)
 		a->cd[j] = 1.0;
 	for (i = 0; i < dMAX_CAL_SETS; i++)
 	{
-		a->freqs[i] = (double*) malloc0 (sizeof(double) * dMAX_N);
+		a->freqs[i] = (real*) malloc0 (sizeof(real) * dMAX_N);
 		for (j = 0; j < dMAX_M; j++)
 		{
-			a->ac3[i][j] = (double*) malloc0 (sizeof(double) * dMAX_N);
-			a->ac2[i][j] = (double*) malloc0 (sizeof(double) * dMAX_N);
-			a->ac1[i][j] = (double*) malloc0 (sizeof(double) * dMAX_N);
-			a->ac0[i][j] = (double*) malloc0 (sizeof(double) * dMAX_N);
+			a->ac3[i][j] = (real*) malloc0 (sizeof(real) * dMAX_N);
+			a->ac2[i][j] = (real*) malloc0 (sizeof(real) * dMAX_N);
+			a->ac1[i][j] = (real*) malloc0 (sizeof(real) * dMAX_N);
+			a->ac0[i][j] = (real*) malloc0 (sizeof(real) * dMAX_N);
 		}
 	}
 	
@@ -1243,7 +1243,7 @@ PORT
 void SnapSpectrum(	int disp,
 					int ss,
 					int LO,
-					double *snap_buff)
+					real *snap_buff)
 {
 	DP a = pdisp[disp];
 	a->snap_buff[ss][LO] = snap_buff;
@@ -1253,9 +1253,9 @@ void SnapSpectrum(	int disp,
 
 int calcompare (const void * a, const void * b)
 {
-	if (*(double*)a < *(double*)b)
+	if (*(real*)a < *(real*)b)
 		return -1;
-	else if (*(double*)a == *(double*)b)
+	else if (*(real*)a == *(real*)b)
 		return 0;
 	else
 		return 1;
@@ -1265,16 +1265,16 @@ PORT
 void SetCalibration (	int disp,
 						int set_num,				//identifier for this calibration data set
 						int n_points,				//number of calibration points in the set
-						double (*cal)[dMAX_M+1]		//pointer to the calibration table, first
+						real (*cal)[dMAX_M+1]		//pointer to the calibration table, first
 					)								//   column is frequency, add'l columns are
 													//	 data for variables being calibrated
 {
 	DP a = pdisp[disp];
 	int i, j;
 	int k = 0;
-	double y [dMAX_N][dMAX_M];
+	real y [dMAX_N][dMAX_M];
 
-	qsort (cal, n_points, (dMAX_M+1) * sizeof(double), calcompare);
+	qsort (cal, n_points, (dMAX_M+1) * sizeof(real), calcompare);
 
 	for (i = 0; i < n_points; i++)
 	{
@@ -1418,7 +1418,7 @@ void Spectrum2(int run, int disp, int ss, int LO, dINREAL* pbuff)
 }
 
 PORT
-void Spectrum0(int run, int disp, int ss, int LO, double* pbuff)
+void Spectrum0(int run, int disp, int ss, int LO, real* pbuff)
 {
 	if (run)
 	{
@@ -1500,7 +1500,7 @@ void SetDisplayAverageMode (int disp, int pixout, int mode)
 				a->av_sum[pixout][i] = -120.0;
 			break;
 		default:
-			memset ((void *)a->av_sum[pixout], 0, sizeof(double) * dMAX_PIXELS);
+			memset ((void *)a->av_sum[pixout], 0, sizeof(real) * dMAX_PIXELS);
 			break;
 		}
 		LeaveCriticalSection (&a->ResampleSection);
@@ -1523,7 +1523,7 @@ void SetDisplayNumAverage (int disp, int pixout, int num)
 }
 
 PORT
-void SetDisplayAvBackmult (int disp, int pixout, double mult)
+void SetDisplayAvBackmult (int disp, int pixout, real mult)
 {
 	DP a = pdisp[disp];
 	if (a->av_backmult[pixout] != mult)

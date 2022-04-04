@@ -24,14 +24,14 @@ warren@wpratt.com
 
 */
 
-extern void dR (int n, double* r, double* y);
+extern void dR (int n, real* r, real* y);
 
 extern void trI (
     int n,
-    double* r,
-    double* B
+    real* r,
+    real* B
     );
 
-extern void asolve(int xsize, int asize, double* x, double* a);
+extern void asolve(int xsize, int asize, real* x, real* a);
 
-extern void median(int n, double* a, double* med);
+extern void median(int n, real* a, real* med);

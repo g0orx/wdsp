@@ -47,7 +47,7 @@ enum _slew
 void create_slews (IOB a)
 {
 	int i;
-	double delta, theta;
+	real delta, theta;
 	a->slew.ustate = BEGIN;
 	a->slew.dstate = BEGIN;
 	a->slew.ucount = 0;
@@ -56,10 +56,10 @@ void create_slews (IOB a)
 	a->slew.ndeldown = (int)(ch[a->channel].tdelaydown * ch[a->channel].out_rate);
 	a->slew.ntup = (int)(ch[a->channel].tslewup * ch[a->channel].in_rate);
 	a->slew.ntdown = (int)(ch[a->channel].tslewdown * ch[a->channel].out_rate);
-	a->slew.cup   = (double *) malloc0 ((a->slew.ntup + 1) * sizeof (double));
-	a->slew.cdown = (double *) malloc0 ((a->slew.ntdown + 1) * sizeof (double));
+	a->slew.cup   = (real *) malloc0 ((a->slew.ntup + 1) * sizeof (real));
+	a->slew.cdown = (real *) malloc0 ((a->slew.ntdown + 1) * sizeof (real));
 
-	delta = PI / (double)a->slew.ntup;
+	delta = PI / (real)a->slew.ntup;
 	theta = 0.0;
 	for (i = 0; i <= a->slew.ntup; i++)
 	{
@@ -67,7 +67,7 @@ void create_slews (IOB a)
 		theta += delta;
 	}
 
-	delta = PI / (double)a->slew.ntdown;
+	delta = PI / (real)a->slew.ntdown;
 	theta = 0.0;
 	for (i = 0; i <= a->slew.ntdown; i++)
 	{
@@ -95,11 +95,11 @@ void flush_slews (IOB a)
 	InterlockedBitTestAndReset (&a->slew.downflag, 0);
 }
 
-void upslew0 (IOB a, double* pin)
+void upslew0 (IOB a, real* pin)
 {
 	int i;
-	double *pout;
-	double I, Q;
+	real *pout;
+	real I, Q;
 	pout = a->r1_baseptr + 2 * a->r1_inidx;
 	for (i = 0; i < a->in_size; i++)
 	{
@@ -162,13 +162,13 @@ void upslew0 (IOB a, double* pin)
 void upslew2 (IOB a, INREAL* pIin, INREAL* pQin)
 {
 	int i;
-	double *pout;
-	double I, Q;
+	real *pout;
+	real I, Q;
 	pout = a->r1_baseptr + 2 * a->r1_inidx;
 	for (i = 0; i < a->in_size; i++)
 	{
-		I = (double)pIin[i];
-		Q = (double)pQin[i];
+		I = (real)pIin[i];
+		Q = (real)pQin[i];
 		switch (a->slew.ustate)
 			{
 			case BEGIN:
@@ -223,11 +223,11 @@ void upslew2 (IOB a, INREAL* pIin, INREAL* pQin)
 	}
 }
 
-void downslew0 (IOB a, double* pout)
+void downslew0 (IOB a, real* pout)
 {
 	int i;
-	double *pin;
-	double I, Q;
+	real *pin;
+	real I, Q;
 	pin = a->r2_baseptr + 2 * a->r2_outidx;
 	for (i = 0; i < a->out_size; i++)
 	{
@@ -302,8 +302,8 @@ void downslew0 (IOB a, double* pout)
 void downslew2 (IOB a, OUTREAL* pIout, OUTREAL* pQout)
 {
 	int i;
-	double *pin;
-	double I, Q;
+	real *pin;
+	real I, Q;
 	pin = a->r2_baseptr + 2 * a->r2_outidx;
 	for (i = 0; i < a->out_size; i++)
 	{
@@ -401,8 +401,8 @@ void create_iobuffs (int channel)
 		a->r2_size = a->r2_insize;
 	a->r1_active_buffsize = DSP_MULT * a->r1_size;
 	a->r2_active_buffsize = DSP_MULT * a->r2_size;
-	a->r1_baseptr = (double*) malloc0 (a->r1_active_buffsize * sizeof (complex));
-	a->r2_baseptr = (double*) malloc0 (a->r2_active_buffsize * sizeof (complex));
+	a->r1_baseptr = (real*) malloc0 (a->r1_active_buffsize * sizeof (complex));
+	a->r2_baseptr = (real*) malloc0 (a->r2_active_buffsize * sizeof (complex));
 	a->r1_inidx = 0;
 	a->r1_outidx = 0;
 	a->r1_unqueuedsamps = 0;
@@ -451,8 +451,8 @@ void flush_iobuffs (int channel)
 }
 
 
-PORT	//double, interleaved I/Q
-void fexchange0 (int channel, double* in, double* out, int* error)
+PORT	//real, interleaved I/Q
+void fexchange0 (int channel, real* in, real* out, int* error)
 {
 	int n;
 	int doit = 0;
@@ -520,8 +520,8 @@ void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTREAL *
 		else
 			for (i = 0; i < a->in_size; i++)
 			{
-				(a->r1_baseptr + 2 * a->r1_inidx)[2 * i + 0] = (double)(Iin[i]);
-				(a->r1_baseptr + 2 * a->r1_inidx)[2 * i + 1] = (double)(Qin[i]);
+				(a->r1_baseptr + 2 * a->r1_inidx)[2 * i + 0] = (real)(Iin[i]);
+				(a->r1_baseptr + 2 * a->r1_inidx)[2 * i + 1] = (real)(Qin[i]);
 			}
 																										// add check with *error += -1; for case when r1 is full and an overwrite occurs
 		if ((a->r1_unqueuedsamps += a->in_size) >= a->r1_outsize)
@@ -569,7 +569,7 @@ void fexchange2 (int channel, INREAL *Iin, INREAL *Qin, OUTREAL *Iout, OUTREAL *
 	}
 }
 
-void dexchange (int channel, double* in, double* out)
+void dexchange (int channel, real* in, real* out)
 {
 	int n;
 	IOB a = ch[channel].iob.pd;

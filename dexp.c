@@ -28,7 +28,7 @@ warren@wpratt.com
 
 DEXP pdexp[4];
 
-DELRING calc_delring (int rsize, int size, int delay, double* in, double* out)
+DELRING calc_delring (int rsize, int size, int delay, real* in, real* out)
 {
 	DELRING a = (DELRING) malloc0 (sizeof (delring));
 	a->rsize = rsize;
@@ -36,7 +36,7 @@ DELRING calc_delring (int rsize, int size, int delay, double* in, double* out)
 	a->rdelay = delay;
 	a->in = in;
 	a->out = out;
-	a->ring = (double *) malloc0 (a->rsize * sizeof (complex));
+	a->ring = (real *) malloc0 (a->rsize * sizeof (complex));
 	a->inptr = a->rdelay;
 	a->outptr = 0;
 	return a;
@@ -91,15 +91,15 @@ void xdelring (DELRING a)
 void calc_slews (DEXP a)
 {
 	int i;
-	double delta, theta;
-	delta = PI / (double)a->nattack;
+	real delta, theta;
+	delta = PI / (real)a->nattack;
 	theta = 0.0;
 	for (i = 0; i <= a->nattack; i++)
 	{
 		a->cattack[i] = a->low_gain + (1.0 - a->low_gain) * 0.5 * (1.0 - cos (theta));
 		theta += delta;
 	}
-	delta = PI / (double)a->ndecay;
+	delta = PI / (real)a->ndecay;
 	theta = 0.0;
 	for (i = 0; i <= a->ndecay; i++)
 	{
@@ -110,9 +110,9 @@ void calc_slews (DEXP a)
 
 void calc_buffs (DEXP a)
 {
-	a->trigsig   = (double *)malloc0 (2 * a->size * sizeof(complex));	// allow for double-sized output of filter
-	a->delsig    = (double *)malloc0 (    a->size * sizeof(complex));
-	a->audbuffer = (double *)malloc0 (    a->size * sizeof(complex));
+	a->trigsig   = (real *)malloc0 (2 * a->size * sizeof(complex));	// allow for real-sized output of filter
+	a->delsig    = (real *)malloc0 (    a->size * sizeof(complex));
+	a->audbuffer = (real *)malloc0 (    a->size * sizeof(complex));
 }
 
 void decalc_buffs (DEXP a)
@@ -131,8 +131,8 @@ void calc_dexp (DEXP a)
 	// level change
 	a->nattack = (int)(a->tattack * a->rate);
 	a->ndecay = (int)(a->tdecay * a->rate);
-	a->cattack = (double *)malloc0((a->nattack + 1) * sizeof(double));
-	a->cdecay = (double *)malloc0((a->ndecay + 1) * sizeof(double));
+	a->cattack = (real *)malloc0((a->nattack + 1) * sizeof(real));
+	a->cdecay = (real *)malloc0((a->ndecay + 1) * sizeof(real));
 	a->low_gain = 1.0 / a->exp_ratio;
 	calc_slews(a);
 	// control
@@ -155,10 +155,10 @@ void decalc_dexp (DEXP a)
 
 void calc_filter (DEXP a)
 {
-	double* impulse;
+	real* impulse;
 	// 2.0 gain on filter is somewhat arbitrarily chosen to get trigger input similar to that without the filter, knowing
 	//    that for any reasonable use of the filter there will be a reduction in trigger signal.
-	impulse = fir_bandpass (a->nc, a->low_cut, a->high_cut, a->rate, a->wintype, 1, 2.0/(double)(2 * a->size));
+	impulse = fir_bandpass (a->nc, a->low_cut, a->high_cut, a->rate, a->wintype, 1, 2.0/(real)(2 * a->size));
 	// print_impulse ("scf.txt", a->nc, impulse, 1, 0);
 	a->p = create_fircore (a->size, a->in, a->trigsig, a->nc, 1, impulse);
 	_aligned_free (impulse);
@@ -175,7 +175,7 @@ void calc_antivox(DEXP a)
 {
 	a->antivox_mult = exp(-1.0 / (a->antivox_rate * a->antivox_tau));
 	a->antivox_onemmult = 1.0 - a->antivox_mult;
-	a->antivox_data = (double *) malloc0 (a->antivox_size * sizeof (complex));
+	a->antivox_data = (real *) malloc0 (a->antivox_size * sizeof (complex));
 }
 
 void decalc_antivox(DEXP a)
@@ -184,10 +184,10 @@ void decalc_antivox(DEXP a)
 }
 
 PORT
-void create_dexp (int id, int run_dexp, int size, double* in, double* out, int rate, double dettau, double tattack, double tdecay, 
-	double thold, double exp_ratio, double hyst_ratio, double attack_thresh, int nc, int wtype, double lowcut, double highcut, 
-	int run_filt, int run_vox, int run_audelay, double audelay, void (__stdcall *pushvox)(int id, int active),
-	int antivox_run, int antivox_size, int antivox_rate, double antivox_gain, double antivox_tau)
+void create_dexp (int id, int run_dexp, int size, real* in, real* out, int rate, real dettau, real tattack, real tdecay, 
+	real thold, real exp_ratio, real hyst_ratio, real attack_thresh, int nc, int wtype, real lowcut, real highcut, 
+	int run_filt, int run_vox, int run_audelay, real audelay, void (__stdcall *pushvox)(int id, int active),
+	int antivox_run, int antivox_size, int antivox_rate, real antivox_gain, real antivox_tau)
 {
 	DEXP a = (DEXP) malloc0 (sizeof (dexp));
 	a->id = id;
@@ -195,7 +195,7 @@ void create_dexp (int id, int run_dexp, int size, double* in, double* out, int r
 	a->size = size;
 	a->in = in;
 	a->out = out;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->dettau = dettau;
 	a->tattack = tattack;
 	a->tdecay = tdecay;
@@ -214,7 +214,7 @@ void create_dexp (int id, int run_dexp, int size, double* in, double* out, int r
 	a->pushvox = pushvox;
 	a->antivox_run = antivox_run;
 	a->antivox_size = antivox_size;
-	a->antivox_rate = (double)antivox_rate;
+	a->antivox_rate = (real)antivox_rate;
 	a->antivox_gain = antivox_gain;
 	a->antivox_tau = antivox_tau;
 	calc_buffs (a);
@@ -267,8 +267,8 @@ void xdexp (int id)
 {
 	DEXP a = pdexp[id];
 	int i;
-	double sig, gain, asig;
-	double max = 0.0;
+	real sig, gain, asig;
+	real max = 0.0;
 	EnterCriticalSection (&a->cs_update);
 
 	// ******* BEGIN SIDE-CHANNEL FILTER *******
@@ -433,7 +433,7 @@ void SetDEXPSize (int id, int size)
 }
 
 PORT
-void SetDEXPIOBuffers (int id, double* in, double* out)
+void SetDEXPIOBuffers (int id, real* in, real* out)
 {
 	// Sets the input/output buffers.  They can be the same.
 	DEXP a = pdexp[id];
@@ -448,7 +448,7 @@ void SetDEXPIOBuffers (int id, double* in, double* out)
 }
 
 PORT
-void SetDEXPRate (int id, double rate)
+void SetDEXPRate (int id, real rate)
 {
 	// Sets the sample rate.
 	// This is used for timing and filter calculations as well as sizing 'audring'.
@@ -463,7 +463,7 @@ void SetDEXPRate (int id, double rate)
 }
 
 PORT
-void SetDEXPDetectorTau (int id, double tau)
+void SetDEXPDetectorTau (int id, real tau)
 {
 	// Time-constant for smoothing the signal for detection (seconds).
 	// 0.01 seconds is a good starting point to try.
@@ -476,7 +476,7 @@ void SetDEXPDetectorTau (int id, double tau)
 }
 
 PORT
-void SetDEXPAttackTime (int id, double time)
+void SetDEXPAttackTime (int id, real time)
 {
 	// Set attack time, seconds.
 	// 0.002 - 0.100 should be a good range.
@@ -489,7 +489,7 @@ void SetDEXPAttackTime (int id, double time)
 }
 
 PORT
-void SetDEXPReleaseTime (int id, double time)
+void SetDEXPReleaseTime (int id, real time)
 {
 	// Set release time, seconds.
 	// 0.002 - 0.999 should be a good range.
@@ -502,7 +502,7 @@ void SetDEXPReleaseTime (int id, double time)
 }
 
 PORT
-void SetDEXPHoldTime (int id, double time)
+void SetDEXPHoldTime (int id, real time)
 {
 	// Set hold time, seconds.
 	// 0.000 - 2.000 should be a good range.
@@ -515,7 +515,7 @@ void SetDEXPHoldTime (int id, double time)
 }
 
 PORT
-void SetDEXPExpansionRatio (int id, double ratio)
+void SetDEXPExpansionRatio (int id, real ratio)
 {
 	// Set expansion ratio.  High_gain = 1.0; Low_gain = 1.0/exp_ratio.
 	// Range of 1.0 - 30.0 should be good.  Could use dB:  0.0 - 30.0dB.
@@ -528,7 +528,7 @@ void SetDEXPExpansionRatio (int id, double ratio)
 }
 
 PORT
-void SetDEXPHysteresisRatio (int id, double ratio)
+void SetDEXPHysteresisRatio (int id, real ratio)
 {
 	// Set Hysteresis Ratio.  Hold_thresh = hysteresis_ratio * Attack_thresh.
 	// Expose to operator in dB:  0.0dB - 9.9dB should be good (1.000 - 0.320).
@@ -541,7 +541,7 @@ void SetDEXPHysteresisRatio (int id, double ratio)
 }
 
 PORT
-void SetDEXPAttackThreshold (int id, double thresh)
+void SetDEXPAttackThreshold (int id, real thresh)
 {
 	// Set attack threshold.
 	DEXP a = pdexp[id];
@@ -579,7 +579,7 @@ void SetDEXPWindowType (int id, int type)
 }
 
 PORT
-void SetDEXPLowCut (int id, double lowcut)
+void SetDEXPLowCut (int id, real lowcut)
 {
 	// Set side-channel filter low_cut (Hertz).
 	DEXP a = pdexp[id];
@@ -591,7 +591,7 @@ void SetDEXPLowCut (int id, double lowcut)
 }
 
 PORT
-void SetDEXPHighCut (int id, double highcut)
+void SetDEXPHighCut (int id, real highcut)
 {
 	// Set side-channel filter high_cut (Hertz).
 	DEXP a = pdexp[id];
@@ -633,7 +633,7 @@ void SetDEXPRunAudioDelay (int id, int run)
 }
 
 PORT
-void SetDEXPAudioDelay (int id, double delay)
+void SetDEXPAudioDelay (int id, real delay)
 {
 	// Set the audio delay, seconds.
 	DEXP a = pdexp[id];
@@ -645,7 +645,7 @@ void SetDEXPAudioDelay (int id, double delay)
 }
 
 PORT
-void GetDEXPPeakSignal (int id, double* peak)
+void GetDEXPPeakSignal (int id, real* peak)
 {
 	DEXP a = pdexp[id];
 	EnterCriticalSection (&a->cs_update);
@@ -674,7 +674,7 @@ void SetAntiVOXSize (int id, int size)
 }
 
 PORT
-void SetAntiVOXRate (int id, double rate)
+void SetAntiVOXRate (int id, real rate)
 {
 	DEXP a = pdexp[id];
 	EnterCriticalSection (&a->cs_update);
@@ -685,7 +685,7 @@ void SetAntiVOXRate (int id, double rate)
 }
 
 PORT
-void SetAntiVOXGain (int id, double gain)
+void SetAntiVOXGain (int id, real gain)
 {
 	DEXP a = pdexp[id];
 	EnterCriticalSection (&a->cs_update);
@@ -694,7 +694,7 @@ void SetAntiVOXGain (int id, double gain)
 }
 
 PORT
-void SetAntiVOXDetectorTau (int id, double tau)
+void SetAntiVOXDetectorTau (int id, real tau)
 {
 	DEXP a = pdexp[id];
 	EnterCriticalSection (&a->cs_update);
@@ -705,7 +705,7 @@ void SetAntiVOXDetectorTau (int id, double tau)
 }
 
 PORT 
-void SendAntiVOXData (int id, int nsamples, double* data)
+void SendAntiVOXData (int id, int nsamples, real* data)
 {
 	// note:  'nsamples' is not used as it has been previously specified
 	DEXP a = pdexp[id];

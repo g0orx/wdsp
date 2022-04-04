@@ -31,30 +31,30 @@ typedef struct _nob
 {
 	int run;
 	int buffsize;					// size of input/output buffer
-	double* in;						// input buffer
-	double* out;					// output buffer
+	real* in;						// input buffer
+	real* out;					// output buffer
 	int mode;
-	int dline_size;					// length of delay line which is 'double dline[length][2]'
-	double *dline;					// pointer to delay line
+	int dline_size;					// length of delay line which is 'real dline[length][2]'
+	real *dline;					// pointer to delay line
 	int *imp;
-	double samplerate;				// samplerate, used to convert times into sample counts
-	double advslewtime;						// transition time, signal<->zero
-	double advtime;					// deadtime (zero output) in advance of detected noise
-	double hangslewtime;
-	double hangtime;				// time to stay at zero after noise is no longer detected
-	double max_imp_seq_time;
+	real samplerate;				// samplerate, used to convert times into sample counts
+	real advslewtime;						// transition time, signal<->zero
+	real advtime;					// deadtime (zero output) in advance of detected noise
+	real hangslewtime;
+	real hangtime;				// time to stay at zero after noise is no longer detected
+	real max_imp_seq_time;
 	int filterlen;
-	double *fcoefs;
-	double *bfbuff;
+	real *fcoefs;
+	real *bfbuff;
 	int bfb_in_idx;
-	double *ffbuff;
+	real *ffbuff;
 	int ffb_in_idx;
-	double backtau;					// time constant used in averaging the magnitude of the input signal
-	double threshold;				// triggers if (noise > threshold * average_signal_magnitude)
-    double *awave;                   // pointer to array holding transition waveform
-	double *hwave;
+	real backtau;					// time constant used in averaging the magnitude of the input signal
+	real threshold;				// triggers if (noise > threshold * average_signal_magnitude)
+    real *awave;                   // pointer to array holding transition waveform
+	real *hwave;
     int state;                      // state of the state machine
-    double avg;                     // average value of the signal magnitude
+    real avg;                     // average value of the signal magnitude
     int time;                       // count when decreasing the signal magnitude
 	int adv_slew_count;
     int adv_count;                  // number of samples to equal 'tau' time
@@ -65,33 +65,33 @@ typedef struct _nob
     int in_idx;                     // ring buffer position into which new samples are inserted
 	int scan_idx;
     int out_idx;                    // ring buffer position from which delayed samples are pulled
-    double backmult;				// multiplier for waveform averaging
-    double ombackmult;				// multiplier for waveform averaging
-	double I1, Q1;
-	double I2, Q2;
-	double I, Q;
-	double Ilast, Qlast;
-	double deltaI, deltaQ;
-	double Inext, Qnext;
+    real backmult;				// multiplier for waveform averaging
+    real ombackmult;				// multiplier for waveform averaging
+	real I1, Q1;
+	real I2, Q2;
+	real I, Q;
+	real Ilast, Qlast;
+	real deltaI, deltaQ;
+	real Inext, Qnext;
 	int overflow;
 	CRITICAL_SECTION cs_update;
-	double *legacy;																										////////////  legacy interface - remove
+	real *legacy;																										////////////  legacy interface - remove
 } nob, *NOB;
 
 __declspec (dllexport) NOB create_nob	(
 	int run,
 	int buffsize,
-	double* in,
-	double* out,
-	double samplerate,
+	real* in,
+	real* out,
+	real samplerate,
 	int mode,
-	double advslewtime,
-	double advtime,
-	double hangslewtime,
-	double hangtime,
-	double max_imp_seq_time,
-	double backtau,
-	double threshold
+	real advslewtime,
+	real advtime,
+	real hangslewtime,
+	real hangtime,
+	real max_imp_seq_time,
+	real backtau,
+	real threshold
 						);
 
 __declspec (dllexport) void destroy_nob (NOB a);
@@ -105,21 +105,21 @@ extern __declspec (dllexport) void create_nobEXT	(
 	int run,
 	int mode,
 	int buffsize,
-	double samplerate,
-	double slewtime,
-	double hangtime,
-	double advtime,
-	double backtau,
-	double threshold
+	real samplerate,
+	real slewtime,
+	real hangtime,
+	real advtime,
+	real backtau,
+	real threshold
 					);
 
 extern __declspec (dllexport) void destroy_nobEXT (int id);
 
 extern __declspec (dllexport) void flush_nobEXT (int id);
 
-extern __declspec (dllexport) void xnobEXT (int id, double* in, double* out);
+extern __declspec (dllexport) void xnobEXT (int id, real* in, real* out);
 
-extern void setBuffers_nob (NOB a, double* in, double* out);
+extern void setBuffers_nob (NOB a, real* in, real* out);
 
 extern void setSamplerate_nob (NOB a, int rate);
 
@@ -134,14 +134,14 @@ extern __declspec (dllexport) void pSetRCVRNOBBuffsize (NOB a, int size);
 
 extern __declspec (dllexport) void pSetRCVRNOBSamplerate (NOB a, int size);
 
-extern __declspec (dllexport) void pSetRCVRNOBTau (NOB a, double tau);
+extern __declspec (dllexport) void pSetRCVRNOBTau (NOB a, real tau);
 
-extern __declspec (dllexport) void pSetRCVRNOBHangtime (NOB a, double time);
+extern __declspec (dllexport) void pSetRCVRNOBHangtime (NOB a, real time);
 
-extern __declspec (dllexport) void pSetRCVRNOBAdvtime (NOB a, double time);
+extern __declspec (dllexport) void pSetRCVRNOBAdvtime (NOB a, real time);
 
-extern __declspec (dllexport) void pSetRCVRNOBBacktau (NOB a, double tau);
+extern __declspec (dllexport) void pSetRCVRNOBBacktau (NOB a, real tau);
 
-extern __declspec (dllexport) void pSetRCVRNOBThreshold (NOB a, double thresh);
+extern __declspec (dllexport) void pSetRCVRNOBThreshold (NOB a, real thresh);
 
 #endif

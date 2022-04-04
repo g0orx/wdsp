@@ -24,16 +24,16 @@ warren@wpratt.com
 
 */
 
-extern double* fftcv_mults (int NM, double* c_impulse);
+extern real* fftcv_mults (int NM, real* c_impulse);
 
-extern double* fir_fsamp_odd (int N, double* A, int rtype, double scale, int wintype);
+extern real* fir_fsamp_odd (int N, real* A, int rtype, real scale, int wintype);
 
-extern double* fir_fsamp (int N, double* A, int rtype, double scale, int wintype);
+extern real* fir_fsamp (int N, real* A, int rtype, real scale, int wintype);
 
-extern double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int wintype, int rtype, double scale);
+extern real* fir_bandpass (int N, real f_low, real f_high, real samplerate, int wintype, int rtype, real scale);
 
-extern double* get_fsamp_window(int N, int wintype);
+extern real* get_fsamp_window(int N, int wintype);
 
-extern double *fir_read (int N, const char *filename, int rtype, double scale);
+extern real *fir_read (int N, const char *filename, int rtype, real scale);
 
-extern void mp_imp (int N, double* fir, double* mpfir, int pfactor, int polarity);
+extern void mp_imp (int N, real* fir, real* mpfir, int pfactor, int polarity);

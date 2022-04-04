@@ -26,19 +26,19 @@ warren@wpratt.com
 
 #include "comm.h"
 
-double* fc_impulse (int nc, double f0, double f1, double g0, double g1, int curve, double samplerate, double scale, int ctfmode, int wintype)
+real* fc_impulse (int nc, real f0, real f1, real g0, real g1, int curve, real samplerate, real scale, int ctfmode, int wintype)
 {
-	double* A  = (double *) malloc0 ((nc / 2 + 1) * sizeof (double));
+	real* A  = (real *) malloc0 ((nc / 2 + 1) * sizeof (real));
 	int i;
-	double fn, f;
-	double* impulse;
+	real fn, f;
+	real* impulse;
 	int mid = nc / 2;
-	double g0_lin = pow(10.0, g0 / 20.0);
+	real g0_lin = pow(10.0, g0 / 20.0);
 	if (nc & 1)
 	{
 		for (i = 0; i <= mid; i++)
 		{
-			fn = (double)i / (double)mid;
+			fn = (real)i / (real)mid;
 			f = fn * samplerate / 2.0;
 			switch (curve)
 			{
@@ -61,7 +61,7 @@ double* fc_impulse (int nc, double f0, double f1, double g0, double g1, int curv
 	{
 		for (i = 0; i < mid; i++)
 		{
-			fn = ((double)i + 0.5) / (double)mid;
+			fn = ((real)i + 0.5) / (real)mid;
 			f = fn * samplerate / 2.0;
 			switch (curve)
 			{
@@ -83,29 +83,29 @@ double* fc_impulse (int nc, double f0, double f1, double g0, double g1, int curv
 	if (ctfmode == 0)
 	{
 		int k, low, high;
-		double lowmag, highmag, flow4, fhigh4;
+		real lowmag, highmag, flow4, fhigh4;
 		if (nc & 1)
 		{
 			low  = (int)(2.0 * f0 / samplerate * mid);
 			high = (int)(2.0 * f1 / samplerate * mid + 0.5);
 			lowmag = A[low];
 			highmag = A[high];
-			flow4 = pow((double)low / (double)mid, 4.0);
-			fhigh4 = pow((double)high / (double)mid, 4.0);
+			flow4 = pow((real)low / (real)mid, 4.0);
+			fhigh4 = pow((real)high / (real)mid, 4.0);
 			k = low;
 			while (--k >= 0)
 			{
-				f = (double)k / (double)mid;
+				f = (real)k / (real)mid;
 				lowmag *= (f * f * f * f) / flow4;
-				if (lowmag < 1.0e-100) lowmag = 1.0e-100;
+				if (lowmag < REAL_EPSILON) lowmag = REAL_EPSILON;
 				A[k] = lowmag;
 			}
 			k = high;
 			while (++k <= mid)
 			{
-				f = (double)k / (double)mid;
+				f = (real)k / (real)mid;
 				highmag *= fhigh4 / (f * f * f * f);
-				if (highmag < 1.0e-100) highmag = 1.0e-100;
+				if (highmag < REAL_EPSILON) highmag = REAL_EPSILON;
 				A[k] = highmag;
 			}
 		}
@@ -115,22 +115,22 @@ double* fc_impulse (int nc, double f0, double f1, double g0, double g1, int curv
 			high = (int)(2.0 * f1 / samplerate * mid - 0.5);
 			lowmag = A[low];
 			highmag = A[high];
-			flow4 = pow((double)low / (double)mid, 4.0);
-			fhigh4 = pow((double)high / (double)mid, 4.0);
+			flow4 = pow((real)low / (real)mid, 4.0);
+			fhigh4 = pow((real)high / (real)mid, 4.0);
 			k = low;
 			while (--k >= 0)
 			{
-				f = (double)k / (double)mid;
+				f = (real)k / (real)mid;
 				lowmag *= (f * f * f * f) / flow4;
-				if (lowmag < 1.0e-100) lowmag = 1.0e-100;
+				if (lowmag < REAL_EPSILON) lowmag = REAL_EPSILON;
 				A[k] = lowmag;
 			}
 			k = high;
 			while (++k < mid)
 			{
-				f = (double)k / (double)mid;
+				f = (real)k / (real)mid;
 				highmag *= fhigh4 / (f * f * f * f);
-				if (highmag < 1.0e-100) highmag = 1.0e-100;
+				if (highmag < REAL_EPSILON) highmag = REAL_EPSILON;
 				A[k] = highmag;
 			}
 		}
@@ -145,10 +145,10 @@ double* fc_impulse (int nc, double f0, double f1, double g0, double g1, int curv
 }
 
 // generate mask for Overlap-Save Filter
-double* fc_mults (int size, double f0, double f1, double g0, double g1, int curve, double samplerate, double scale, int ctfmode, int wintype)
+real* fc_mults (int size, real f0, real f1, real g0, real g1, int curve, real samplerate, real scale, int ctfmode, int wintype)
 {
-	double* impulse = fc_impulse (size + 1, f0, f1, g0, g1, curve, samplerate, scale, ctfmode, wintype);
-	double* mults = fftcv_mults(2 * size, impulse);
+	real* impulse = fc_impulse (size + 1, f0, f1, g0, g1, curve, samplerate, scale, ctfmode, wintype);
+	real* mults = fftcv_mults(2 * size, impulse);
 	_aligned_free (impulse);
 	return mults;
 }

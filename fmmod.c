@@ -39,16 +39,16 @@ void calc_fmmod (FMMOD a)
 	a->bp_fc = a->deviation + a->f_high;
 }
 
-FMMOD create_fmmod (int run, int size, double* in, double* out, int rate, double dev, double f_low, double f_high, 
-	int ctcss_run, double ctcss_level, double ctcss_freq, int bp_run, int nc, int mp)
+FMMOD create_fmmod (int run, int size, real* in, real* out, int rate, real dev, real f_low, real f_high, 
+	int ctcss_run, real ctcss_level, real ctcss_freq, int bp_run, int nc, int mp)
 {
 	FMMOD a = (FMMOD) malloc0 (sizeof (fmmod));
-	double* impulse;
+	real* impulse;
 	a->run = run;
 	a->size = size;
 	a->in = in;
 	a->out = out;
-	a->samplerate = (double)rate;
+	a->samplerate = (real)rate;
 	a->deviation = dev;
 	a->f_low = f_low;
 	a->f_high = f_high;
@@ -80,7 +80,7 @@ void flush_fmmod (FMMOD a)
 void xfmmod (FMMOD a)
 {
 	int i;
-	double dp, magdp, peak;
+	real dp, magdp, peak;
 	if (a->run)
 	{
 		peak = 0.0;
@@ -109,7 +109,7 @@ void xfmmod (FMMOD a)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_fmmod (FMMOD a, double* in, double* out)
+void setBuffers_fmmod (FMMOD a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -119,7 +119,7 @@ void setBuffers_fmmod (FMMOD a, double* in, double* out)
 
 void setSamplerate_fmmod (FMMOD a, int rate)
 {
-	double* impulse;
+	real* impulse;
 	a->samplerate = rate;
 	calc_fmmod (a);
 	impulse = fir_bandpass(a->nc, -a->bp_fc, +a->bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
@@ -129,7 +129,7 @@ void setSamplerate_fmmod (FMMOD a, int rate)
 
 void setSize_fmmod (FMMOD a, int size)
 {
-	double* impulse;
+	real* impulse;
 	a->size = size;
 	calc_fmmod (a);
 	setSize_fircore (a->p, a->size);
@@ -145,11 +145,11 @@ void setSize_fmmod (FMMOD a, int size)
 ********************************************************************************************************/
 
 PORT
-void SetTXAFMDeviation (int channel, double deviation)
+void SetTXAFMDeviation (int channel, real deviation)
 {
 	FMMOD a = txa[channel].fmmod.p;
-	double bp_fc = a->f_high + deviation;
-	double* impulse = fir_bandpass (a->nc, -bp_fc, +bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
+	real bp_fc = a->f_high + deviation;
+	real* impulse = fir_bandpass (a->nc, -bp_fc, +bp_fc, a->samplerate, 0, 1, 1.0 / (2 * a->size));
 	setImpulse_fircore (a->p, impulse, 0);
 	_aligned_free (impulse);
 	EnterCriticalSection (&ch[channel].csDSP);
@@ -164,7 +164,7 @@ void SetTXAFMDeviation (int channel, double deviation)
 }
 
 PORT
-void SetTXACTCSSFreq (int channel, double freq)
+void SetTXACTCSSFreq (int channel, real freq)
 {
 	FMMOD a;
 	EnterCriticalSection (&ch[channel].csDSP);
@@ -187,7 +187,7 @@ PORT
 void SetTXAFMNC (int channel, int nc)
 {
 	FMMOD a;
-	double* impulse;
+	real* impulse;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = txa[channel].fmmod.p;
 	if (a->nc != nc)

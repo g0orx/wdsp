@@ -27,10 +27,10 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-double* fftcv_mults (int NM, double* c_impulse)
+real* fftcv_mults (int NM, real* c_impulse)
 {
-	double* mults        = (double *) malloc0 (NM * sizeof (complex));
-	double* cfft_impulse = (double *) malloc0 (NM * sizeof (complex));
+	real* mults        = (real *) malloc0 (NM * sizeof (complex));
+	real* cfft_impulse = (real *) malloc0 (NM * sizeof (complex));
 	fftw_plan ptmp = fftw_plan_dft_1d(NM, (fftw_complex *) cfft_impulse,
 			(fftw_complex *) mults, FFTW_FORWARD, FFTW_PATIENT);
 	memset (cfft_impulse, 0, NM * sizeof (complex));
@@ -42,18 +42,18 @@ double* fftcv_mults (int NM, double* c_impulse)
 	return mults;
 }
 
-double* get_fsamp_window(int N, int wintype)
+real* get_fsamp_window(int N, int wintype)
 {
 	int i;
-	double arg0, arg1;
-	double* window = (double *) malloc0 (N * sizeof(double));
+	real arg0, arg1;
+	real* window = (real *) malloc0 (N * sizeof(real));
 	switch (wintype)
 	{
 	case 0:
-		arg0 = 2.0 * PI / ((double)N - 1.0);
+		arg0 = 2.0 * PI / ((real)N - 1.0);
 		for (i = 0; i < N; i++)
 		{
-			arg1 = cos(arg0 * (double)i);
+			arg1 = cos(arg0 * (real)i);
 			window[i]  =   +0.21747
 				+ arg1 *  (-0.45325
 				+ arg1 *  (+0.28256
@@ -61,10 +61,10 @@ double* get_fsamp_window(int N, int wintype)
 		}
 		break;
 	case 1:
-		arg0 = 2.0 * PI / ((double)N - 1.0);
+		arg0 = 2.0 * PI / ((real)N - 1.0);
 		for (i = 0; i < N; ++i)
 		{
-			arg1 = cos(arg0 * (double)i);
+			arg1 = cos(arg0 * (real)i);
 			window[i]  =   +6.3964424114390378e-02
 				+ arg1 *  (-2.3993864599352804e-01
 				+ arg1 *  (+3.5015956323820469e-01
@@ -81,20 +81,20 @@ double* get_fsamp_window(int N, int wintype)
 	return window;
 }
 
-double* fir_fsamp_odd (int N, double* A, int rtype, double scale, int wintype)
+real* fir_fsamp_odd (int N, real* A, int rtype, real scale, int wintype)
 {
 	int i, j;
 	int mid = (N - 1) / 2;
-	double mag, phs;
-	double* window;
-	double *fcoef     = (double *) malloc0 (N * sizeof (complex));
-	double *c_impulse = (double *) malloc0 (N * sizeof (complex));
+	real mag, phs;
+	real* window;
+	real *fcoef     = (real *) malloc0 (N * sizeof (complex));
+	real *c_impulse = (real *) malloc0 (N * sizeof (complex));
 	fftw_plan ptmp = fftw_plan_dft_1d(N, (fftw_complex *)fcoef, (fftw_complex *)c_impulse, FFTW_BACKWARD, FFTW_PATIENT);
-	double local_scale = 1.0 / (double)N;
+	real local_scale = 1.0 / (real)N;
 	for (i = 0; i <= mid; i++)
 	{
 		mag = A[i] * local_scale;
-		phs = - (double)mid * TWOPI * (double)i / (double)N;
+		phs = - (real)mid * TWOPI * (real)i / (real)N;
 		fcoef[2 * i + 0] = mag * cos (phs);
 		fcoef[2 * i + 1] = mag * sin (phs);
 	}
@@ -125,12 +125,12 @@ double* fir_fsamp_odd (int N, double* A, int rtype, double scale, int wintype)
 	return c_impulse;
 }
 
-double* fir_fsamp (int N, double* A, int rtype, double scale, int wintype)
+real* fir_fsamp (int N, real* A, int rtype, real scale, int wintype)
 {
 	int n, i, j, k;
-	double sum;
-	double* window;
-	double *c_impulse = (double *) malloc0 (N * sizeof (complex));
+	real sum;
+	real* window;
+	real *c_impulse = (real *) malloc0 (N * sizeof (complex));
 
 	if (N & 1)
 	{
@@ -151,7 +151,7 @@ double* fir_fsamp (int N, double* A, int rtype, double scale, int wintype)
 	}
 	else
 	{
-		double M = (double)(N - 1) / 2.0;
+		real M = (real)(N - 1) / 2.0;
 		for (n = 0; n < N / 2; n++)
 		{
 			sum = 0.0;
@@ -185,18 +185,18 @@ double* fir_fsamp (int N, double* A, int rtype, double scale, int wintype)
 	return c_impulse;
 }
 
-double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int wintype, int rtype, double scale)
+real* fir_bandpass (int N, real f_low, real f_high, real samplerate, int wintype, int rtype, real scale)
 {
-	double *c_impulse = (double *) malloc0 (N * sizeof (complex));
-	double ft = (f_high - f_low) / (2.0 * samplerate);
-	double ft_rad = TWOPI * ft;
-	double w_osc = PI * (f_high + f_low) / samplerate;
+	real *c_impulse = (real *) malloc0 (N * sizeof (complex));
+	real ft = (f_high - f_low) / (2.0 * samplerate);
+	real ft_rad = TWOPI * ft;
+	real w_osc = PI * (f_high + f_low) / samplerate;
 	int i, j;
-	double m = 0.5 * (double)(N - 1);
-	double delta = PI / m;
-	double cosphi;
-	double posi, posj;
-	double sinc, window, coef;
+	real m = 0.5 * (real)(N - 1);
+	real delta = PI / m;
+	real cosphi;
+	real posi, posj;
+	real sinc, window, coef;
 
 	if (N & 1)
 	{
@@ -213,8 +213,8 @@ double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int
 	}
 	for (i = (N + 1) / 2, j = N / 2 - 1; i < N; i++, j--)
 	{
-		posi = (double)i - m;
-		posj = (double)j - m;
+		posi = (real)i - m;
+		posj = (real)j - m;
 		sinc = sin (ft_rad * posi) / (PI * posi);
 		switch (wintype)
 		{
@@ -254,7 +254,7 @@ double* fir_bandpass (int N, double f_low, double f_high, double samplerate, int
 	return c_impulse;
 }
 
-double *fir_read (int N, const char *filename, int rtype, double scale)
+real *fir_read (int N, const char *filename, int rtype, real scale)
 	// N = number of real or complex coefficients (see rtype)
 	// *filename = filename
 	// rtype = 0:  real coefficients
@@ -265,8 +265,8 @@ double *fir_read (int N, const char *filename, int rtype, double scale)
 {
 	FILE *file;
 	int i;
-	double I, Q;
-	double *c_impulse = (double *) malloc0 (N * sizeof (complex));
+	real I, Q;
+	real *c_impulse = (real *) malloc0 (N * sizeof (complex));
 	file = fopen (filename, "r");
 	for (i = 0; i < N; i++)
 	{
@@ -275,12 +275,12 @@ double *fir_read (int N, const char *filename, int rtype, double scale)
 		switch (rtype)
 		{
 		case 0:
-			fscanf (file, "%le", &I);
+			fscanf (file, REAL, &I);
 			c_impulse[i] = + scale * I;
 			break;
 		case 1:
-			fscanf (file, "%le", &I);
-			fscanf (file, "%le", &Q);
+			fscanf (file, REAL, &I);
+			fscanf (file, REAL, &Q);
 			c_impulse[2 * i + 0] = + scale * I;
 			c_impulse[2 * i + 1] = - scale * Q;
 			break;
@@ -290,12 +290,12 @@ double *fir_read (int N, const char *filename, int rtype, double scale)
 	return c_impulse;
 }
 
-void analytic (int N, double* in, double* out)
+void analytic (int N, real* in, real* out)
 {
 	int i;
-	double inv_N = 1.0 / (double)N;
-	double two_inv_N = 2.0 * inv_N;
-	double* x = (double *) malloc0 (N * sizeof (complex));
+	real inv_N = 1.0 / (real)N;
+	real two_inv_N = 2.0 * inv_N;
+	real* x = (real *) malloc0 (N * sizeof (complex));
 	fftw_plan pfor = fftw_plan_dft_1d (N, (fftw_complex *) in,
 			(fftw_complex *) x, FFTW_FORWARD, FFTW_PATIENT);
 	fftw_plan prev = fftw_plan_dft_1d (N, (fftw_complex *) x,
@@ -310,24 +310,24 @@ void analytic (int N, double* in, double* out)
 	}
 	x[N + 0] *= inv_N;
 	x[N + 1] *= inv_N;
-	memset (&x[N + 2], 0, (N - 2) * sizeof (double));
+	memset (&x[N + 2], 0, (N - 2) * sizeof (real));
 	fftw_execute (prev);
 	fftw_destroy_plan (prev);
 	fftw_destroy_plan (pfor);
 	_aligned_free (x);
 }
 
-void mp_imp (int N, double* fir, double* mpfir, int pfactor, int polarity)
+void mp_imp (int N, real* fir, real* mpfir, int pfactor, int polarity)
 {
 	int i;
 	int size = N * pfactor;
-	double inv_PN = 1.0 / (double)size;
-	double* firpad  = (double *) malloc0 (size * sizeof (complex));
-	double* firfreq = (double *) malloc0 (size * sizeof (complex));
-	double* mag     = (double *) malloc0 (size * sizeof (double));
-	double* ana     = (double *) malloc0 (size * sizeof (complex));
-	double* impulse = (double *) malloc0 (size * sizeof (complex));
-	double* newfreq = (double *) malloc0 (size * sizeof (complex));
+	real inv_PN = 1.0 / (real)size;
+	real* firpad  = (real *) malloc0 (size * sizeof (complex));
+	real* firfreq = (real *) malloc0 (size * sizeof (complex));
+	real* mag     = (real *) malloc0 (size * sizeof (real));
+	real* ana     = (real *) malloc0 (size * sizeof (complex));
+	real* impulse = (real *) malloc0 (size * sizeof (complex));
+	real* newfreq = (real *) malloc0 (size * sizeof (complex));
 	memcpy (firpad, fir, N * sizeof (complex));
 	fftw_plan pfor = fftw_plan_dft_1d (size, (fftw_complex *) firpad,
 			(fftw_complex *) firfreq, FFTW_FORWARD, FFTW_PATIENT);
@@ -341,7 +341,7 @@ void mp_imp (int N, double* fir, double* mpfir, int pfactor, int polarity)
 		if (mag[i] > 0.0)
 			ana[2 * i + 0] = log (mag[i]);
 		else
-			ana[2 * i + 0] = log (1.0e-300);
+			ana[2 * i + 0] = log (REAL_EPSILON);
 	}
 	analytic (size, ana, ana);
 	for (i = 0; i < size; i++)

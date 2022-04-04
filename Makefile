@@ -33,6 +33,10 @@ JAVA_PROGRAM=libwdspj.so		# Linux: shared libs end in .so
 NOEXECSTACK=	-z noexecstack		# Linux: link option for gcc
 endif
 
+ifeq ($(USE_FLOAT32), 1)
+OPTIONS += -fsingle-precision-constant -DUSE_FLOAT32=1
+endif
+
 JAVA_LIBS=-L. -lwdsp
 
 INCLUDES=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux

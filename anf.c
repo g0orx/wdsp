@@ -30,21 +30,21 @@ ANF create_anf	(
 				int run,
 				int position,
 				int buff_size,
-				double *in_buff,
-				double *out_buff,
+				real *in_buff,
+				real *out_buff,
 				int dline_size,
 				int n_taps,
 				int delay,
-				double two_mu,
-				double gamma,
+				real two_mu,
+				real gamma,
 
-				double lidx,
-				double lidx_min,
-				double lidx_max,
-				double ngamma,
-				double den_mult,
-				double lincr,
-				double ldecr
+				real lidx,
+				real lidx_min,
+				real lidx_max,
+				real ngamma,
+				real den_mult,
+				real lincr,
+				real ldecr
 			)
 {
 	ANF a = (ANF) malloc0 (sizeof(anf));
@@ -68,8 +68,8 @@ ANF create_anf	(
 	a->lincr = lincr;
 	a->ldecr = ldecr;
 	
-	memset (a->d, 0, sizeof(double) * ANF_DLINE_SIZE);
-	memset (a->w, 0, sizeof(double) * ANF_DLINE_SIZE);
+	memset (a->d, 0, sizeof(real) * ANF_DLINE_SIZE);
+	memset (a->w, 0, sizeof(real) * ANF_DLINE_SIZE);
 	
 	return a;
 }
@@ -82,9 +82,9 @@ void destroy_anf (ANF a)
 void xanf(ANF a, int position)
 {
     int i, j, idx;
-    double c0, c1;
-    double y, error, sigma, inv_sigp;
-	double nel, nev;
+    real c0, c1;
+    real y, error, sigma, inv_sigp;
+	real nel, nev;
     if (a->run && (a->position == position))
 	{
 		for (i = 0; i < a->buff_size; i++)
@@ -131,12 +131,12 @@ void xanf(ANF a, int position)
 
 void flush_anf (ANF a)
 {
-	memset (a->d, 0, sizeof(double) * ANF_DLINE_SIZE);
-	memset (a->w, 0, sizeof(double) * ANF_DLINE_SIZE);
+	memset (a->d, 0, sizeof(real) * ANF_DLINE_SIZE);
+	memset (a->w, 0, sizeof(real) * ANF_DLINE_SIZE);
 	a->in_idx = 0;
 }
 
-void setBuffers_anf (ANF a, double* in, double* out)
+void setBuffers_anf (ANF a, real* in, real* out)
 {
 	a->in_buff = in;
 	a->out_buff = out;
@@ -177,7 +177,7 @@ SetRXAANFRun (int channel, int run)
 
 
 PORT void
-SetRXAANFVals (int channel, int taps, int delay, double gain, double leakage)
+SetRXAANFVals (int channel, int taps, int delay, real gain, real leakage)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].anf.p->n_taps = taps;
@@ -207,7 +207,7 @@ SetRXAANFDelay (int channel, int delay)
 }
 
 PORT void
-SetRXAANFGain (int channel, double gain)
+SetRXAANFGain (int channel, real gain)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].anf.p->two_mu = gain;
@@ -216,7 +216,7 @@ SetRXAANFGain (int channel, double gain)
 }
 
 PORT void
-SetRXAANFLeakage (int channel, double leakage)
+SetRXAANFLeakage (int channel, real leakage)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].anf.p->gamma = leakage;

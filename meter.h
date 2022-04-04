@@ -32,23 +32,23 @@ typedef struct _meter
 	int run;
 	int* prun;
 	int size;
-	double* buff;
-	double rate;
-	double tau_average;
-	double tau_peak_decay;
-	double mult_average;
-	double mult_peak;
-	double* result;
+	real* buff;
+	real rate;
+	real tau_average;
+	real tau_peak_decay;
+	real mult_average;
+	real mult_peak;
+	real* result;
 	int enum_av;
 	int enum_pk;
 	int enum_gain;
-	double* pgain;
-	double avg;
-	double peak;
+	real* pgain;
+	real avg;
+	real peak;
 	CRITICAL_SECTION mtupdate;
 } meter, *METER;
 
-extern METER create_meter (int run, int* prun, int size, double* buff, int rate, double tau_av, double tau_decay, double* result, CRITICAL_SECTION** pmtupdate, int enum_av, int enum_pk, int enum_gain, double* pgain);
+extern METER create_meter (int run, int* prun, int size, real* buff, int rate, real tau_av, real tau_decay, real* result, CRITICAL_SECTION** pmtupdate, int enum_av, int enum_pk, int enum_gain, real* pgain);
 
 extern void destroy_meter (METER a);
 
@@ -56,7 +56,7 @@ extern void flush_meter (METER a);
 
 extern void xmeter (METER a);
 
-extern void setBuffers_meter (METER a, double* in);
+extern void setBuffers_meter (METER a, real* in);
 
 extern void setSamplerate_meter (METER a, int rate);
 
@@ -64,10 +64,10 @@ extern void setSize_meter (METER a, int size);
 
 // RXA Properties
 
-extern __declspec (dllexport) double GetRXAMeter (int channel, int mt);
+extern __declspec (dllexport) real GetRXAMeter (int channel, int mt);
 
 // TXA Properties
 
-extern __declspec (dllexport) double GetTXAMeter (int channel, int mt);
+extern __declspec (dllexport) real GetTXAMeter (int channel, int mt);
 
 #endif

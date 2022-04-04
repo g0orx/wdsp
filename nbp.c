@@ -38,10 +38,10 @@ NOTCHDB create_notchdb (int master_run, int maxnotches)
 	a->master_run = master_run;
 	a->maxnotches = maxnotches;
 	a->nn = 0;
-	a->fcenter = (double *) malloc0 (a->maxnotches * sizeof (double));
-	a->fwidth  = (double *) malloc0 (a->maxnotches * sizeof (double));
-	a->nlow    = (double *) malloc0 (a->maxnotches * sizeof (double));
-	a->nhigh   = (double *) malloc0 (a->maxnotches * sizeof (double));
+	a->fcenter = (real *) malloc0 (a->maxnotches * sizeof (real));
+	a->fwidth  = (real *) malloc0 (a->maxnotches * sizeof (real));
+	a->nlow    = (real *) malloc0 (a->maxnotches * sizeof (real));
+	a->nhigh   = (real *) malloc0 (a->maxnotches * sizeof (real));
 	a->active  = (int    *) malloc0 (a->maxnotches * sizeof (int   ));
 	return a;
 }
@@ -61,11 +61,11 @@ void destroy_notchdb (NOTCHDB b)
 *																										*
 ********************************************************************************************************/
 
-double* fir_mbandpass (int N, int nbp, double* flow, double* fhigh, double rate, double scale, int wintype)
+real* fir_mbandpass (int N, int nbp, real* flow, real* fhigh, real rate, real scale, int wintype)
 {
 	int i, k;
-	double* impulse = (double *) malloc0 (N * sizeof (complex));
-	double* imp;
+	real* impulse = (real *) malloc0 (N * sizeof (complex));
+	real* imp;
 	for (k = 0; k < nbp; k++)
 	{
 		imp = fir_bandpass (N, flow[k], fhigh[k], rate, wintype, 1, scale);
@@ -79,9 +79,9 @@ double* fir_mbandpass (int N, int nbp, double* flow, double* fhigh, double rate,
 	return impulse;
 }
 
-double min_notch_width (NBP a)
+real min_notch_width (NBP a)
 {
-	double min_width;
+	real min_width;
 	switch (a->wintype)
 	{
 	case 0:
@@ -94,13 +94,13 @@ double min_notch_width (NBP a)
 	return min_width;
 }
 
-int make_nbp (int nn, int* active, double* center, double* width, double* nlow, double* nhigh, 
-	double minwidth, int autoincr, double flow, double fhigh, double* bplow, double* bphigh, int* havnotch)
+int make_nbp (int nn, int* active, real* center, real* width, real* nlow, real* nhigh, 
+	real minwidth, int autoincr, real flow, real fhigh, real* bplow, real* bphigh, int* havnotch)
 {
 	int nbp;
 	int nnbp, adds;
 	int i, j, k;
-	double nl, nh;
+	real nl, nh;
 	int* del = (int *) malloc0 (1024 * sizeof (int));
 	if (fhigh > flow)
 	{
@@ -181,8 +181,8 @@ int make_nbp (int nn, int* active, double* center, double* width, double* nlow, 
 void calc_nbp_lightweight (NBP a)
 {	// calculate and set new impulse response; used when changing tune freq or shift freq
 	int i;
-	double fl, fh;
-	double offset;
+	real fl, fh;
+	real offset;
 	NOTCHDB b = *a->ptraddr;
 	if (a->fnfrun)
 	{
@@ -200,7 +200,7 @@ void calc_nbp_lightweight (NBP a)
 				a->bphigh[i] -= offset;
 			}
 			a->impulse = fir_mbandpass (a->nc, a->numpb, a->bplow, a->bphigh,
-				a->rate, a->gain / (double)(2 * a->size), a->wintype);
+				a->rate, a->gain / (real)(2 * a->size), a->wintype);
 			setImpulse_fircore (a->p, a->impulse, 1);
 			// print_impulse ("nbp.txt", a->size + 1, impulse, 1, 0);
 			_aligned_free(a->impulse);
@@ -214,8 +214,8 @@ void calc_nbp_lightweight (NBP a)
 void calc_nbp_impulse (NBP a)
 {	// calculates impulse response; for create_fircore() and parameter changes
 	int i;
-	double fl, fh;
-	double offset;
+	real fl, fh;
+	real offset;
 	NOTCHDB b = *a->ptraddr;
 	if (a->fnfrun)
 	{
@@ -230,16 +230,16 @@ void calc_nbp_impulse (NBP a)
 			a->bphigh[i] -= offset;
 		}
 		a->impulse = fir_mbandpass (a->nc, a->numpb, a->bplow, a->bphigh,
-			a->rate, a->gain / (double)(2 * a->size), a->wintype);
+			a->rate, a->gain / (real)(2 * a->size), a->wintype);
 	}
 	else
 	{
-		a->impulse = fir_bandpass(a->nc, a->flow, a->fhigh, a->rate, a->wintype, 1, a->gain / (double)(2 * a->size));
+		a->impulse = fir_bandpass(a->nc, a->flow, a->fhigh, a->rate, a->wintype, 1, a->gain / (real)(2 * a->size));
 	}
 }
 
-NBP create_nbp(int run, int fnfrun, int position, int size, int nc, int mp, double* in, double* out, 
-	double flow, double fhigh, int rate, int wintype, double gain, int autoincr, int maxpb, NOTCHDB* ptraddr)
+NBP create_nbp(int run, int fnfrun, int position, int size, int nc, int mp, real* in, real* out, 
+	real flow, real fhigh, int rate, int wintype, real gain, int autoincr, int maxpb, NOTCHDB* ptraddr)
 {
 	NBP a = (NBP) malloc0 (sizeof (nbp));
 	a->run = run;
@@ -248,7 +248,7 @@ NBP create_nbp(int run, int fnfrun, int position, int size, int nc, int mp, doub
 	a->size = size;
 	a->nc = nc;
 	a->mp = mp;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->wintype = wintype;
 	a->gain = gain;
 	a->in = in;
@@ -258,8 +258,8 @@ NBP create_nbp(int run, int fnfrun, int position, int size, int nc, int mp, doub
 	a->fhigh = fhigh;
 	a->maxpb = maxpb;
 	a->ptraddr = ptraddr;
-	a->bplow   = (double *) malloc0 (a->maxpb * sizeof (double));
-	a->bphigh  = (double *) malloc0 (a->maxpb * sizeof (double));
+	a->bplow   = (real *) malloc0 (a->maxpb * sizeof (real));
+	a->bphigh  = (real *) malloc0 (a->maxpb * sizeof (real));
 	calc_nbp_impulse (a);
 	a->p = create_fircore (a->size, a->in, a->out, a->nc, a->mp, a->impulse);
 	// print_impulse ("nbp.txt", a->size + 1, impulse, 1, 0);
@@ -288,7 +288,7 @@ void xnbp (NBP a, int pos)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_nbp (NBP a, double* in, double* out)
+void setBuffers_nbp (NBP a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -356,7 +356,7 @@ void UpdateNBPFilters(int channel)
 }
 
 PORT
-int RXANBPAddNotch (int channel, int notch, double fcenter, double fwidth, int active)
+int RXANBPAddNotch (int channel, int notch, real fcenter, real fwidth, int active)
 {
 	NOTCHDB b;
 	int i, j;
@@ -387,7 +387,7 @@ int RXANBPAddNotch (int channel, int notch, double fcenter, double fwidth, int a
 }
 
 PORT
-int RXANBPGetNotch (int channel, int notch, double* fcenter, double* fwidth, int* active)
+int RXANBPGetNotch (int channel, int notch, real* fcenter, real* fwidth, int* active)
 {
 	NOTCHDB a;
 	int rval;
@@ -438,7 +438,7 @@ int RXANBPDeleteNotch (int channel, int notch)
 }
 
 PORT
-int RXANBPEditNotch (int channel, int notch, double fcenter, double fwidth, int active)
+int RXANBPEditNotch (int channel, int notch, real fcenter, real fwidth, int active)
 {
 	NOTCHDB a;
 	int rval;
@@ -469,7 +469,7 @@ void RXANBPGetNumNotches (int channel, int* nnotches)
 }
 
 PORT
-void RXANBPSetTuneFrequency (int channel, double tunefreq)
+void RXANBPSetTuneFrequency (int channel, real tunefreq)
 {
 	NOTCHDB a;
 	a = rxa[channel].ndb.p;
@@ -481,7 +481,7 @@ void RXANBPSetTuneFrequency (int channel, double tunefreq)
 }
 
 PORT
-void RXANBPSetShiftFrequency (int channel, double shift)
+void RXANBPSetShiftFrequency (int channel, real shift)
 {
 	NOTCHDB a;
 	a = rxa[channel].ndb.p;
@@ -525,7 +525,7 @@ void RXANBPSetRun (int channel, int run)
 }
 
 PORT
-void RXANBPSetFreqs (int channel, double flow, double fhigh)
+void RXANBPSetFreqs (int channel, real flow, real fhigh)
 {
 	NBP a;
 	a = rxa[channel].nbp0.p;
@@ -588,7 +588,7 @@ void RXANBPSetMP (int channel, int mp)
 }
 
 PORT
-void RXANBPGetMinNotchWidth (int channel, double* minwidth)
+void RXANBPGetMinNotchWidth (int channel, real* minwidth)
 {
 	NBP a;
 	EnterCriticalSection (&ch[channel].csDSP);

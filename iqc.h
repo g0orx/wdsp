@@ -32,17 +32,17 @@ typedef struct _iqc
 	volatile long run;
 	volatile long busy;
 	int size;
-	double* in;
-	double* out;
-	double rate;
+	real* in;
+	real* out;
+	real rate;
 	int ints;
-	double* t;
+	real* t;
 	int cset;
-	double* cm[2];
-	double* cc[2];
-	double* cs[2];
-	double tup;
-	double* cup;
+	real* cm[2];
+	real* cc[2];
+	real* cs[2];
+	real tup;
+	real* cup;
 	int count;
 	int ntup;
 	int state;
@@ -56,7 +56,7 @@ typedef struct _iqc
 	} dog;
 } iqc, *IQC;
 
-extern IQC create_iqc (int run, int size, double* in, double* out, double rate, int ints, double tup, int spi);
+extern IQC create_iqc (int run, int size, real* in, real* out, real rate, int ints, real tup, int spi);
 
 extern void destroy_iqc (IQC a);
 
@@ -64,7 +64,7 @@ extern void flush_iqc (IQC a);
 
 extern void xiqc (IQC a);
 
-extern void setBuffers_iqc (IQC a, double* in, double* out);
+extern void setBuffers_iqc (IQC a, real* in, real* out);
 
 extern void setSamplerate_iqc (IQC a, int rate);
 
@@ -76,13 +76,13 @@ extern void desize_iqc (IQC a);
 
 // TXA Properties
 
-extern __declspec (dllexport)  void GetTXAiqcValues (int channel, double* cm, double* cc, double* cs);
+extern __declspec (dllexport)  void GetTXAiqcValues (int channel, real* cm, real* cc, real* cs);
 
-extern __declspec (dllexport)  void SetTXAiqcValues (int channel, double* cm, double* cc, double* cs);
+extern __declspec (dllexport)  void SetTXAiqcValues (int channel, real* cm, real* cc, real* cs);
 
-extern __declspec (dllexport)  void SetTXAiqcSwap (int channel, double* cm, double* cc, double* cs);
+extern __declspec (dllexport)  void SetTXAiqcSwap (int channel, real* cm, real* cc, real* cs);
 
-extern __declspec (dllexport)  void SetTXAiqcStart (int channel, double* cm, double* cc, double* cs);
+extern __declspec (dllexport)  void SetTXAiqcStart (int channel, real* cm, real* cc, real* cs);
 
 extern __declspec (dllexport)  void SetTXAiqcEnd (int channel);
 

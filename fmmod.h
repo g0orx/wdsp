@@ -31,32 +31,32 @@ typedef struct _fmmod
 {
 	int run;
 	int size;
-	double* in;
-	double* out;
-	double samplerate;
-	double deviation;
-	double f_low;
-	double f_high;
+	real* in;
+	real* out;
+	real samplerate;
+	real deviation;
+	real f_low;
+	real f_high;
 	int ctcss_run;
-	double ctcss_level;
-	double ctcss_freq;
+	real ctcss_level;
+	real ctcss_freq;
 	// for ctcss gen
-	double tscale;
-	double tphase;
-	double tdelta;
+	real tscale;
+	real tphase;
+	real tdelta;
 	// mod
-	double sphase;
-	double sdelta;
+	real sphase;
+	real sdelta;
 	// bandpass
 	int bp_run;
-	double bp_fc;
+	real bp_fc;
 	int nc;
 	int mp;
 	FIRCORE p;
 }fmmod, *FMMOD;
 
-extern FMMOD create_fmmod (int run, int size, double* in, double* out, int rate, double dev, double f_low, double f_high, 
-	int ctcss_run, double ctcss_level, double ctcss_freq, int bp_run, int nc, int mp);
+extern FMMOD create_fmmod (int run, int size, real* in, real* out, int rate, real dev, real f_low, real f_high, 
+	int ctcss_run, real ctcss_level, real ctcss_freq, int bp_run, int nc, int mp);
 
 extern void destroy_fmmod (FMMOD a);
 
@@ -64,7 +64,7 @@ extern void flush_fmmod (FMMOD a);
 
 extern void xfmmod (FMMOD a);
 
-extern void setBuffers_fmmod (FMMOD a, double* in, double* out);
+extern void setBuffers_fmmod (FMMOD a, real* in, real* out);
 
 extern void setSamplerate_fmmod (FMMOD a, int rate);
 
@@ -72,9 +72,9 @@ extern void setSize_fmmod (FMMOD a, int size);
 
 // TXA Properties
 
-extern __declspec (dllexport) void SetTXAFMDeviation (int channel, double deviation);
+extern __declspec (dllexport) void SetTXAFMDeviation (int channel, real deviation);
 
-extern __declspec (dllexport) void SetTXACTCSSFreq (int channel, double freq);
+extern __declspec (dllexport) void SetTXACTCSSFreq (int channel, real freq);
 
 extern __declspec (dllexport) void SetTXACTCSSRun (int channel, int run);
 

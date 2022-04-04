@@ -32,10 +32,10 @@ warren@wpratt.com
 *																										*
 ********************************************************************************************************/
 
-EMPHP create_emphp (int run, int position, int size, int nc, int mp, double* in, double* out, int rate, int ctype, double f_low, double f_high)
+EMPHP create_emphp (int run, int position, int size, int nc, int mp, real* in, real* out, int rate, int ctype, real f_low, real f_high)
 {
 	EMPHP a = (EMPHP) malloc0 (sizeof (emphp));
-	double* impulse;
+	real* impulse;
 	a->run = run;
 	a->position = position;
 	a->size = size;
@@ -72,7 +72,7 @@ void xemphp (EMPHP a, int position)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_emphp (EMPHP a, double* in, double* out)
+void setBuffers_emphp (EMPHP a, real* in, real* out)
 {
 	a->in = in;
 	a->out = out;
@@ -81,7 +81,7 @@ void setBuffers_emphp (EMPHP a, double* in, double* out)
 
 void setSamplerate_emphp (EMPHP a, int rate)
 {
-	double* impulse;
+	real* impulse;
 	a->rate = rate;
 	impulse = fc_impulse (a->nc, a->f_low, a->f_high, -20.0 * log10(a->f_high / a->f_low), 0.0, a->ctype, a->rate, 1.0 / (2.0 * a->size), 0, 0);
 	setImpulse_fircore (a->p, impulse, 1);
@@ -90,7 +90,7 @@ void setSamplerate_emphp (EMPHP a, int rate)
 
 void setSize_emphp (EMPHP a, int size)
 {
-	double* impulse;
+	real* impulse;
 	a->size = size;
 	setSize_fircore (a->p, a->size);
 	impulse = fc_impulse (a->nc, a->f_low, a->f_high, -20.0 * log10(a->f_high / a->f_low), 0.0, a->ctype, a->rate, 1.0 / (2.0 * a->size), 0, 0);
@@ -128,7 +128,7 @@ PORT
 void SetTXAFMEmphNC (int channel, int nc)
 {
 	EMPHP a;
-	double* impulse;
+	real* impulse;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = txa[channel].preemph.p;
 	if (a->nc != nc)
@@ -149,8 +149,8 @@ void SetTXAFMEmphNC (int channel, int nc)
 
 void calc_emph (EMPH a)
 {
-	a->infilt = (double *)malloc0(2 * a->size * sizeof(complex));
-	a->product = (double *)malloc0(2 * a->size * sizeof(complex));
+	a->infilt = (real *)malloc0(2 * a->size * sizeof(complex));
+	a->product = (real *)malloc0(2 * a->size * sizeof(complex));
 	a->mults = fc_mults(a->size, a->f_low, a->f_high, -20.0 * log10(a->f_high / a->f_low), 0.0, a->ctype, a->rate, 1.0 / (2.0 * a->size), 0, 0);
 	a->CFor = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->infilt, (fftw_complex *)a->product, FFTW_FORWARD, FFTW_PATIENT);
 	a->CRev = fftw_plan_dft_1d(2 * a->size, (fftw_complex *)a->product, (fftw_complex *)a->out, FFTW_BACKWARD, FFTW_PATIENT);
@@ -165,7 +165,7 @@ void decalc_emph (EMPH a)
 	_aligned_free(a->infilt);
 }
 
-EMPH create_emph (int run, int position, int size, double* in, double* out, int rate, int ctype, double f_low, double f_high)
+EMPH create_emph (int run, int position, int size, real* in, real* out, int rate, int ctype, real f_low, real f_high)
 {
 	EMPH a = (EMPH) malloc0 (sizeof (emph));
 	a->run = run;
@@ -173,7 +173,7 @@ EMPH create_emph (int run, int position, int size, double* in, double* out, int 
 	a->size = size;
 	a->in = in;
 	a->out = out;
-	a->rate = (double)rate;
+	a->rate = (real)rate;
 	a->ctype = ctype;
 	a->f_low = f_low;
 	a->f_high = f_high;
@@ -195,7 +195,7 @@ void flush_emph (EMPH a)
 void xemph (EMPH a, int position)
 {
 	int i;
-	double I, Q;
+	real I, Q;
 	if (a->run && a->position == position)
 	{
 		memcpy (&(a->infilt[2 * a->size]), a->in, a->size * sizeof (complex));
@@ -214,7 +214,7 @@ void xemph (EMPH a, int position)
 		memcpy (a->out, a->in, a->size * sizeof (complex));
 }
 
-void setBuffers_emph (EMPH a, double* in, double* out)
+void setBuffers_emph (EMPH a, real* in, real* out)
 {
 	decalc_emph (a);
 	a->in = in;

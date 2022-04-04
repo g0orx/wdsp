@@ -34,8 +34,8 @@ void calc_snba (SNBA d)
 		d->isize = d->bsize / (d->inrate / d->internalrate);
 	else
 		d->isize = d->bsize * (d->internalrate / d->inrate);
-	d->inbuff  = (double *) malloc0 (d->isize * sizeof (complex));
-	d->outbuff = (double *) malloc0 (d->isize * sizeof (complex));
+	d->inbuff  = (real *) malloc0 (d->isize * sizeof (complex));
+	d->outbuff = (real *) malloc0 (d->isize * sizeof (complex));
 	if (d->inrate != d->internalrate) d->resamprun = 1;
 	else                              d->resamprun = 0;
 	d->inresamp  = create_resample (d->resamprun, d->bsize, d->in,      d->inbuff, d->inrate,       d->internalrate, 0.0, 0, 2.0);
@@ -47,7 +47,7 @@ void calc_snba (SNBA d)
 	else                     d->iasize = d->isize;
 	d->iainidx = 0;
 	d->iaoutidx = 0;
-	d->inaccum = (double *) malloc0 (d->iasize * sizeof (double));
+	d->inaccum = (real *) malloc0 (d->iasize * sizeof (real));
 	d->nsamps = 0;
 	if (d->incr > d->isize)
 	{
@@ -62,11 +62,11 @@ void calc_snba (SNBA d)
 		d->oaoutidx = 0;
 	}
 	d->init_oaoutidx = d->oaoutidx;
-	d->outaccum = (double *) malloc0 (d->oasize * sizeof (double));
+	d->outaccum = (real *) malloc0 (d->oasize * sizeof (real));
 }
 
-SNBA create_snba (int run, double* in, double* out, int inrate, int internalrate, int bsize, int ovrlp, int xsize,
-	int asize, int npasses, double k1, double k2, int b, int pre, int post, double pmultmin, double out_low_cut, double out_high_cut)
+SNBA create_snba (int run, real* in, real* out, int inrate, int internalrate, int bsize, int ovrlp, int xsize,
+	int asize, int npasses, real k1, real k2, int b, int pre, int post, real pmultmin, real out_low_cut, real out_high_cut)
 {
 	SNBA d = (SNBA) malloc0 (sizeof (snba));
 	d->run = run;
@@ -90,16 +90,16 @@ SNBA create_snba (int run, double* in, double* out, int inrate, int internalrate
 
 	calc_snba (d);
 
-	d->xbase    = (double *) malloc0 (2 * d->xsize * sizeof (double));
+	d->xbase    = (real *) malloc0 (2 * d->xsize * sizeof (real));
 	d->xaux     = d->xbase + d->xsize;
-	d->exec.a       = (double *) malloc0 (d->xsize * sizeof (double));
-	d->exec.v       = (double *) malloc0 (d->xsize * sizeof (double));
+	d->exec.a       = (real *) malloc0 (d->xsize * sizeof (real));
+	d->exec.v       = (real *) malloc0 (d->xsize * sizeof (real));
 	d->exec.detout  = (int    *) malloc0 (d->xsize * sizeof (int));
-	d->exec.savex   = (double *) malloc0 (d->xsize * sizeof (double));
-	d->exec.xHout   = (double *) malloc0 (d->xsize * sizeof (double));
+	d->exec.savex   = (real *) malloc0 (d->xsize * sizeof (real));
+	d->exec.xHout   = (real *) malloc0 (d->xsize * sizeof (real));
 	d->exec.unfixed = (int    *) malloc0 (d->xsize * sizeof (int));
-	d->sdet.vp      = (double *) malloc0 (d->xsize * sizeof (double));
-	d->sdet.vpwr    = (double *) malloc0 (d->xsize * sizeof (double));
+	d->sdet.vp      = (real *) malloc0 (d->xsize * sizeof (real));
+	d->sdet.vpwr    = (real *) malloc0 (d->xsize * sizeof (real));
 	
 	return d;
 }
@@ -140,17 +140,17 @@ void flush_snba (SNBA d)
 	d->oainidx = 0;
 	d->oaoutidx = d->init_oaoutidx;
 
-	memset (d->inaccum,      0, d->iasize * sizeof (double));
-	memset (d->outaccum,     0, d->oasize * sizeof (double));
-	memset (d->xaux,         0, d->xsize  * sizeof (double));
-	memset (d->exec.a,       0, d->xsize  * sizeof (double));
-	memset (d->exec.v,       0, d->xsize  * sizeof (double));
+	memset (d->inaccum,      0, d->iasize * sizeof (real));
+	memset (d->outaccum,     0, d->oasize * sizeof (real));
+	memset (d->xaux,         0, d->xsize  * sizeof (real));
+	memset (d->exec.a,       0, d->xsize  * sizeof (real));
+	memset (d->exec.v,       0, d->xsize  * sizeof (real));
 	memset (d->exec.detout,  0, d->xsize  * sizeof (int));
-	memset (d->exec.savex,   0, d->xsize  * sizeof (double));
-	memset (d->exec.xHout,   0, d->xsize  * sizeof (double));
+	memset (d->exec.savex,   0, d->xsize  * sizeof (real));
+	memset (d->exec.xHout,   0, d->xsize  * sizeof (real));
 	memset (d->exec.unfixed, 0, d->xsize  * sizeof (int));
-	memset (d->sdet.vp,      0, d->xsize  * sizeof (double));
-	memset (d->sdet.vpwr,    0, d->xsize  * sizeof (double));
+	memset (d->sdet.vp,      0, d->xsize  * sizeof (real));
+	memset (d->sdet.vpwr,    0, d->xsize  * sizeof (real));
 
 	memset (d->inbuff,       0, d->isize  * sizeof (complex));
 	memset (d->outbuff,      0, d->isize  * sizeof (complex));
@@ -158,7 +158,7 @@ void flush_snba (SNBA d)
 	flush_resample (d->outresamp);
 }
 
-void setBuffers_snba (SNBA a, double* in, double* out)
+void setBuffers_snba (SNBA a, real* in, real* out)
 {
 	decalc_snba (a);
 	a->in = in;
@@ -180,20 +180,20 @@ void setSize_snba (SNBA a, int size)
 	calc_snba (a);
 }
 
-void ATAc0 (int n, int nr, double* A, double* r)
+void ATAc0 (int n, int nr, real* A, real* r)
 {
     int i, j;
-	memset(r, 0, n * sizeof (double));
+	memset(r, 0, n * sizeof (real));
     for (i = 0; i < n; i++)
         for (j = 0; j < nr; j++)
             r[i] += A[j * n + i] * A[j * n + 0];
 }
 
-void multA1TA2(double* a1, double* a2, int m, int n, int q, double* c)
+void multA1TA2(real* a1, real* a2, int m, int n, int q, real* c)
 {
 	int i, j, k;
     int p = q - m;
-	memset (c, 0, m * n * sizeof (double));              
+	memset (c, 0, m * n * sizeof (real));              
     for (i = 0; i < m; i++)
     {
         for (j = 0; j < n; j++)
@@ -213,10 +213,10 @@ void multA1TA2(double* a1, double* a2, int m, int n, int q, double* c)
     }
 }
 
-void multXKE(double* a, double* xk, int m, int q, int p, double* vout)
+void multXKE(real* a, real* xk, int m, int q, int p, real* vout)
 {
     int i, k;
-	memset (vout, 0, m * sizeof (double));
+	memset (vout, 0, m * sizeof (real));
     for (i = 0; i < m; i++)
     {
         for (k = i; k < p; k++)
@@ -226,10 +226,10 @@ void multXKE(double* a, double* xk, int m, int q, int p, double* vout)
     }
 }
 
-void multAv(double* a, double* v, int m, int q, double* vout)
+void multAv(real* a, real* v, int m, int q, real* vout)
 {
 	int i, k;
-	memset (vout, 0, m * sizeof (double));
+	memset (vout, 0, m * sizeof (real));
     for (i = 0; i < m; i++)
     {
         for (k = 0; k < q; k++)
@@ -237,17 +237,17 @@ void multAv(double* a, double* v, int m, int q, double* vout)
     }
 }
 
-void xHat(int xusize, int asize, double* xk, double* a, double* xout)
+void xHat(int xusize, int asize, real* xk, real* a, real* xout)
 {
     int i, j, k;
 	int a1rows = xusize + asize;
 	int a2cols = xusize + 2 * asize;
-	double* r    = (double *) malloc0 (xusize          * sizeof (double));
-	double* ATAI = (double *) malloc0 (xusize * xusize * sizeof (double));
-	double* A1   = (double *) malloc0 (a1rows * xusize * sizeof (double));
-	double* A2   = (double *) malloc0 (a1rows * a2cols * sizeof (double));
-	double* P1   = (double *) malloc0 (xusize * a2cols * sizeof (double));
-	double* P2   = (double *) malloc0 (xusize          * sizeof (double));
+	real* r    = (real *) malloc0 (xusize          * sizeof (real));
+	real* ATAI = (real *) malloc0 (xusize * xusize * sizeof (real));
+	real* A1   = (real *) malloc0 (a1rows * xusize * sizeof (real));
+	real* A2   = (real *) malloc0 (a1rows * a2cols * sizeof (real));
+	real* P1   = (real *) malloc0 (xusize * a2cols * sizeof (real));
+	real* P2   = (real *) malloc0 (xusize          * sizeof (real));
 
     for (i = 0; i < xusize; i++)
     {
@@ -283,10 +283,10 @@ void xHat(int xusize, int asize, double* xk, double* a, double* xout)
 	_aligned_free (r);
 }
 
-void invf(int xsize, int asize, double* a, double* x, double* v)
+void invf(int xsize, int asize, real* a, real* x, real* v)
 {
     int i, j;
-	memset (v, 0, xsize * sizeof (double));
+	memset (v, 0, xsize * sizeof (real));
 	for (i = asize; i < xsize - asize; i++)
 	{
 		for (j = 0; j < asize; j++)
@@ -301,10 +301,10 @@ void invf(int xsize, int asize, double* a, double* x, double* v)
     }
 }
 
-void det(SNBA d, int asize, double* v, int* detout)
+void det(SNBA d, int asize, real* v, int* detout)
 {
     int i, j;
-    double medpwr, t1, t2;
+    real medpwr, t1, t2;
     int bstate, bcount, bsamp;
     for (i = asize, j = 0; i < d->xsize; i++, j++)
 	{
@@ -321,7 +321,7 @@ void det(SNBA d, int asize, double* v, int* detout)
         else if (d->sdet.vpwr[i] <= 2.0 * t1)
 			t2 += 2.0 * t1 - d->sdet.vpwr[i];
     }
-    t2 *= d->sdet.k2 / (double)(d->xsize - asize);
+    t2 *= d->sdet.k2 / (real)(d->xsize - asize);
     for (i = asize; i < d->xsize; i++)
     {
         if (d->sdet.vpwr[i] > t2)
@@ -381,15 +381,15 @@ void det(SNBA d, int asize, double* v, int* detout)
     }
 }
 
-int scanFrame(int xsize, int pval, double pmultmin, int* det, int* bimp, int* limp, 
+int scanFrame(int xsize, int pval, real pmultmin, int* det, int* bimp, int* limp, 
             int* befimp, int* aftimp, int* p_opt, int* next)
 {
     int inflag = 0;
     int i = 0, j = 0, k = 0;
     int nimp = 0;
-	double td;
+	real td;
     int ti;
-	double merit[MAXIMP] = { 0 };
+	real merit[MAXIMP] = { 0 };
 	int nextlist[MAXIMP];
 	memset (befimp, 0, MAXIMP * sizeof (int));
 	memset (aftimp, 0, MAXIMP * sizeof (int));
@@ -429,7 +429,7 @@ int scanFrame(int xsize, int pval, double pmultmin, int* det, int* bimp, int* li
             
     for (i = 0; i < nimp; i++)
     {
-        merit[i] = (double)p_opt[i] / (double)limp[i];
+        merit[i] = (real)p_opt[i] / (real)limp[i];
         nextlist[i] = i;
     }
     for (j = 0; j < nimp - 1; j++)
@@ -469,7 +469,7 @@ int scanFrame(int xsize, int pval, double pmultmin, int* det, int* bimp, int* li
     return nimp;
 }
 
-void execFrame(SNBA d, double* x)
+void execFrame(SNBA d, real* x)
 {
 	int i, k;
     int pass;
@@ -481,7 +481,7 @@ void execFrame(SNBA d, double* x)
 	int p_opt[MAXIMP];
     int next = 0;
     int p;
-	memcpy (d->exec.savex, x, d->xsize * sizeof (double));                    
+	memcpy (d->exec.savex, x, d->xsize * sizeof (real));                    
     asolve(d->xsize, d->exec.asize, x, d->exec.a);
     invf(d->xsize, d->exec.asize, d->exec.a, x, d->exec.v);
     det(d, d->exec.asize, d->exec.v, d->exec.detout);
@@ -503,12 +503,12 @@ void execFrame(SNBA d, double* x)
             {      
                 asolve(d->xsize, p, x, d->exec.a);
                 xHat(limp[next], p, &x[bimp[next] - p], d->exec.a, d->exec.xHout);
-				memcpy (&x[bimp[next]], d->exec.xHout, limp[next] * sizeof (double));
+				memcpy (&x[bimp[next]], d->exec.xHout, limp[next] * sizeof (real));
 				memset (&d->exec.unfixed[bimp[next]], 0, limp[next] * sizeof (int));
             }
             else
             {
-				memcpy (&x[bimp[next]], &d->exec.savex[bimp[next]], limp[next] * sizeof (double));
+				memcpy (&x[bimp[next]], &d->exec.savex[bimp[next]], limp[next] * sizeof (real));
             }
         }
     }
@@ -528,13 +528,13 @@ void xsnba (SNBA d)
 		d->nsamps += d->isize;
 		while (d->nsamps >= d->incr)
 		{
-			memcpy (&d->xaux[d->xsize - d->incr], &d->inaccum[d->iaoutidx], d->incr * sizeof (double));
+			memcpy (&d->xaux[d->xsize - d->incr], &d->inaccum[d->iaoutidx], d->incr * sizeof (real));
 			execFrame (d, d->xaux);
 			d->iaoutidx = (d->iaoutidx + d->incr) % d->iasize;
 			d->nsamps -= d->incr;
-			memcpy (&d->outaccum[d->oainidx], d->xaux, d->incr * sizeof (double));
+			memcpy (&d->outaccum[d->oainidx], d->xaux, d->incr * sizeof (real));
 			d->oainidx = (d->oainidx + d->incr) % d->oasize;
-			memmove (d->xbase, &d->xbase[d->incr], (2 * d->xsize - d->incr) * sizeof (double));
+			memmove (d->xbase, &d->xbase[d->incr], (2 * d->xsize - d->incr) * sizeof (real));
 		}
 		for (i = 0; i < d->isize; i++)
 		{
@@ -593,14 +593,14 @@ PORT void SetRXASNBAnpasses (int channel, int npasses)
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
-PORT void SetRXASNBAk1 (int channel, double k1)
+PORT void SetRXASNBAk1 (int channel, real k1)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].snba.p->sdet.k1 = k1;
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
-PORT void SetRXASNBAk2 (int channel, double k2)
+PORT void SetRXASNBAk2 (int channel, real k2)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].snba.p->sdet.k2 = k2;
@@ -628,18 +628,18 @@ PORT void SetRXASNBApostsamps (int channel, int postsamps)
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
-PORT void SetRXASNBApmultmin (int channel, double pmultmin)
+PORT void SetRXASNBApmultmin (int channel, real pmultmin)
 {
 	EnterCriticalSection (&ch[channel].csDSP);
 	rxa[channel].snba.p->scan.pmultmin = pmultmin;
 	LeaveCriticalSection (&ch[channel].csDSP);
 }
 
-PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
+PORT void SetRXASNBAOutputBandwidth (int channel, real flow, real fhigh)
 {
 	SNBA a;
 	RESAMPLE d;
-	double f_low, f_high;
+	real f_low, f_high;
 	EnterCriticalSection (&ch[channel].csDSP);
 	a = rxa[channel].snba.p;
 	d = a->outresamp;
@@ -660,7 +660,7 @@ PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 	}
 	else if (flow < 0 && fhigh > 0)
 	{
-		double absmax = max (-flow, fhigh);
+		real absmax = max (-flow, fhigh);
 		if (absmax <  a->out_low_cut) absmax =  a->out_low_cut;
 		f_low = a->out_low_cut;
 		f_high = min (a->out_high_cut, absmax);
@@ -683,7 +683,7 @@ PORT void SetRXASNBAOutputBandwidth (int channel, double flow, double fhigh)
 
 void calc_bpsnba (BPSNBA a)
 {
-	a->buff = (double *) malloc0 (a->size * sizeof (complex));
+	a->buff = (real *) malloc0 (a->size * sizeof (complex));
 	a->bpsnba = create_nbp (
 		1,							// run, always runs (use bpsnba 'run')
 		a->run_notches,				// run the notches
@@ -703,8 +703,8 @@ void calc_bpsnba (BPSNBA a)
 		a->ptraddr);				// addr of database pointer
 }
 
-BPSNBA create_bpsnba (int run, int run_notches, int position, int size, int nc, int mp, double* in, double* out, int rate,  
-	double abs_low_freq, double abs_high_freq, double f_low, double f_high, int wintype, double gain, int autoincr, 
+BPSNBA create_bpsnba (int run, int run_notches, int position, int size, int nc, int mp, real* in, real* out, int rate,  
+	real abs_low_freq, real abs_high_freq, real f_low, real f_high, int wintype, real gain, int autoincr, 
 	int maxpb, NOTCHDB* ptraddr)
 {
 	BPSNBA a = (BPSNBA) malloc0 (sizeof (bpsnba));
@@ -748,7 +748,7 @@ void flush_bpsnba (BPSNBA a)
 	flush_nbp (a->bpsnba);
 }
 
-void setBuffers_bpsnba (BPSNBA a, double* in, double* out)
+void setBuffers_bpsnba (BPSNBA a, real* in, real* out)
 {
 	decalc_bpsnba (a);
 	a->in = in;

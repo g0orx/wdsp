@@ -32,14 +32,14 @@ typedef struct _gain
 	int run;
 	int* prun;
 	int size;
-	double* in;
-	double* out;
-	double Igain;
-	double Qgain;
+	real* in;
+	real* out;
+	real Igain;
+	real Qgain;
 	CRITICAL_SECTION cs_update;
 }gain, *GAIN;
 
-__declspec (dllexport) GAIN create_gain (int run, int* prun, int size, double* in, double* out, double Igain, double Qgain);
+__declspec (dllexport) GAIN create_gain (int run, int* prun, int size, real* in, real* out, real Igain, real Qgain);
 
 __declspec (dllexport) void destroy_gain (GAIN a);
 
@@ -47,7 +47,7 @@ __declspec (dllexport) void flush_gain (GAIN a);
 
 __declspec (dllexport) void xgain (GAIN a);
 
-extern void setBuffers_gain (GAIN a, double* in, double* out);
+extern void setBuffers_gain (GAIN a, real* in, real* out);
 
 extern void setSamplerate_gain (GAIN a, int rate);
 
@@ -57,7 +57,7 @@ extern void setSize_gain (GAIN a, int size);
 
 // POINTER-BASED Properties
 
-__declspec (dllexport) void pSetTXOutputLevel (GAIN a, double level);
+__declspec (dllexport) void pSetTXOutputLevel (GAIN a, real level);
 
 __declspec (dllexport) void pSetTXOutputLevelRun (GAIN a, int run);
 

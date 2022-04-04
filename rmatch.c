@@ -26,7 +26,7 @@ warren@wpratt.com
 
 #include "comm.h"
 
-MAV create_mav (int ringmin, int ringmax, double nom_value)
+MAV create_mav (int ringmin, int ringmax, real nom_value)
 {
 	MAV a = (MAV) malloc0 (sizeof (mav));
 	a->ringmin = ringmin;
@@ -53,7 +53,7 @@ void flush_mav (MAV a)
 	a->load = 0;
 	a->sum = 0;
 }
-void xmav (MAV a, int input, double* output)
+void xmav (MAV a, int input, real* output)
 {
 	if (a->load >= a->ringmax)
 		a->sum -= a->ring[a->i];
@@ -62,13 +62,13 @@ void xmav (MAV a, int input, double* output)
 	a->sum += a->ring[a->i];
     
 	if (a->load >= a->ringmin)
-		*output = (double)a->sum / (double)a->load;
+		*output = (real)a->sum / (real)a->load;
 	else
 		*output = a->nom_value;
     a->i = (a->i + 1) & a->mask;
 }
 
-AAMAV create_aamav (int ringmin, int ringmax, double nom_ratio)
+AAMAV create_aamav (int ringmin, int ringmax, real nom_ratio)
 {
 	AAMAV a = (AAMAV) malloc0 (sizeof (aamav));
 	a->ringmin = ringmin;
@@ -98,7 +98,7 @@ void flush_aamav (AAMAV a)
 	a->neg = 0;
 }
 
-void xaamav (AAMAV a, int input, double* output)
+void xaamav (AAMAV a, int input, real* output)
 {
 	if (a->load >= a->ringmax)
     {
@@ -114,11 +114,11 @@ void xaamav (AAMAV a, int input, double* output)
     else
         a->neg -= a->ring[a->i];
 	if (a->load >= a->ringmin)
-		*output = (double)a->neg / (double)a->pos;
+		*output = (real)a->neg / (real)a->pos;
 	else if (a->neg > 0 && a->pos > 0)
 	{
-		double frac = (double)a->load / (double)a->ringmin;
-		*output = (1.0 - frac) * a->nom_ratio + frac * ((double)a->neg / (double)a->pos);
+		real frac = (real)a->load / (real)a->ringmin;
+		*output = (1.0 - frac) * a->nom_ratio + frac * ((real)a->neg / (real)a->pos);
 	}
 	else
 		*output = a->nom_ratio;
@@ -128,43 +128,43 @@ void xaamav (AAMAV a, int input, double* output)
 void calc_rmatch (RMATCH a)
 {
 	int m;
-	double theta, dtheta;
+	real theta, dtheta;
 	int max_ring_insize;
-	a->nom_ratio = (double)a->nom_outrate / (double)a->nom_inrate;
-	max_ring_insize = (int)(1.0 + (double)a->insize * (1.05 * a->nom_ratio));
+	a->nom_ratio = (real)a->nom_outrate / (real)a->nom_inrate;
+	max_ring_insize = (int)(1.0 + (real)a->insize * (1.05 * a->nom_ratio));
 	if (a->ringsize < 2 * max_ring_insize)  a->ringsize = 2 * max_ring_insize;
 	if (a->ringsize < 2 * a->outsize) a->ringsize = 2 * a->outsize;
-	a->ring = (double *) malloc0 (a->ringsize * sizeof (complex));
+	a->ring = (real *) malloc0 (a->ringsize * sizeof (complex));
 	a->rsize = a->ringsize;
 	a->n_ring = a->rsize / 2;
 	a->iin = a->rsize / 2;
 	a->iout = 0;
-	a->resout = (double *) malloc0 (max_ring_insize * sizeof (complex));
+	a->resout = (real *) malloc0 (max_ring_insize * sizeof (complex));
 	a->v = create_varsamp (1, a->insize, a->in, a->resout, a->nom_inrate, a->nom_outrate, 
 		a->fc_high, a->fc_low, a->R, a->gain, a->var, a->varmode);
 	a->ffmav = create_aamav (a->ff_ringmin, a->ff_ringmax, a->nom_ratio);
 	a->propmav = create_mav (a->prop_ringmin, a->prop_ringmax, 0.0);
-	a->pr_gain = a->prop_gain * 48000.0 / (double)a->nom_outrate;	// adjust gain for rate
-	a->inv_nom_ratio = (double)a->nom_inrate / (double)a->nom_outrate;
+	a->pr_gain = a->prop_gain * 48000.0 / (real)a->nom_outrate;	// adjust gain for rate
+	a->inv_nom_ratio = (real)a->nom_inrate / (real)a->nom_outrate;
 	a->feed_forward = 1.0;
 	a->av_deviation = 0.0;
 	InitializeCriticalSectionAndSpinCount (&a->cs_ring, 2500);
 	InitializeCriticalSectionAndSpinCount (&a->cs_var,  2500);
 	a->ntslew = (int)(a->tslew * a->nom_outrate);
 	if (a->ntslew + 1 > a->rsize / 2) a->ntslew = a->rsize / 2 - 1;
-	a->cslew = (double *) malloc0 ((a->ntslew + 1) * sizeof (double));
-	dtheta = PI / (double)a->ntslew;
+	a->cslew = (real *) malloc0 ((a->ntslew + 1) * sizeof (real));
+	dtheta = PI / (real)a->ntslew;
 	theta = 0.0;
 	for (m = 0; m <= a->ntslew; m++)
 	{
 		a->cslew[m] = 0.5 * (1.0 - cos (theta));
 		theta += dtheta;
 	}
-	a->baux = (double *) malloc0 (a->ringsize / 2 * sizeof (complex));
+	a->baux = (real *) malloc0 (a->ringsize / 2 * sizeof (complex));
 	a->readsamps = 0;
 	a->writesamps = 0;
-	a->read_startup = (unsigned int)((double)a->nom_outrate * a->startup_delay);
-	a->write_startup = (unsigned int)((double)a->nom_inrate * a->startup_delay);
+	a->read_startup = (unsigned int)((real)a->nom_outrate * a->startup_delay);
+	a->write_startup = (unsigned int)((real)a->nom_inrate * a->startup_delay);
 	a->control_flag = 0;
 	// diagnostics
 	a->underflows = 0;
@@ -188,28 +188,28 @@ void decalc_rmatch (RMATCH a)
 
 RMATCH create_rmatch (
 	int run,				// 0 - input and output calls do nothing; 1 - operates normally
-	double* in,				// pointer to input buffer
-	double* out,			// pointer to output buffer
+	real* in,				// pointer to input buffer
+	real* out,			// pointer to output buffer
 	int insize,				// size of input buffer
 	int outsize,			// size of output buffer
 	int nom_inrate,			// nominal input samplerate
 	int nom_outrate,		// nominal output samplerate
-	double fc_high,			// high cutoff frequency if lower than max
-	double fc_low,			// low cutoff frequency if higher than zero
-	double gain,			// gain to be applied during this process
-	double startup_delay,	// time (seconds) to delay before beginning measurements to control variable resampler
+	real fc_high,			// high cutoff frequency if lower than max
+	real fc_low,			// low cutoff frequency if higher than zero
+	real gain,			// gain to be applied during this process
+	real startup_delay,	// time (seconds) to delay before beginning measurements to control variable resampler
 	int auto_ringsize,		// 0 specified ringsize is used; 1 ringsize is auto-optimized - FEATURE NOT IMPLEMENTED!!
 	int ringsize,			// specified ringsize; max ringsize if 'auto' is enabled
 	int R,					// density factor for varsamp coefficients
-	double var,				// initial value of variable resampler ratio (value of ~1.0)
+	real var,				// initial value of variable resampler ratio (value of ~1.0)
 	int ffmav_min,			// minimum feed-forward moving average size to put full weight on data in the ring
 	int ffmav_max,			// maximum feed-forward moving average size - MUST BE A POWER OF TWO!
-	double ff_alpha,		// feed-forward exponential averaging multiplier
+	real ff_alpha,		// feed-forward exponential averaging multiplier
 	int prop_ringmin,		// proportional feedback min moving average ringsize
 	int prop_ringmax,		// proportional feedback max moving average ringsize - MUST BE A POWER OF TWO!
-	double prop_gain,		// proportional feedback gain factor
+	real prop_gain,		// proportional feedback gain factor
 	int varmode,			// 0 - use same var for all samples of the buffer; 1 - interpolate from old_var to this var
-	double tslew			// slew/blend time (seconds)
+	real tslew			// slew/blend time (seconds)
 	)
 {
 	RMATCH a = (RMATCH) malloc0 (sizeof (rmatch));
@@ -258,7 +258,7 @@ void reset_rmatch (RMATCH a)
 void control (RMATCH a, int change)
 {
 	{
-		double current_ratio;
+		real current_ratio;
 		xaamav (a->ffmav, change, &current_ratio);
 		current_ratio *= a->inv_nom_ratio;
 		a->feed_forward = a->ff_alpha * current_ratio + (1.0 - a->ff_alpha) * a->feed_forward;
@@ -299,13 +299,13 @@ void upslew (RMATCH a, int newsamps)
 }
 
 PORT
-void xrmatchIN (void* b, double* in)
+void xrmatchIN (void* b, real* in)
 {
 	RMATCH a = (RMATCH)b;
 	if (InterlockedAnd (&a->run, 1))
 	{
 		int newsamps, first, second, ovfl;
-		double var;
+		real var;
 		a->v->in = a->in = in;
 		EnterCriticalSection (&a->cs_var);
 		if (!a->force)
@@ -426,7 +426,7 @@ void dslew (RMATCH a)
 }
 
 PORT
-void xrmatchOUT (void* b, double* out)
+void xrmatchOUT (void* b, real* out)
 {
 	RMATCH a = (RMATCH)b;
 	if (InterlockedAnd (&a->run, 1))
@@ -468,7 +468,7 @@ void xrmatchOUT (void* b, double* out)
 }
 
 PORT
-void getRMatchDiags (void* b, int* underflows, int* overflows, double* var, int* ringsize)
+void getRMatchDiags (void* b, int* underflows, int* overflows, real* var, int* ringsize)
 {
 	RMATCH a = (RMATCH)b;
 	*underflows = InterlockedAnd (&a->underflows, 0xFFFFFFFF);
@@ -488,7 +488,7 @@ void resetRMatchDiags (void* b)
 }
 
 PORT
-void forceRMatchVar (void* b, int force, double fvar)
+void forceRMatchVar (void* b, int force, real fvar)
 {
 	RMATCH a = (RMATCH)b;
 	EnterCriticalSection (&a->cs_var);

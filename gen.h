@@ -31,89 +31,89 @@ typedef struct _gen
 {
 	int run;					// run
 	int size;					// number of samples per buffer
-	double* in;					// input buffer (retained in case I want to mix in a generated signal)
-	double* out;				// output buffer
-	double rate;				// sample rate
+	real* in;					// input buffer (retained in case I want to mix in a generated signal)
+	real* out;				// output buffer
+	real rate;				// sample rate
 	int mode;					
 	struct _tone
 	{
-		double mag;
-		double freq;
-		double phs;
-		double delta;
-		double cosdelta;
-		double sindelta;
+		real mag;
+		real freq;
+		real phs;
+		real delta;
+		real cosdelta;
+		real sindelta;
 	} tone;
 	struct _tt
 	{
-		double mag1;
-		double mag2;
-		double f1;
-		double f2;
-		double phs1;
-		double phs2;
-		double delta1;
-		double delta2;
-		double cosdelta1;
-		double cosdelta2;
-		double sindelta1;
-		double sindelta2;
+		real mag1;
+		real mag2;
+		real f1;
+		real f2;
+		real phs1;
+		real phs2;
+		real delta1;
+		real delta2;
+		real cosdelta1;
+		real cosdelta2;
+		real sindelta1;
+		real sindelta2;
 	} tt;
 	struct _noise
 	{
-		double mag;
+		real mag;
 	} noise;
 	struct _sweep
 	{
-		double mag;
-		double f1;
-		double f2;
-		double sweeprate;
-		double phs;
-		double dphs;
-		double d2phs;
-		double dphsmax;
+		real mag;
+		real f1;
+		real f2;
+		real sweeprate;
+		real phs;
+		real dphs;
+		real d2phs;
+		real dphsmax;
 	} sweep;
 	struct _saw
 	{
-		double mag;
-		double f;
-		double period;
-		double delta;
-		double t;
+		real mag;
+		real f;
+		real period;
+		real delta;
+		real t;
 	} saw;
 	struct _tri
 	{
-		double mag;
-		double f;
-		double period;
-		double half;
-		double delta;
-		double t;
-		double t1;
+		real mag;
+		real f;
+		real period;
+		real half;
+		real delta;
+		real t;
+		real t1;
 	} tri;
 	struct _pulse
 	{
-		double mag;
-		double pf;
-		double pdutycycle;
-		double ptranstime;
-		double* ctrans;
+		real mag;
+		real pf;
+		real pdutycycle;
+		real ptranstime;
+		real* ctrans;
 		int pcount;
 		int pnon;
 		int pntrans;
 		int pnoff;
-		double pperiod;
-		double tf;
-		double tphs;
-		double tdelta;
-		double tcosdelta;
-		double tsindelta;
+		real pperiod;
+		real tf;
+		real tphs;
+		real tdelta;
+		real tcosdelta;
+		real tsindelta;
 		int state;
 	} pulse;
 } gen, *GEN;
 
-extern GEN create_gen (int run, int size, double* in, double* out, int rate, int mode);
+extern GEN create_gen (int run, int size, real* in, real* out, int rate, int mode);
 
 extern void destroy_gen (GEN a);
 
@@ -121,7 +121,7 @@ extern void flush_gen (GEN a);
 
 extern void xgen (GEN a);
 
-extern void setBuffers_gen (GEN a, double* in, double* out);
+extern void setBuffers_gen (GEN a, real* in, real* out);
 
 extern void setSamplerate_gen (GEN a, int rate);
 

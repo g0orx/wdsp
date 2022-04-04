@@ -56,20 +56,20 @@ typedef struct _dp
 	int num_stitch;											// number of results to be stitched together to generate the pixel frame
 	unsigned long long stitch_flag;
 	int spec_flag[dMAX_STITCH];								// flags showing if all ffts for a sub-span are done so elimination can proceed
-	double pix_per_bin;										// number of pixels per fft bin, note that this is fractional, not integral
-	double bin_per_pix;										// number of fft bins per pixel, this is fractional and != 1.0/pix_per_bin
-	double scale;											// output amplitude scale factor
-	double PiAlpha;											// parameter for Kaiser window function
+	real pix_per_bin;										// number of pixels per fft bin, note that this is fractional, not integral
+	real bin_per_pix;										// number of fft bins per pixel, this is fractional and != 1.0/pix_per_bin
+	real scale;											// output amplitude scale factor
+	real PiAlpha;											// parameter for Kaiser window function
 
 	int cal_set;											// specifies which set of calibration data to use
-	double f_min;											// frequency at first pixel (for calibration)
-	double f_max;											// frequency at last pixel (for calibration)
+	real f_min;											// frequency at first pixel (for calibration)
+	real f_max;											// frequency at last pixel (for calibration)
 	int cal_changed;										// flag to indicate that the calibration data has changed
 
-	double *window;											// pointer to buffer to hold window coefficients	
-	double *result[dMAX_STITCH];							// pointers to buffer to hold elimination results for each sub-span
+	real *window;											// pointer to buffer to hold window coefficients	
+	real *result[dMAX_STITCH];							// pointers to buffer to hold elimination results for each sub-span
 	dOUTREAL *pixels[dMAX_PIXOUTS][dNUM_PIXEL_BUFFS];		// pointers pixel output buffers
-	double *t_pixels[dMAX_PIXOUTS];							// pointer to temporary pixel buffer									//pointer to temporary pixel buffer for non-averaged data
+	real *t_pixels[dMAX_PIXOUTS];							// pointer to temporary pixel buffer									//pointer to temporary pixel buffer for non-averaged data
 	int w_pix_buff[dMAX_PIXOUTS];							// number of pixel buffer owned by writing process
 	int r_pix_buff[dMAX_PIXOUTS];							// number of pixel buffer owned by reading process
 	int last_pix_buff[dMAX_PIXOUTS];						// number of the last pixel buffer written
@@ -78,23 +78,23 @@ typedef struct _dp
 	int avail_frames[dMAX_PIXOUTS];							// number of pixel frames currently available to average
 	int av_in_idx[dMAX_PIXOUTS];							// input index in averaging pixel buffer ring
 	int av_out_idx[dMAX_PIXOUTS];							// output index in averaging pixel buffer ring
-	double *av_sum[dMAX_PIXOUTS];							// pointer to sum buffer for averaging
-	double *av_buff[dMAX_PIXOUTS][dMAX_AVERAGE];			// pointers to ring of buffers to hold pixel frames for averaging
-	double *pre_av_sum;
-	double *pre_av_out;
+	real *av_sum[dMAX_PIXOUTS];							// pointer to sum buffer for averaging
+	real *av_buff[dMAX_PIXOUTS][dMAX_AVERAGE];			// pointers to ring of buffers to hold pixel frames for averaging
+	real *pre_av_sum;
+	real *pre_av_out;
 	int av_mode[dMAX_PIXOUTS];
-	double av_backmult[dMAX_PIXOUTS];						// back multiplier for weighted averaging
-	double *cd;												// pointer to amplitude calibration buffer
+	real av_backmult[dMAX_PIXOUTS];						// back multiplier for weighted averaging
+	real *cd;												// pointer to amplitude calibration buffer
 	int n_freqs[dMAX_CAL_SETS];								// number of frequencies in each calibration set
-	double *freqs[dMAX_CAL_SETS];							// pointers to vectors of calibration frequencies
-	double (*ac3[dMAX_CAL_SETS][dMAX_M]);					// pointers to amplitude interpolant coefficients
-	double (*ac2[dMAX_CAL_SETS][dMAX_M]);
-	double (*ac1[dMAX_CAL_SETS][dMAX_M]);
-	double (*ac0[dMAX_CAL_SETS][dMAX_M]);
+	real *freqs[dMAX_CAL_SETS];							// pointers to vectors of calibration frequencies
+	real (*ac3[dMAX_CAL_SETS][dMAX_M]);					// pointers to amplitude interpolant coefficients
+	real (*ac2[dMAX_CAL_SETS][dMAX_M]);
+	real (*ac1[dMAX_CAL_SETS][dMAX_M]);
+	real (*ac0[dMAX_CAL_SETS][dMAX_M]);
 
 	fftw_plan plan[dMAX_STITCH][dMAX_NUM_FFT];				// fftw plans
 	fftw_plan Cplan[dMAX_STITCH][dMAX_NUM_FFT];
-	double *fft_in[dMAX_STITCH][dMAX_NUM_FFT];				// pointers to fftw real input vectors
+	real *fft_in[dMAX_STITCH][dMAX_NUM_FFT];				// pointers to fftw real input vectors
 	fftw_complex *Cfft_in[dMAX_STITCH][dMAX_NUM_FFT];		// pointers to fftw complex input vectors
 	fftw_complex *fft_out[dMAX_STITCH][dMAX_NUM_FFT];		// pointers to fftw complex output vectors
 	volatile LONG *pnum_threads;							// pointer to current number of active worker threads
@@ -119,7 +119,7 @@ typedef struct _dp
 
 	volatile LONG snap[dMAX_STITCH][dMAX_NUM_FFT];			// set to 1 to allow a snap of raw spectrum data
 	HANDLE hSnapEvent[dMAX_STITCH][dMAX_NUM_FFT];			// mutex handles; mutexes will be used to signal a snap is complete
-	double *snap_buff[dMAX_STITCH][dMAX_NUM_FFT];			// pointers to buffers for the snap
+	real *snap_buff[dMAX_STITCH][dMAX_NUM_FFT];			// pointers to buffers for the snap
 
 	CRITICAL_SECTION PB_ControlsSection[dMAX_PIXOUTS];
 	CRITICAL_SECTION SetAnalyzerSection;
@@ -129,10 +129,10 @@ typedef struct _dp
 	CRITICAL_SECTION ResampleSection;
 
 	int det_type[dMAX_PIXOUTS];								// detector type
-	double inv_coherent_gain;
-	double inherent_power_gain;
-	double inv_enb;
-	double norm_oneHz;										// dB factor to normalize to one Hz bandwidth
+	real inv_coherent_gain;
+	real inherent_power_gain;
+	real inv_enb;
+	real norm_oneHz;										// dB factor to normalize to one Hz bandwidth
 	int sample_rate;										// sample rate; used for normalization calculations
 	int normalize[dMAX_PIXOUTS];
 }  dp, *DP;
@@ -160,7 +160,7 @@ extern __declspec( dllexport )
 void SetCalibration (	int disp,
 						int set_num,				//identifier for this calibration data set
 						int n_points,				//number of calibration points in the set
-						double (*cal)[dMAX_M+1]		//pointer to the calibration table, first
+						real (*cal)[dMAX_M+1]		//pointer to the calibration table, first
 					);
 
 extern __declspec( dllexport )   
@@ -176,12 +176,12 @@ extern __declspec( dllexport )
 void Spectrum2(int run, int disp, int ss, int LO, dINREAL* pbuff);
 
 extern __declspec( dllexport )
-void Spectrum0(int run, int disp, int ss, int LO, double* pbuff);
+void Spectrum0(int run, int disp, int ss, int LO, real* pbuff);
 
 extern __declspec( dllexport )
 void SnapSpectrum(	int disp,
 					int ss,
 					int LO,
-					double *snap_buff);
+					real *snap_buff);
 
 #endif

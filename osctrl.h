@@ -35,19 +35,19 @@ typedef struct _osctrl
 {
 	int run;						// 1 to run; 0 otherwise
 	int size;						// buffer size
-	double *inbuff;					// input buffer
-	double *outbuff;				// output buffer
+	real *inbuff;					// input buffer
+	real *outbuff;				// output buffer
 	int rate;						// sample rate
-	double osgain;					// gain applied to overshoot "clippings"
-	double bw;						// bandwidth
+	real osgain;					// gain applied to overshoot "clippings"
+	real bw;						// bandwidth
 	int pn;							// "peak stretcher" window, samples
 	int dl_len;						// delay line length, samples
-	double* dl;						// delay line for complex samples
-	double* dlenv;					// delay line for envelope values
+	real* dl;						// delay line for complex samples
+	real* dlenv;					// delay line for envelope values
 	int in_idx;						// input index for dl
 	int out_idx;					// output index for dl
-	double max_env;					// maximum env value in env delay line
-	double env_out;
+	real max_env;					// maximum env value in env delay line
+	real env_out;
 } osctrl, *OSCTRL;
 
 extern void xosctrl (OSCTRL a);
@@ -55,16 +55,16 @@ extern void xosctrl (OSCTRL a);
 extern OSCTRL create_osctrl (
 				int run,
 				int size,
-				double* inbuff,
-				double* outbuff,
+				real* inbuff,
+				real* outbuff,
 				int rate,
-				double osgain );
+				real osgain );
 
 extern void destroy_osctrl (OSCTRL a);
 
 extern void flush_osctrl (OSCTRL a);
 
-extern void setBuffers_osctrl (OSCTRL a, double* in, double* out);
+extern void setBuffers_osctrl (OSCTRL a, real* in, real* out);
 
 extern void setSamplerate_osctrl (OSCTRL a, int rate);
 
