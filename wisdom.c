@@ -27,16 +27,11 @@ warren@wpratt.com
 #define _CRT_SECURE_NO_WARNINGS
 #include "comm.h"
 
-//
-// A string holding the last "progress report" message.
-// The new function wdsp_get_status() returns a pointer
-// to this string. All output lines to stdout are also
-// printed to this string.
-//
 static char status[128];
 
 PORT
-char *wisdom_get_status() {
+char* wisdom_get_status()
+{
 	return status;
 }
 

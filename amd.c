@@ -208,11 +208,6 @@ void xamd (AMD a)
 								audio = (ai_ps + bi_ps) - (aq_ps - bq_ps);
 								break;
 							}
-						default:
-							{
-								audio = 0.0;
-								break;
-							}
 						}
 
 						if (a->levelfade)
