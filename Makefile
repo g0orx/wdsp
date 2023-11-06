@@ -4,8 +4,13 @@
 
 # get the OS Name
 UNAME_S := $(shell uname -s)
+# Support for Out-of-source build
+BLDDIR_PATH := $(realpath $(BUILDDIR))
+# Ensuring non-empty path ends with a slash
+BLDDIR := $(BLDDIR_PATH:=/)
 
 PREFIX?=/usr/local
+DESTDIR=$(PREFIX)
 LIBDIR=$(PREFIX)/lib
 INCLUDEDIR=$(PREFIX)/include
 
@@ -22,14 +27,14 @@ endif
 ifeq ($(UNAME_S), Darwin)
 OPTIONS=-g -O3 -D _GNU_SOURCE   	# MacOS: do not need PIC
 LIBS=`pkg-config --libs fftw3`  	# MacOS: get FFTW library path from pkg-config
-PROGRAM=libwdsp.dylib			# MacOS: shared libs end in .dylib
-JAVA_PROGRAM=libwdspj.dylib		# MacOS: shared libs end in .dylib
+PROGRAM=$(BLDDIR)libwdsp.dylib			# MacOS: shared libs end in .dylib
+JAVA_PROGRAM=$(BLDDIR)libwdspj.dylib		# MacOS: shared libs end in .dylib
 NOEXECSTACK=				# MacOS: Compiler does not have -z option
 else
 OPTIONS=-g -fPIC -O3 -D _GNU_SOURCE	# Linux: legacy compiler options for WDSP
 LIBS=-lfftw3 -lpthread			# Linux: assume FFTW3 lib is found this way
-PROGRAM=libwdsp.so			# Linux: shared libs end in .so
-JAVA_PROGRAM=libwdspj.so		# Linux: shared libs end in .so
+PROGRAM=$(BLDDIR)libwdsp.so			# Linux: shared libs end in .so
+JAVA_PROGRAM=$(BLDDIR)libwdspj.so		# Linux: shared libs end in .so
 NOEXECSTACK=	-z noexecstack		# Linux: link option for gcc
 endif
 
@@ -228,36 +233,38 @@ all: $(PROGRAM) $(HEADERS) $(SOURCES)
 
 java: $(JAVA_PROGRAM) $(JAVA_HEADERS) $(JAVA_SOURCES)
 
-$(PROGRAM): $(OBJS)
-	$(LINK) -shared $(NOEXECSTACK) $(LDFLAGS) -o $(PROGRAM) $(OBJS) $(LIBS) $(GTKLIBS)
+$(PROGRAM): $(OBJS:%.o=$(BLDDIR)%.o)
+	$(LINK) -shared $(NOEXECSTACK) $(LDFLAGS) -o $@ $^ $(LIBS) $(GTKLIBS)
 
-$(JAVA_PROGRAM): $(JAVA_OBJS)
-	$(LINK) -shared $(NOEXECSTACK) $(LDFLAGS) -o $(JAVA_PROGRAM) $(JAVA_OBJS) $(JAVA_LIBS)
+$(JAVA_PROGRAM): $(JAVA_OBJS:%.o=$(BLDDIR)%.o)
+	$(LINK) -shared $(NOEXECSTACK) $(LDFLAGS) -o -o $@ $^ $(JAVA_LIBS)
 
-.c.o:
-	$(COMPILE) $(OPTIONS) $(GTKOPTIONS) $(CFLAGS) -c -o $@ $<
+$(BLDDIR)%.o: %.c
+	$(COMPILE) $(OPTIONS) $(GTKOPTIONS) $(CFLAGS) -c -o $@ -MMD -MP -MF$(@:.o=.d) -MT$@ $<
 
 install-dirs:
-	mkdir -p $(LIBDIR) $(INCLUDEDIR)
+	mkdir -p $(DESTDIR)/lib $(DESTDIR)/include
 
 install: $(PROGRAM) install-dirs
-	cp wdsp.h $(INCLUDEDIR)
+	cp wdsp.h $(DESTDIR)/include
 ifeq ($(UNAME_S), Darwin)
-	/usr/bin/install_name_tool -id $(LIBDIR)/$(PROGRAM) $(PROGRAM)
-	cp $(PROGRAM) $(LIBDIR)
+	/usr/bin/install_name_tool -id $(DESTDIR)/lib/$(PROGRAM) $(PROGRAM)
+	cp $(PROGRAM) $(DESTDIR)/lib
 else
-	cp $(PROGRAM) $(LIBDIR)
+	cp $(PROGRAM) $(DESTDIR)/lib
 	ldconfig || :
 endif
 
 install_java: $(JAVA_PROGRAM)
-	cp $(JAVA_PROGRAM) /usr/local/lib
+	cp $(JAVA_PROGRAM) $(DESTDIR)/lib
 
 release: $(PROGRAM)
 	cp $(PROGRAM) ../pihpsdr/release/pihpsdr
 
 clean:
-	-rm -f *.o
+	-rm -f $(BLDDIR)*.o
+	-rm -f $(BLDDIR)*.d
 	-rm -f $(PROGRAM)
 	-rm -f $(JAVA_PROGRAM)
 
+-include $(shell find $(BLDDIR) -name '*.d')
