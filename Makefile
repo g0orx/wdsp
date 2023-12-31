@@ -40,7 +40,7 @@ endif
 
 JAVA_LIBS=-L. -lwdsp
 
-INCLUDES=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux
+INCLUDES=-I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux -I $(PREFIX)/include
 
 COMPILE=$(CC) $(INCLUDES) $(GTKINCLUDES)
 
